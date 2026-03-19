@@ -7,7 +7,7 @@ import {
     useVelocity,
     useSpring,
 } from "framer-motion";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 export const TracingBeam = ({
     children,
@@ -63,21 +63,21 @@ export const TracingBeam = ({
                                 ? "none"
                                 : "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                     }}
-                    className="ml-[27px] h-4 w-4 rounded-full border border-netural-200 shadow-sm flex items-center justify-center"
+                    className="ml-[27px] h-4 w-4 rounded-full border border-border flex items-center justify-center bg-background"
                 >
-                    <motion.div
-                        transition={{
-                            duration: 0.2,
-                            delay: 0.5,
-                        }}
-                        animate={{
-                            backgroundColor:
-                                scrollYProgress.get() > 0 ? "white" : "var(--emerald-500)",
-                            borderColor:
-                                scrollYProgress.get() > 0 ? "white" : "var(--emerald-600)",
-                        }}
-                        className="h-2 w-2  rounded-full border bg-transparent"
-                    />
+                <motion.div
+                    transition={{
+                        duration: 0.2,
+                        delay: 0.5,
+                    }}
+                    animate={{
+                        backgroundColor:
+                            scrollYProgress.get() > 0 ? "hsl(var(--muted))" : "var(--primary)",
+                        borderColor:
+                            scrollYProgress.get() > 0 ? "var(--border)" : "var(--primary)",
+                    }}
+                    className="h-2 w-2 rounded-full border bg-transparent"
+                />
                 </motion.div>
                 <svg
                     viewBox={`0 0 20 ${svgHeight}`}
@@ -89,8 +89,8 @@ export const TracingBeam = ({
                     <motion.path
                         d={`M 1 0V -36 l 18 24 V ${svgHeight * 0.8} l -18 24V ${svgHeight}`}
                         fill="none"
-                        stroke="#9091A0"
-                        strokeOpacity="0.16"
+                        stroke="var(--border)"
+                        strokeOpacity="0.5"
                         transition={{
                             duration: 10,
                         }}
@@ -111,13 +111,13 @@ export const TracingBeam = ({
                             gradientUnits="userSpaceOnUse"
                             x1="0"
                             x2="0"
-                            y1={y1} // set y1 for gradient
-                            y2={y2} // set y2 for gradient
+                            y1={y1}
+                            y2={y2}
                         >
-                            <stop stopColor="#18CCFC" stopOpacity="0"></stop>
-                            <stop stopColor="#18CCFC"></stop>
-                            <stop offset="0.325" stopColor="#6344F5"></stop>
-                            <stop offset="1" stopColor="#AE48FF" stopOpacity="0"></stop>
+                            <stop stopColor="var(--primary)" stopOpacity="0"></stop>
+                            <stop stopColor="var(--primary)"></stop>
+                            <stop offset="0.5" stopColor="var(--primary)"></stop>
+                            <stop offset="1" stopColor="var(--primary)" stopOpacity="0"></stop>
                         </motion.linearGradient>
                     </defs>
                 </svg>
