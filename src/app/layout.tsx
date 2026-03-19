@@ -24,32 +24,64 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(DATA.url),
   title: {
-    default: DATA.name,
+    default: `${DATA.name} | Fullstack Engineer`,
     template: `%s | ${DATA.name}`,
   },
   description: DATA.description,
+  applicationName: DATA.name,
+  authors: [{ name: DATA.name, url: DATA.url }],
+  creator: DATA.name,
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/Icon Color Version@700x.png",
     apple: "/Icon Color Version@700x.png",
   },
   keywords: [
     "Yabibal Eshetie",
+    "Yabibal Eshetie Molla",
     "Yabibal portfolio",
+    "Fullstack engineer",
     "Full-stack developer",
+    "AI security",
+    "LLM",
+    "RAG",
+    "Automation",
+    "AWS",
+    "TypeScript",
+    "Next.js",
     "Web developer Ethiopia",
-    "MERN stack developer",
+    "Addis Ababa developer",
+    "MERN stack",
   ],
   openGraph: {
-    title: DATA.name,
+    title: `${DATA.name} | Fullstack Engineer`,
     description: DATA.description,
     url: DATA.url,
     siteName: DATA.name,
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: DATA.ogImage,
+        alt: DATA.ogImageAlt,
+      },
+    ],
   },
   twitter: {
-    title: DATA.name,
     card: "summary_large_image",
+    title: `${DATA.name} | Fullstack Engineer`,
+    description: DATA.description,
+    images: [DATA.ogImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 

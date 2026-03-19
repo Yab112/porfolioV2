@@ -9,6 +9,10 @@ export const DATA = {
   locationLink: "https://www.google.com/maps/place/addis+ababa",
   description:
     "Fullstack Engineer specializing in AI security, self-healing automation, and production-grade multi-tenant systems.",
+  /** Open Graph / Twitter / social preview (`public/SEO.png`) */
+  ogImage: "/SEO.png",
+  ogImageAlt:
+    "Yabibal Eshetie Molla - Fullstack engineer, AI security, automation, Addis Ababa",
   summary:
     "I'm a fullstack engineer specializing in AI security and production-grade automation systems. I design and implement end-to-end solutions that prioritize reliability, security, and maintainability. My work focuses on building intelligent systems that can operate autonomously while maintaining human oversight and control.\n\nCurrent focus: AI security patterns (human-in-the-loop, self-healing), production automation with AWS, multi-tenant architecture, test-driven development for AI workflows, LLM agent development, and RAG system implementation.",
   aboutFocusAreas: [

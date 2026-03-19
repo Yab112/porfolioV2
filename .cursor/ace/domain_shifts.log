@@ -5,3 +5,4 @@
 {"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\data\\resume.tsx","timestamp":"2026-03-19T09:45:12.920Z"}
 {"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\lib\\constant.ts","timestamp":"2026-03-19T22:26:19.983Z"}
 {"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\app\\page.tsx","timestamp":"2026-03-19T22:26:22.232Z"}
+{"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\app\\robots.ts","timestamp":"2026-03-19T22:35:40.331Z"}
