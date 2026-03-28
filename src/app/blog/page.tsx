@@ -1,0 +1,53 @@
+import { BlogIndex } from "@/components/blog/blog-index";
+import { apiListItemToSummary, fetchBlogList } from "@/lib/blog-api";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+
+const PAGE_SIZE = 12;
+
+export const metadata: Metadata = {
+  title: "Blog",
+  description:
+    "Writing from Yabibal Eshetie Molla on fullstack engineering, AI in production, TypeScript, Next.js, and shipping reliable software.",
+  alternates: { canonical: "/blog" },
+};
+
+type Props = { searchParams: Promise<{ page?: string }> };
+
+export default async function BlogPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const requested = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+
+  try {
+    const data = await fetchBlogList(requested, PAGE_SIZE);
+    const totalPages = Math.max(1, Math.ceil(data.total / data.page_size) || 1);
+
+    if (requested > totalPages && data.total > 0) {
+      redirect(totalPages === 1 ? "/blog" : `/blog?page=${totalPages}`);
+    }
+
+    const posts = data.items.map(apiListItemToSummary);
+    return (
+      <BlogIndex
+        posts={posts}
+        pagination={
+          totalPages > 1
+            ? {
+                page: data.page,
+                pageSize: data.page_size,
+                total: data.total,
+                totalPages,
+              }
+            : undefined
+        }
+      />
+    );
+  } catch {
+    return (
+      <BlogIndex
+        posts={[]}
+        error="Could not load posts. The blog API may be unreachable—try again later."
+      />
+    );
+  }
+}

@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -15,18 +16,24 @@ export default function Navbar() {
       <Dock className="z-50 pointer-events-auto relative h-14 p-2 w-fit mx-auto flex gap-2 border border-border bg-card/90 backdrop-blur-3xl rounded-2xl">
         {DATA.navbar.map((item) => {
           const isExternal = item.href.startsWith("http");
+          const NavIcon = item.icon;
+          const dock = (
+            <DockIcon className="rounded-3xl cursor-pointer size-full bg-background p-0 text-muted-foreground hover:text-foreground hover:bg-muted backdrop-blur-3xl border border-border transition-colors">
+              <NavIcon className="size-[1.125rem] shrink-0 sm:size-5" strokeWidth={2} aria-hidden />
+            </DockIcon>
+          );
           return (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
-                <a
-                  href={item.href}
-                  target={isExternal ? "_blank" : undefined}
-                  rel={isExternal ? "noopener noreferrer" : undefined}
-                >
-                  <DockIcon className="rounded-3xl cursor-pointer size-full bg-background p-0 text-muted-foreground hover:text-foreground hover:bg-muted backdrop-blur-3xl border border-border transition-colors">
-                    <item.icon className="size-full rounded-sm overflow-hidden object-contain" />
-                  </DockIcon>
-                </a>
+                {isExternal ? (
+                  <a href={item.href} target="_blank" rel="noopener noreferrer">
+                    {dock}
+                  </a>
+                ) : (
+                  <Link href={item.href} prefetch={false} className="inline-flex rounded-3xl outline-none">
+                    {dock}
+                  </Link>
+                )}
               </TooltipTrigger>
               <TooltipContent
                 side="top"

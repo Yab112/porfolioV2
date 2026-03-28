@@ -1,12 +1,5 @@
 import { NextResponse } from "next/server";
-
-/** Same-origin proxy so the browser never hits CORS; override with AEGIS_AGENT_API_URL. */
-const DEFAULT_BASE = "https://aegis-agent-5omj.onrender.com";
-
-function upstreamBase(): string {
-  const raw = process.env.AEGIS_AGENT_API_URL?.trim() || DEFAULT_BASE;
-  return raw.replace(/\/$/, "");
-}
+import { getAegisApiBase } from "@/lib/upstream-aegis";
 
 export async function POST(req: Request) {
   let body: unknown;
@@ -16,7 +9,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ detail: "Invalid JSON body" }, { status: 400 });
   }
 
-  const upstream = await fetch(`${upstreamBase()}/chat`, {
+  const upstream = await fetch(`${getAegisApiBase()}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
