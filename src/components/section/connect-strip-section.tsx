@@ -38,7 +38,7 @@ export default function ConnectStripSection() {
                 rel="noopener noreferrer"
                 className={linkClass}
               >
-                <Linkedin className="size-4" aria-hidden />
+                <Linkedin className="size-4 text-[#0077b5]" aria-hidden />
                 LinkedIn
               </Link>
               <Link
@@ -47,7 +47,7 @@ export default function ConnectStripSection() {
                 rel="noopener noreferrer"
                 className={linkClass}
               >
-                <Github className="size-4" aria-hidden />
+                <Github className="size-4 text-[#181717] dark:text-white" aria-hidden />
                 GitHub
               </Link>
               <a
@@ -55,7 +55,7 @@ export default function ConnectStripSection() {
                 download
                 className={linkClass}
               >
-                <FileDown className="size-4" aria-hidden />
+                <FileDown className="size-4 text-red-600 dark:text-red-500" aria-hidden />
                 Download CV
               </a>
             </nav>

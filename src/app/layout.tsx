@@ -8,6 +8,8 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import { AegisChatWidget } from "@/components/aegis-chat-widget";
+import { GeoJsonLd } from "@/components/geo-json-ld";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,8 +37,11 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/Icon Color Version@700x.png",
-    apple: "/Icon Color Version@700x.png",
+    icon: [
+      { url: "/logo_papu.png", type: "image/png" },
+    ],
+    apple: "/logo_papu.png",
+    shortcut: "/logo_papu.png",
   },
   keywords: [
     "Yabibal Eshetie",
@@ -83,6 +88,8 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  /** Helps aggregators treat the site as a personal brand surface. */
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -100,6 +107,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="light">
+          <GeoJsonLd />
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
             <div className="absolute inset-0 top-0 left-0 right-0 h-[100px] overflow-hidden z-0">
@@ -118,6 +126,7 @@ export default function RootLayout({
               {children}
             </div>
             <Navbar />
+            <AegisChatWidget />
           </TooltipProvider>
         </ThemeProvider>
       </body>

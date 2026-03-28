@@ -94,7 +94,7 @@ const Contact = () => {
               className=" flex items-center disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:scale-100 disabled:active:scale-100 cursor-pointer gap-2 px-4 py-1 text-[16px] bg-black border border-gray-300 rounded-full text-white font-Poppins hover:scale-110 active:scale-105"
             >
               Send
-              <BsSend className="text-[14px]" />
+              <BsSend className="text-[12px]" />
             </button>
           </div>
         </div>
