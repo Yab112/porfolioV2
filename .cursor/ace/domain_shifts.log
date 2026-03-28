@@ -7,3 +7,8 @@
 {"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\app\\page.tsx","timestamp":"2026-03-19T22:26:22.232Z"}
 {"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\app\\robots.ts","timestamp":"2026-03-19T22:35:40.331Z"}
 {"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\components\\section\\contact-section.tsx","timestamp":"2026-03-28T11:00:55.032Z"}
+{"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\content\\blog\\welcome-to-the-blog.md","timestamp":"2026-03-28T11:13:09.156Z"}
+{"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\components\\blog\\blog-post-body.tsx","timestamp":"2026-03-28T11:15:05.974Z"}
+{"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\content\\blog\\postgres-first-for-rag.md","timestamp":"2026-03-28T11:56:55.056Z"}
+{"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\components\\section\\contact-section.tsx","timestamp":"2026-03-28T18:56:17.261Z"}
+{"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\lib\\prepare-blog-markdown.ts","timestamp":"2026-03-28T19:21:18.288Z"}
