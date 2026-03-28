@@ -30,7 +30,7 @@ export default function Navbar() {
                     {dock}
                   </a>
                 ) : (
-                  <Link href={item.href} prefetch={false} className="inline-flex rounded-3xl outline-none">
+                  <Link href={item.href} className="inline-flex rounded-3xl outline-none">
                     {dock}
                   </Link>
                 )}

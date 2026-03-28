@@ -1,7 +1,9 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
+import { OG_ROUTES } from "@/data/seo-routes";
 import { DATA } from "@/data/resume";
 import Link from "next/link";
+import type { Metadata } from "next";
 import AboutSection from "@/components/section/about-section";
 import ConnectStripSection from "@/components/section/connect-strip-section";
 import ContactSection from "@/components/section/contact-section";
@@ -20,6 +22,31 @@ const LOGO_COLOR = "/Logo Color Version@700x.png";
 const LOGO_WHITE = "/Logo White Version@700x.png";
 const ICON_COLOR = "/Icon Color Version@700x.png";
 const ICON_WHITE = "/Icon White Version@700x.png";
+
+const site = DATA.url.replace(/\/$/, "");
+const homeOg = OG_ROUTES.home;
+const homeOgImage = homeOg?.image ?? DATA.ogImage;
+const homeOgAlt = homeOg?.alt ?? DATA.ogImageAlt;
+const homeTitle = `${DATA.name} | Fullstack Engineer`;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: homeTitle,
+    description: DATA.description,
+    url: `${site}/`,
+    siteName: DATA.name,
+    locale: "en_US",
+    type: "website",
+    images: [{ url: homeOgImage, alt: homeOgAlt }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: homeTitle,
+    description: DATA.description,
+    images: [homeOgImage],
+  },
+};
 
 export default function Page() {
   return (
