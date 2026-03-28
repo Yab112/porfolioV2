@@ -8,6 +8,8 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import { AegisChatWidget } from "@/components/aegis-chat-widget";
+import { GeoJsonLd } from "@/components/geo-json-ld";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,33 +26,70 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(DATA.url),
   title: {
-    default: DATA.name,
+    default: `${DATA.name} | Fullstack Engineer`,
     template: `%s | ${DATA.name}`,
   },
   description: DATA.description,
+  applicationName: DATA.name,
+  authors: [{ name: DATA.name, url: DATA.url }],
+  creator: DATA.name,
+  alternates: {
+    canonical: "/",
+  },
   icons: {
-    icon: "/Icon Color Version@700x.png",
-    apple: "/Icon Color Version@700x.png",
+    icon: [
+      { url: "/logo_papu.png", type: "image/png" },
+    ],
+    apple: "/logo_papu.png",
+    shortcut: "/logo_papu.png",
   },
   keywords: [
     "Yabibal Eshetie",
+    "Yabibal Eshetie Molla",
     "Yabibal portfolio",
+    "Fullstack engineer",
     "Full-stack developer",
+    "AI security",
+    "LLM",
+    "RAG",
+    "Automation",
+    "AWS",
+    "TypeScript",
+    "Next.js",
     "Web developer Ethiopia",
-    "MERN stack developer",
+    "Addis Ababa developer",
+    "MERN stack",
   ],
   openGraph: {
-    title: DATA.name,
+    title: `${DATA.name} | Fullstack Engineer`,
     description: DATA.description,
     url: DATA.url,
     siteName: DATA.name,
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: DATA.ogImage,
+        alt: DATA.ogImageAlt,
+      },
+    ],
   },
   twitter: {
-    title: DATA.name,
     card: "summary_large_image",
+    title: `${DATA.name} | Fullstack Engineer`,
+    description: DATA.description,
+    images: [DATA.ogImage],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  /** Helps aggregators treat the site as a personal brand surface. */
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -68,6 +107,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="light">
+          <GeoJsonLd />
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
             <div className="absolute inset-0 top-0 left-0 right-0 h-[100px] overflow-hidden z-0">
@@ -86,6 +126,7 @@ export default function RootLayout({
               {children}
             </div>
             <Navbar />
+            <AegisChatWidget />
           </TooltipProvider>
         </ThemeProvider>
       </body>

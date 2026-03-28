@@ -97,7 +97,7 @@ export default function WorkSection() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full md:flex md:flex-row md:items-start md:gap-0"
+      className="relative w-full md:flex md:flex-row md:items-stretch md:gap-0"
     >
       {/* Left: company logo + name only */}
       <div className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 md:shrink-0 md:min-w-[200px]">
@@ -149,34 +149,47 @@ export default function WorkSection() {
       <div className="min-w-0 flex-1 md:pl-6 md:pt-0">
         <div
           ref={detailRef}
-          className="min-w-0 space-y-4 rounded-lg border border-primary/50 pt-4 pb-4 px-4 md:px-5"
+          className="relative min-w-0 h-full rounded-lg bg-background p-[1px] overflow-hidden"
         >
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">
-              {selected.title}
-              {!isPlaceholder(selected.company) && (
-                <span className="text-primary"> @ {selected.company}</span>
-              )}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-0.5 tabular-nums">
-              {isPlaceholder(selected.start)
-                ? selected.end
-                : `${selected.start} - ${selected.end}`}
-            </p>
-            {selected.location && !isPlaceholder(selected.location) && (
-              <p className="text-sm text-muted-foreground">{selected.location}</p>
-            )}
+          {/* Animated looping light border */}
+          <div className="absolute inset-[-1000%] animate-[spin_10s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,theme(colors.primary.DEFAULT)_30%,theme(colors.primary.DEFAULT)_50%,transparent_70%)]" />
+          
+          <div className="relative z-10 h-full w-full rounded-[calc(var(--radius)-1px)] bg-background overflow-hidden pt-4 pb-4 px-4 md:px-5">
+            {/* Brand pattern background */}
+            <div
+              className="absolute inset-0 opacity-[0.05] dark:opacity-[0.04] bg-repeat bg-[length:250px] bg-pattern-light dark:bg-pattern-dark pointer-events-none"
+              aria-hidden
+            />
+
+            <div className="relative space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  {selected.title}
+                  {!isPlaceholder(selected.company) && (
+                    <span className="text-primary"> @ {selected.company}</span>
+                  )}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-0.5 tabular-nums">
+                  {isPlaceholder(selected.start)
+                    ? selected.end
+                    : `${selected.start} - ${selected.end}`}
+                </p>
+                {selected.location && !isPlaceholder(selected.location) && (
+                  <p className="text-sm text-muted-foreground">{selected.location}</p>
+                )}
+              </div>
+              <ul className="space-y-2 list-none p-0 m-0">
+                {bullets.map((line, i) => (
+                  <li key={i} className="flex gap-2 text-sm text-muted-foreground">
+                    <DotIcon className="size-3 shrink-0 text-primary mt-1.5" aria-hidden />
+                    <span className="leading-relaxed">
+                      <TextWithWikiLinks text={line} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <ul className="space-y-2 list-none p-0 m-0">
-            {bullets.map((line, i) => (
-              <li key={i} className="flex gap-2 text-sm text-muted-foreground">
-                <DotIcon className="size-3 shrink-0 text-primary mt-1.5" aria-hidden />
-                <span className="leading-relaxed">
-                  <TextWithWikiLinks text={line} />
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

@@ -12,6 +12,9 @@ import toast from "react-hot-toast";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+
+const UPWORK_BANNER_SRC = "/Gemini_Generated_Image_mfpfr2mfpfr2mfpf.png";
 
 export default function ContactSection() {
   const [isLoading, setIsLoading] = useState(false);
@@ -122,9 +125,44 @@ export default function ContactSection() {
             className="w-full sm:w-auto gap-2"
           >
             {isLoading ? "Sending..." : "Send message"}
-            <Send className="size-4" />
+            <Send className="text-sm" />
           </Button>
         </form>
+
+        <div className="mt-10 w-full max-w-2xl border-t border-border/70 pt-10 text-center">
+          <h3 className="text-lg font-semibold tracking-tight text-foreground">
+            Prefer Upwork?
+          </h3>
+          <p className="mt-2 text-balance text-sm leading-relaxed text-muted-foreground">
+            Top Rated on Upwork with a 100% job success score. Proof of work spans agents and RAG, secure AI
+            orchestration, and multi-tenant infrastructure.
+          </p>
+          <Link
+            href={DATA.contact.upworkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 block overflow-hidden gap-4 rounded-xl ring-1 ring-border/50 transition-[box-shadow,ring-color] hover:ring-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <Image
+              src={UPWORK_BANNER_SRC}
+              alt={`${DATA.name} on Upwork: Top Rated, 100% job success; agents and RAG architecture, secure AI orchestration, multi-tenant infrastructure.`}
+              width={1200}
+              height={630}
+              className="h-auto w-full"
+              sizes="(max-width: 768px) 100vw, 42rem"
+            />
+          </Link>
+          <p className="mt-8">
+            <Link
+              href={DATA.contact.upworkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Hire me on Upwork
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
