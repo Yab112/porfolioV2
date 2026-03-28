@@ -113,7 +113,7 @@ const Button = () => {
         href="https://github.com/Yab112"
         target="_blank"
       >
-        <FaGithubSquare className="text-gray-900" />
+        <FaGithubSquare className="text-red-500" />
       </a>
       <a
         className="bg-white p-3 text-gray-700 flex  shadow-lg  items-center gap-2 text-[1.35rem] rounded-full focus:scale-[1.15] hover:scale-[1.15] hover:text-gray-950 active:scale-105 transition cursor-pointer border"

@@ -9,6 +9,10 @@ export const DATA = {
   locationLink: "https://www.google.com/maps/place/addis+ababa",
   description:
     "Fullstack Engineer specializing in AI security, self-healing automation, and production-grade multi-tenant systems.",
+  /** Open Graph / Twitter / social preview (`public/SEO.png`) */
+  ogImage: "/SEO.png",
+  ogImageAlt:
+    "Yabibal Eshetie Molla - Fullstack engineer, AI security, automation, Addis Ababa",
   summary:
     "I'm a fullstack engineer specializing in AI security and production-grade automation systems. I design and implement end-to-end solutions that prioritize reliability, security, and maintainability. My work focuses on building intelligent systems that can operate autonomously while maintaining human oversight and control.\n\nCurrent focus: AI security patterns (human-in-the-loop, self-healing), production automation with AWS, multi-tenant architecture, test-driven development for AI workflows, LLM agent development, and RAG system implementation.",
   aboutFocusAreas: [
@@ -207,6 +211,9 @@ export const DATA = {
       "Away from shipping code: football, competitive practice on LeetCode & Codeforces, and reading that keeps me grounded.",
     bookTitle: "The Subtle Art of Not Giving a F*ck",
     bookAuthor: "Mark Manson",
+    bookAmazonUrl:
+      "https://www.amazon.com/Subtle-Art-Not-Giving-Counterintuitive/dp/0062457713",
+    authorUrl: "https://x.com/Markmanson?lang=en",
     bookImage: "/reserve.png",
     bookNote:
       "The idea isn’t to care about nothing; it’s to care on purpose. I try to reserve my focus for work and relationships that actually deserve it, and to say a polite ‘not now’ to noise, vanity metrics, and drama. Same insight as the loud title, just how I’d explain it at the dinner table.",
@@ -218,7 +225,7 @@ export const DATA = {
       school: "Addis Ababa University",
       href: "https://www.aau.edu.et/",
       degree:
-        "B.Sc. Computer Science and Engineering (Information Science)",
+        "B.Sc. Information Science",
       description:
         "Studied at Ethiopia’s flagship university, with coursework spanning algorithms, software engineering, databases, and systems design through an information science lens. Built a strong foundation in problem-solving, research, and building reliable software, skills I still lean on when designing fullstack systems, AI workflows, and production automation today.",
       logoUrl: "/addis%20ababa.png",
@@ -246,6 +253,29 @@ export const DATA = {
         { type: "Website", href: "https://pestleadspro.com", icon: <Icons.globe className="size-3" /> },
       ],
       image: "",
+      video: "",
+    },
+    {
+      title: "Aegis Agent",
+      href: "https://github.com/Yab112/aegis-agent",
+      dates: "2026",
+      active: true,
+      description:
+        "Autonomous portfolio concierge backend: agentic RAG over Supabase pgvector, intent routing, confidence-gated answers, Google Calendar and Meet booking, and human-in-the-loop handoff for sensitive leads. FastAPI service with LangGraph-style orchestration, session memory, and lead logging. Powers the live chat agent on this portfolio.",
+      technologies: [
+        "Python",
+        "FastAPI",
+        "LangGraph",
+        "RAG",
+        "Supabase",
+        "pgvector",
+        "Gemini",
+        "Google Calendar",
+      ],
+      links: [
+        { type: "GitHub", href: "https://github.com/Yab112/aegis-agent", icon: <Icons.github className="size-3" /> },
+      ],
+      image: "/Gemini_Generated_Image_2cd2bj2cd2bj2cd2.png",
       video: "",
     },
     {

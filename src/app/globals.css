@@ -58,3 +58,19 @@
     @apply bg-background text-foreground antialiased;
   }
 }
+
+/* Used by InfiniteMarquee (inline animation name). Ensures keyframes exist even if Tailwind purges animate-marquee. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}

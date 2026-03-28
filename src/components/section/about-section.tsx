@@ -25,15 +25,10 @@ export default function AboutSection() {
           </div>
         </BlurFade>
 
-        {/* Infinite scroll of service names */}
-        <BlurFade delay={BLUR_DELAY * 3.5}>
-          <InfiniteMarquee
-            items={serviceNames}
-            speed="normal"
-            direction="left"
-            className="py-2 -mx-4 md:-mx-6"
-          />
-        </BlurFade>
+        {/* Infinite scroll: not wrapped in BlurFade so parent transform/filter does not break CSS marquee */}
+        <div className="py-2 -mx-4 md:-mx-6">
+          <InfiniteMarquee items={serviceNames} speed="normal" direction="left" />
+        </div>
 
         {/* Short intro: one line, links for terms */}
         <BlurFade delay={BLUR_DELAY * 4}>
@@ -45,7 +40,7 @@ export default function AboutSection() {
         {/* What I bring: one-line list; full content in details for SEO */}
         <div className="space-y-4 pt-2">
           <BlurFade delay={BLUR_DELAY * 5}>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <h3 className="text-xl font-bold">
               What I bring
             </h3>
           </BlurFade>

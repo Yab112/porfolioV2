@@ -23,9 +23,9 @@ export function InfiniteMarquee({
   const duplicate = [...items, ...items];
 
   return (
-    <div className={cn("overflow-hidden select-none", className)} aria-hidden>
+    <div className={cn("overflow-x-hidden select-none", className)} aria-hidden>
       <div
-        className="flex w-max gap-8 whitespace-nowrap"
+        className="marquee-track flex w-max gap-8 whitespace-nowrap will-change-transform"
         style={{
           animation: `marquee ${duration} linear infinite`,
           animationDirection: direction === "right" ? "reverse" : "normal",

@@ -3,7 +3,7 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
-import { BookOpen, ExternalLink, Goal } from "lucide-react";
+import { ExternalLink, Goal } from "lucide-react";
 import Link from "next/link";
 
 const BLUR_DELAY = 0.04;
@@ -23,7 +23,12 @@ export default function HobbiesSection() {
         </BlurFade>
 
         <BlurFade delay={BLUR_DELAY * 13} className="grid gap-8 md:grid-cols-[minmax(0,200px)_1fr] items-start">
-          <div className="mx-auto md:mx-0 w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm bg-card">
+          <Link
+            href={h.bookAmazonUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto md:mx-0 block w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm bg-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             <img
               src={h.bookImage}
               alt={`${h.bookTitle} cover`}
@@ -31,13 +36,31 @@ export default function HobbiesSection() {
               width={200}
               height={300}
             />
-          </div>
+          </Link>
           <div className="space-y-4 min-w-0">
-            <div className="flex items-start gap-2">
-              <div>
-                <h3 className="font-semibold text-foreground">{h.bookTitle}</h3>
-                <p className="text-sm text-muted-foreground">{h.bookAuthor}</p>
-              </div>
+            <div className="space-y-1">
+              <h3 className="font-semibold text-foreground">
+                <Link
+                  href={h.bookAmazonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-primary hover:underline underline-offset-4"
+                >
+                  {h.bookTitle}
+                  <ExternalLink className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                </Link>
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                <Link
+                  href={h.authorUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-primary hover:underline underline-offset-4"
+                >
+                  {h.bookAuthor}
+                  <ExternalLink className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                </Link>
+              </p>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">{h.bookNote}</p>
 

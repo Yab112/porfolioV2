@@ -10,13 +10,17 @@ export function ModeToggle({ className }: { className?: string }) {
   return (
     <Button
       type="button"
-      variant="link"
+      variant="ghost"
       size="icon"
-      className={cn(className)}
+      aria-label="Toggle color theme"
+      className={cn(
+        "touch-manipulation [&_svg]:size-[1.125rem]",
+        className
+      )}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      <SunIcon className="h-full w-full dark:hidden" />
-      <MoonIcon className="hidden h-full w-full dark:block" />
+      <SunIcon className="size-full shrink-0 dark:hidden" />
+      <MoonIcon className="hidden size-full shrink-0 dark:block" />
     </Button>
   );
 }
