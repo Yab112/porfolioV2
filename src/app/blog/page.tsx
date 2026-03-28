@@ -1,15 +1,39 @@
 import { BlogIndex } from "@/components/blog/blog-index";
+import { DATA } from "@/data/resume";
+import { OG_ROUTES } from "@/data/seo-routes";
 import { apiListItemToSummary, fetchBlogList } from "@/lib/blog-api";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 const PAGE_SIZE = 12;
 
+const site = DATA.url.replace(/\/$/, "");
+const blogDescription =
+  "Writing from Yabibal Eshetie Molla on fullstack engineering, AI in production, TypeScript, Next.js, and shipping reliable software.";
+const blogOg = OG_ROUTES.blog;
+const blogOgImage = blogOg?.image ?? DATA.ogImage;
+const blogOgAlt = blogOg?.alt ?? DATA.ogImageAlt;
+const blogTitle = `Blog | ${DATA.name}`;
+
 export const metadata: Metadata = {
   title: "Blog",
-  description:
-    "Writing from Yabibal Eshetie Molla on fullstack engineering, AI in production, TypeScript, Next.js, and shipping reliable software.",
+  description: blogDescription,
   alternates: { canonical: "/blog" },
+  openGraph: {
+    title: blogTitle,
+    description: blogDescription,
+    url: `${site}/blog`,
+    siteName: DATA.name,
+    locale: "en_US",
+    type: "website",
+    images: [{ url: blogOgImage, alt: blogOgAlt }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: blogTitle,
+    description: blogDescription,
+    images: [blogOgImage],
+  },
 };
 
 type Props = { searchParams: Promise<{ page?: string }> };

@@ -137,7 +137,6 @@ export function BlogIndex({
         >
           <Link
             href={pagination.page <= 2 ? "/blog" : `/blog?page=${pagination.page - 1}`}
-            prefetch={false}
             className={cn(
               "inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors",
               pagination.page <= 1
@@ -157,7 +156,6 @@ export function BlogIndex({
           </span>
           <Link
             href={`/blog?page=${pagination.page + 1}`}
-            prefetch={false}
             className={cn(
               "inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors",
               pagination.page >= pagination.totalPages
