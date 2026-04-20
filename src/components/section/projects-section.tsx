@@ -27,6 +27,7 @@ export default function ProjectsSection() {
               >
                 <ProjectCard
                   href={project.href}
+                  caseStudyHref={`/work/${(project as { slug: string }).slug}`}
                   title={project.title}
                   description={project.description}
                   dates={project.dates}

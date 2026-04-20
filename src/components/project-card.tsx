@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
 import { cn } from "@/lib/utils";
 import { getWikiUrl } from "@/lib/wiki-links";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowUpRight, ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -26,6 +26,8 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
 interface Props {
   title: string;
   href?: string;
+  /** Internal case study URL (e.g. `/work/slug`) — shown as secondary CTA. */
+  caseStudyHref?: string;
   description: string;
   dates: string;
   tags: readonly string[];
@@ -42,6 +44,7 @@ interface Props {
 export function ProjectCard({
   title,
   href,
+  caseStudyHref,
   description,
   dates,
   tags,
@@ -117,6 +120,16 @@ export function ProjectCard({
         <div className="text-xs text-pretty font-sans leading-relaxed text-muted-foreground">
           <TextWithWikiLinks text={description} />
         </div>
+        {caseStudyHref ? (
+          <Link
+            href={caseStudyHref}
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FileText className="size-3.5 shrink-0" aria-hidden />
+            Case study
+          </Link>
+        ) : null}
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
             {tags.map((tag) => {

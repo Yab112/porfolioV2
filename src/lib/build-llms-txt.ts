@@ -35,7 +35,13 @@ export function buildLlmsTxt(): string {
     "## Skills (representative)",
     DATA.skills.join(", "),
     "",
-    "## Featured projects",
+    "## Case studies (on-site)",
+    `- Index: ${base}/work`,
+    ...DATA.projects.map(
+      (p) => `- ${p.title} (${p.slug}): ${base}/work/${p.slug}`
+    ),
+    "",
+    "## Featured projects (external / live)",
     ...DATA.projects.map(
       (p) => `- ${p.title}: ${p.href} — ${p.description.split(/[.!?]\s/)[0]}.`
     ),
