@@ -1,15 +1,21 @@
-import React from "react";
+import { DATA } from "@/data/resume";
+import Link from "next/link";
 
 export default function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="mb-10 px-4 text-center text-gray-500">
-      <small className="mb-2 block text-xs">
-        &copy; 2024 All rights reserved.
-      </small>
-      <p className="text-xs text-sky-900">
-        <span className="font-semibold text-cyan-400">About this website:</span> built with
-        React & Next.js, TypeScript, Tailwind CSS,
-        Framer Motion,  Vercel hosting.
+    <footer
+      className="mt-16 border-t border-border/70 pt-8 text-center text-xs text-muted-foreground"
+      role="contentinfo"
+    >
+      <p className="font-mono tabular-nums">
+        &copy; {year} {DATA.name}. All rights reserved.
+      </p>
+      <p className="mt-2">
+        <Link href="/privacy" className="text-foreground/80 underline-offset-4 transition-colors hover:text-primary hover:underline">
+          Privacy
+        </Link>
       </p>
     </footer>
   );

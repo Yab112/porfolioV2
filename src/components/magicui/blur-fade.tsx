@@ -44,10 +44,10 @@ const BlurFade = ({
     <AnimatePresence>
       <motion.div
         ref={ref}
-        initial="hidden"
+        initial={false}
+        variants={combinedVariants}
         animate={isInView ? "visible" : "hidden"}
         exit="hidden"
-        variants={combinedVariants}
         transition={{
           delay: 0.04 + delay,
           duration,
