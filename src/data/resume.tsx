@@ -4,7 +4,7 @@ import { BookOpen, HomeIcon } from "lucide-react";
 export const DATA = {
   name: "Yabibal Eshetie Molla",
   initials: "YE",
-  url: "https://porfolio-v2-beta.vercel.app",
+  url: "https://yabibal.site",
   location: "Addis Ababa, Ethiopia",
   locationLink: "https://www.google.com/maps/place/addis+ababa",
   description:

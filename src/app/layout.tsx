@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -101,7 +102,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased relative",
+          "min-h-screen overflow-x-hidden bg-background font-sans antialiased relative",
           inter.variable,
           jetbrainsMono.variable
         )}
@@ -122,8 +123,9 @@ export default function RootLayout({
                 }}
               />
             </div>
-            <div className="relative z-10 max-w-4xl mx-auto py-12 pb-24 sm:py-24 px-6 sm:px-8">
-              {children}
+            <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-12 pb-28 sm:px-8 sm:py-24 sm:pb-32">
+              <div className="flex-1">{children}</div>
+              <Footer />
             </div>
             <Navbar />
             <AegisChatWidget />

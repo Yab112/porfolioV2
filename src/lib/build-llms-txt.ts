@@ -41,6 +41,7 @@ export function buildLlmsTxt(): string {
     ),
     "",
     "## Contact",
+    `- Privacy policy: ${base}/privacy`,
     `- Email shown on site: ${DATA.contact.email}`,
     `- Upwork: ${DATA.contact.upworkUrl}`,
     `- Public resume PDF: ${base}${DATA.contact.resumePdfUrl}`,

@@ -19,7 +19,7 @@ import { ArrowUpRight } from "lucide-react";
 const BLUR_FADE_DELAY = 0.04;
 
 const LOGO_COLOR = "/Logo Color Version@700x.png";
-const LOGO_WHITE = "/Logo White Version@700x.png";
+const LOGO_WHITE = "/Logo white Version@700x.png";
 const ICON_COLOR = "/Icon Color Version@700x.png";
 const ICON_WHITE = "/Icon White Version@700x.png";
 
