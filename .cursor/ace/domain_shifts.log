@@ -13,3 +13,4 @@
 {"from":"general","to":"ui","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\components\\section\\contact-section.tsx","timestamp":"2026-03-28T18:56:17.261Z"}
 {"from":"ui","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\lib\\prepare-blog-markdown.ts","timestamp":"2026-03-28T19:21:18.288Z"}
 {"from":"general","to":"api","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\data\\seo-routes.ts","timestamp":"2026-03-28T20:13:20.635Z"}
+{"from":"api","to":"general","file":"c:\\Users\\USER\\Documents\\personal-projects\\YabPortfolioV2\\porfolioV2\\src\\lib\\build-llms-txt.ts","timestamp":"2026-03-28T21:20:28.520Z"}

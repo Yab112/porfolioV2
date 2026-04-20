@@ -72,8 +72,9 @@ function parseFrontmatter(raw: string): { meta: Record<string, string>; body: st
   return { meta, body };
 }
 
-export function readingMinutesFromMarkdown(md: string): number {
-  const text = md.replace(/```[\s\S]*?```/g, " ").replace(/[#>*_[\]`]/g, " ");
+export function readingMinutesFromMarkdown(md: string | undefined | null): number {
+  const raw = typeof md === "string" ? md : "";
+  const text = raw.replace(/```[\s\S]*?```/g, " ").replace(/[#>*_[\]`]/g, " ");
   const words = text.trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
