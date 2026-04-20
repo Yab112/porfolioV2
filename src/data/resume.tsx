@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons";
-import { BookOpen, HomeIcon } from "lucide-react";
+import { BookOpen, Briefcase, HomeIcon } from "lucide-react";
 
 export const DATA = {
   name: "Yabibal Eshetie Molla",
@@ -78,6 +78,7 @@ export const DATA = {
   ],
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
+    { href: "/work", icon: Briefcase, label: "Work" },
     { href: "/blog", icon: BookOpen, label: "Blog" },
   ],
   contact: {
@@ -237,6 +238,7 @@ export const DATA = {
   projects: [
     {
       title: "Pest Leads Pro",
+      slug: "pest-leads-pro",
       href: "https://pestleadspro.com",
       dates: "v2.5 · 2024",
       active: true,
@@ -258,6 +260,7 @@ export const DATA = {
     },
     {
       title: "Aegis Agent",
+      slug: "aegis-agent",
       href: "https://github.com/Yab112/aegis-agent",
       dates: "2026",
       active: true,
@@ -281,6 +284,7 @@ export const DATA = {
     },
     {
       title: "Dual-Agent Architecture AI",
+      slug: "dual-agent-architecture-ai",
       href: "https://dual-agent-architecture-ai.vercel.app",
       dates: "2026",
       active: true,
@@ -296,6 +300,7 @@ export const DATA = {
     },
     {
       title: "Yeabrak",
+      slug: "yeabrak",
       href: "https://app.yeabrak.com/",
       dates: "Ongoing",
       active: true,
@@ -310,6 +315,7 @@ export const DATA = {
     },
     {
       title: "Addis Astemari",
+      slug: "addis-astemari",
       href: "https://www.addisastemari.com/",
       dates: "Ongoing",
       active: true,
@@ -324,6 +330,7 @@ export const DATA = {
     },
     {
       title: "Eset Coffee",
+      slug: "eset-coffee",
       href: "https://www.esetcoffee.com/",
       dates: "Recent",
       active: true,
@@ -339,6 +346,7 @@ export const DATA = {
     },
     {
       title: "Art Gallery",
+      slug: "art-gallery",
       href: "https://art-gallery-rouge-gamma.vercel.app",
       dates: "Recent",
       active: true,
@@ -354,6 +362,7 @@ export const DATA = {
     },
     {
       title: "Lumen Tech",
+      slug: "lumen-tech",
       href: "https://lumen-tech-navy.vercel.app",
       dates: "Recent",
       active: true,
@@ -369,6 +378,7 @@ export const DATA = {
     },
     {
       title: "Octopus",
+      slug: "octopus",
       href: "https://octopus-jet.vercel.app",
       dates: "Recent",
       active: true,
