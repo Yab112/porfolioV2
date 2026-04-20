@@ -28,6 +28,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogPostEntries,
   ];
 
+  const workEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${base}/work`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    ...DATA.projects.map((p) => ({
+      url: `${base}/work/${p.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    })),
+  ];
+
   return [
     {
       url: base,
@@ -47,6 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    ...workEntries,
     ...blogEntries,
   ];
 }
