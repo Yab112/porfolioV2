@@ -1,6 +1,8 @@
+import { JsonLd } from "@/components/json-ld";
 import { WorkCaseStudyGrid } from "@/components/work/work-case-study-grid";
 import { DATA } from "@/data/resume";
 import { OG_ROUTES } from "@/data/seo-routes";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
 
 const site = DATA.url.replace(/\/$/, "");
@@ -32,6 +34,21 @@ export const metadata: Metadata = {
   },
 };
 
+const workJsonLd = buildCollectionPageJsonLd({
+  name: title,
+  description,
+  url: `${site}/work`,
+  breadcrumbs: [
+    { name: "Home", item: site },
+    { name: "Work", item: `${site}/work` },
+  ],
+});
+
 export default function WorkPage() {
-  return <WorkCaseStudyGrid projects={DATA.projects} work={DATA.work} />;
+  return (
+    <>
+      <JsonLd data={workJsonLd} />
+      <WorkCaseStudyGrid projects={DATA.projects} work={DATA.work} />
+    </>
+  );
 }
