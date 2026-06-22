@@ -7,10 +7,17 @@ function siteBase(): string {
 function absUrl(path: string): string {
   if (path.startsWith("http")) return path;
   const base = siteBase();
-  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  const encoded = clean
+    .split("/")
+    .map((seg, i) => (i === 0 ? seg : encodeURIComponent(seg)))
+    .join("/");
+  return `${base}${encoded}`;
 }
 
-/** Schema.org JSON-LD @graph for Person, WebSite, and WebPage (GEO / rich results). */
+const LOGO_PATH = "/Logo Color Version@700x.png";
+
+/** Schema.org JSON-LD @graph for Person, WebSite, and ProfilePage (GEO / rich results). */
 export function buildGeoJsonLd(): Record<string, unknown> {
   const base = siteBase();
   const personId = `${base}/#person`;
@@ -28,9 +35,21 @@ export function buildGeoJsonLd(): Record<string, unknown> {
     "@id": personId,
     name: DATA.name,
     url: base,
-    image: absUrl(DATA.avatarUrl),
+    image: [
+      {
+        "@type": "ImageObject",
+        url: absUrl(LOGO_PATH),
+        caption: `${DATA.name} — Logo`,
+      },
+      {
+        "@type": "ImageObject",
+        url: absUrl(DATA.avatarUrl),
+        caption: `${DATA.name} — Photo`,
+      },
+    ],
     jobTitle: "Fullstack Engineer",
     description: DATA.description,
+    email: DATA.contact.email,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Addis Ababa",
@@ -53,18 +72,24 @@ export function buildGeoJsonLd(): Record<string, unknown> {
     name: `${DATA.name} — Portfolio`,
     description: DATA.description,
     inLanguage: "en",
+    logo: {
+      "@type": "ImageObject",
+      url: absUrl(LOGO_PATH),
+      caption: `${DATA.name} — Logo`,
+    },
     publisher: { "@id": personId },
     author: { "@id": personId },
   };
 
-  const webpage = {
-    "@type": "WebPage",
+  const profilePage = {
+    "@type": "ProfilePage",
     "@id": `${base}/`,
     url: `${base}/`,
     name: `${DATA.name} | Fullstack Engineer`,
     description: DATA.description,
     isPartOf: { "@id": websiteId },
     about: { "@id": personId },
+    mainEntity: { "@id": personId },
     primaryImageOfPage: {
       "@type": "ImageObject",
       url: absUrl(DATA.ogImage),
@@ -74,6 +99,6 @@ export function buildGeoJsonLd(): Record<string, unknown> {
 
   return {
     "@context": "https://schema.org",
-    "@graph": [person, website, webpage],
+    "@graph": [person, website, profilePage],
   };
 }
