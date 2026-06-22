@@ -1,13 +1,13 @@
 "use client";
 
 import BlurFade from "@/components/magicui/blur-fade";
-import { Badge } from "@/components/ui/badge";
 import type { BlogTopicItem } from "@/lib/blog-api";
 import type { BlogPostSummary } from "@/lib/blog";
-import { ArrowUpRight, CalendarDays, ChevronLeft, ChevronRight, Clock, Rss } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+const PAGE_SIZE = 12;
 const DELAY = 0.04;
 
 export type BlogPaginationProps = {
@@ -17,58 +17,169 @@ export type BlogPaginationProps = {
   totalPages: number;
 };
 
-function buildBlogListHref(page: number, activeTopic: string | null | undefined): string {
-  const p = new URLSearchParams();
-  if (page > 1) p.set("page", String(page));
-  if (activeTopic?.trim()) p.set("topic", activeTopic.trim());
-  const q = p.toString();
-  return q ? `/blog?${q}` : "/blog";
+type RawBlogItem = {
+  slug: string;
+  title: string;
+  description: string;
+  published_at: string | null;
+  tags: string[];
+  image_url: string | null;
+  image_alt: string | null;
+  og_image_url: string | null;
+};
+
+function rawToSummary(item: RawBlogItem): BlogPostSummary {
+  const words = item.description.trim().split(/\s+/).filter(Boolean).length;
+  return {
+    slug: item.slug,
+    title: item.title,
+    description: item.description,
+    date: item.published_at ?? "",
+    tags: item.tags ?? [],
+    readingMinutes: Math.max(1, Math.round(words / 200)),
+    image: item.image_url ?? undefined,
+    imageAlt: item.image_alt ?? undefined,
+    ogImage: item.og_image_url ?? undefined,
+  };
 }
 
-function formatDate(iso: string) {
-  if (!iso.trim()) return "—";
+function fmtDate(iso: string) {
+  if (!iso.trim()) return "";
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(new Date(iso));
+    return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short" }).format(new Date(iso));
   } catch {
     return iso;
   }
 }
 
-function topicHref(topic: string): string {
-  const p = new URLSearchParams();
-  p.set("topic", topic);
-  return `/blog?${p.toString()}`;
+function CardSkeleton() {
+  return (
+    <div className="rounded-2xl border border-border overflow-hidden animate-pulse">
+      <div className="aspect-[3/2] bg-muted" />
+      <div className="p-5 space-y-2.5">
+        <div className="h-2.5 w-20 rounded-full bg-muted" />
+        <div className="h-4 w-full rounded bg-muted" />
+        <div className="h-3 w-5/6 rounded bg-muted" />
+        <div className="h-2.5 w-24 rounded-full bg-muted mt-2" />
+      </div>
+    </div>
+  );
 }
 
-/** Map post count to tag-cloud weighting (reference: prominent topics scale up). */
-function topicCloudClasses(count: number, minC: number, maxC: number, isActive: boolean) {
-  if (isActive) {
-    return "font-semibold text-primary drop-shadow-[0_0_12px_rgba(142,98,169,0.35)] dark:drop-shadow-[0_0_14px_rgba(142,98,169,0.25)]";
+function FeaturedPost({ post }: { post: BlogPostSummary }) {
+  if (post.image) {
+    return (
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group relative block rounded-2xl overflow-hidden border border-border"
+      >
+        <div className="relative w-full aspect-[21/9] overflow-hidden">
+          <img
+            src={post.image}
+            alt={post.imageAlt ?? ""}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-10 space-y-3">
+          {post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {post.tags.slice(0, 3).map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-border/50 bg-background/50 backdrop-blur-sm px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-foreground/70"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-foreground">
+            {post.title}
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 max-w-2xl">
+            {post.description}
+          </p>
+          <p className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">
+            {fmtDate(post.date)}
+            {post.readingMinutes ? ` · ${post.readingMinutes} min read` : ""}
+          </p>
+        </div>
+      </Link>
+    );
   }
-  const r = maxC <= minC ? 0.5 : (count - minC) / (maxC - minC);
-  if (r > 0.72) {
-    return "font-semibold text-foreground";
-  }
-  if (r > 0.4) {
-    return "font-medium text-foreground/85";
-  }
-  if (r > 0.18) {
-    return "font-normal text-muted-foreground";
-  }
-  return "font-normal text-muted-foreground/75";
+
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group block rounded-2xl border border-border bg-muted/20 hover:bg-muted/30 transition-colors"
+    >
+      <div className="p-8 sm:p-10 lg:p-12 space-y-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">Featured</p>
+        {post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            {post.tags.slice(0, 3).map((t) => (
+              <span key={t} className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/50">
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors">
+          {post.title}
+        </h2>
+        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+          {post.description}
+        </p>
+        <p className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
+          {fmtDate(post.date)}
+          {post.readingMinutes ? ` · ${post.readingMinutes} min read` : ""}
+        </p>
+      </div>
+    </Link>
+  );
 }
 
-function topicCloudFontRem(count: number, minC: number, maxC: number): number {
-  const r = maxC <= minC ? 0.5 : (count - minC) / (maxC - minC);
-  return 0.68 + r * 0.78;
+function PostCard({ post }: { post: BlogPostSummary }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group flex flex-col h-full rounded-2xl overflow-hidden border border-border bg-card/30 hover:bg-muted/20 transition-colors"
+    >
+      {post.image && (
+        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted/20 shrink-0">
+          <img
+            src={post.image}
+            alt={post.imageAlt ?? ""}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            loading="lazy"
+          />
+        </div>
+      )}
+      <div className="flex flex-col flex-1 p-5 space-y-2.5">
+        {post.tags.length > 0 && (
+          <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50">
+            {post.tags.slice(0, 2).join(" · ")}
+          </p>
+        )}
+        <h3 className="font-bold text-sm sm:text-base leading-snug text-foreground group-hover:text-primary transition-colors flex-1">
+          {post.title}
+        </h3>
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          {post.description}
+        </p>
+        <p className="font-mono text-[10px] text-muted-foreground/40 tabular-nums pt-1">
+          {fmtDate(post.date)}
+          {post.readingMinutes ? ` · ${post.readingMinutes} min` : ""}
+        </p>
+      </div>
+    </Link>
+  );
 }
 
 export function BlogIndex({
-  posts,
+  posts: initialPosts,
   topics = [],
   activeTopic = null,
   pagination,
@@ -80,277 +191,210 @@ export function BlogIndex({
   pagination?: BlogPaginationProps;
   error?: string | null;
 }) {
+  const [posts, setPosts] = useState<BlogPostSummary[]>(initialPosts);
+  const [currentPage, setCurrentPage] = useState(pagination?.page ?? 1);
+  const [hasMore, setHasMore] = useState(
+    pagination ? pagination.page < pagination.totalPages : false
+  );
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Stable refs so the IntersectionObserver never needs to reconnect
+  const currentPageRef = useRef(currentPage);
+  const hasMoreRef = useRef(hasMore);
+  const loadingRef = useRef(loading);
+  const activeTopicRef = useRef(activeTopic);
+  useEffect(() => { currentPageRef.current = currentPage; }, [currentPage]);
+  useEffect(() => { hasMoreRef.current = hasMore; }, [hasMore]);
+  useEffect(() => { loadingRef.current = loading; }, [loading]);
+  useEffect(() => { activeTopicRef.current = activeTopic; }, [activeTopic]);
+
+  const loadMore = useCallback(async () => {
+    if (loadingRef.current || !hasMoreRef.current) return;
+    setLoading(true);
+    loadingRef.current = true;
+    setLoadError(false);
+    const nextPage = currentPageRef.current + 1;
+    try {
+      const params = new URLSearchParams({
+        page: String(nextPage),
+        page_size: String(PAGE_SIZE),
+      });
+      if (activeTopicRef.current) params.set("topic", activeTopicRef.current);
+      const res = await fetch(`/api/blog-list?${params.toString()}`);
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      const data = await res.json() as { items: RawBlogItem[]; total: number; page_size: number };
+      setPosts((prev) => [...prev, ...data.items.map(rawToSummary)]);
+      setCurrentPage(nextPage);
+      currentPageRef.current = nextPage;
+      const totalPages = Math.max(1, Math.ceil(data.total / data.page_size));
+      const more = nextPage < totalPages;
+      setHasMore(more);
+      hasMoreRef.current = more;
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+      loadingRef.current = false;
+    }
+  }, []); // stable — reads state via refs
+
+  // Create observer once; it stays connected the whole time
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
+      { rootMargin: "500px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore]); // loadMore is stable (empty deps), so this runs once
+
   const topicNorm = (t: string) => t.trim().toLowerCase();
   const activeNorm = activeTopic ? topicNorm(activeTopic) : null;
-
-  const topicCounts = topics.map((t) => t.count);
-  const minTopicCount = topicCounts.length ? Math.min(...topicCounts) : 0;
-  const maxTopicCount = topicCounts.length ? Math.max(...topicCounts) : 1;
-  /** Stable order for SSR; visual weight still comes from count. */
-  const topicsCloud = [...topics].sort((a, b) => a.topic.localeCompare(b.topic, undefined, { sensitivity: "base" }));
+  const sortedTopics = [...topics].sort((a, b) => b.count - a.count);
+  const [featured, ...rest] = posts;
 
   return (
-    <main className="min-h-dvh w-full pb-8">
-      <div className="flex w-full min-w-0 flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(17.5rem,36%)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(20rem,38%)] xl:gap-12 2xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <div className="min-w-0 text-left">
-          <BlurFade delay={DELAY}>
-            <header className="relative overflow-hidden rounded-3xl border border-border">
-              <div
-                className="absolute inset-0 opacity-[0.07] dark:opacity-[0.06] bg-repeat bg-[length:280px] bg-pattern-light dark:bg-pattern-dark"
-                aria-hidden
-              />
-              <div className="relative space-y-4 px-6 py-10 sm:px-10 sm:py-12">
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">Writing</p>
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Articles</h1>
-                <p className="max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
-                  Notes on fullstack engineering, AI in production, and shipping reliable software—newest first.
-                </p>
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-2 pt-1">
-                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                    Subscribe
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    <a
-                      href="/blog/rss.xml"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Rss className="size-3.5 text-primary" aria-hidden />
-                      RSS
-                    </a>
-                    <a
-                      href="/blog/atom.xml"
-                      className="inline-flex items-center rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Atom
-                    </a>
-                    <a
-                      href="/blog/feed.json"
-                      className="inline-flex items-center rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="JSON Feed for modern readers"
-                    >
-                      JSON
-                    </a>
-                  </div>
-                </div>
-                {pagination ? (
-                  <p className="font-mono text-xs text-muted-foreground tabular-nums">
-                    {pagination.total} article{pagination.total === 1 ? "" : "s"}
-                    {topics.length > 0 ? (
-                      <>
-                        <span className="text-border"> · </span>
-                        {topics.length} topic{topics.length === 1 ? "" : "s"}
-                      </>
-                    ) : null}
-                    {pagination.totalPages > 1 ? (
-                      <>
-                        <span className="text-border"> · </span>
-                        Page {pagination.page} of {pagination.totalPages}
-                      </>
-                    ) : null}
-                  </p>
-                ) : null}
-              </div>
-            </header>
-          </BlurFade>
-
-          {error ? (
-            <p
-              className="mt-10 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-center text-sm text-destructive"
-              role="alert"
-            >
-              {error}
-            </p>
-          ) : null}
-
-          <div className="mt-10 min-w-0">
-          {activeTopic ? (
-            <div className="mb-6 flex flex-wrap items-center gap-2 rounded-xl border border-border/80 bg-muted/20 px-4 py-3 text-sm">
-              <span className="text-muted-foreground">Filtered by</span>
-              <Badge variant="secondary" className="font-mono text-xs font-normal">
-                {activeTopic}
-              </Badge>
-              <Link href="/blog" className="ml-auto text-sm font-medium text-primary hover:underline" scroll={false}>
-                Clear
-              </Link>
-            </div>
-          ) : null}
-
-          {!error && posts.length === 0 ? (
-            <p className="rounded-xl border border-border bg-card/30 px-4 py-8 text-center text-sm text-muted-foreground">
-              {activeTopic
-                ? "No published posts match this topic yet."
-                : "No published posts yet. When posts are live in the API, they appear here."}
-            </p>
-          ) : null}
-
-          {posts.length > 0 ? (
-            <ul className="flex flex-col gap-4">
-              {posts.map((post, i) => (
-                <li key={post.slug}>
-                  <BlurFade delay={DELAY * 3 + i * 0.05}>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="group flex flex-col gap-4 rounded-xl border border-border bg-card/40 p-5 transition-[box-shadow,background-color] hover:bg-muted/30 hover:shadow-sm dark:bg-card/30 sm:flex-row sm:items-stretch sm:justify-between sm:gap-6"
-                    >
-                      {post.image ? (
-                        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-lg border border-border/50 bg-muted/30 sm:aspect-auto sm:h-auto sm:w-40">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={post.image}
-                            alt={post.imageAlt ?? ""}
-                            className="h-full max-h-40 w-full object-cover sm:max-h-none sm:min-h-[7rem]"
-                            loading="lazy"
-                          />
-                        </div>
-                      ) : null}
-                      <div className="min-w-0 flex-1 space-y-2">
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground">
-                          <span className="inline-flex items-center gap-1">
-                            <CalendarDays className="size-3.5 shrink-0 opacity-70" aria-hidden />
-                            <time dateTime={post.date || undefined}>{formatDate(post.date)}</time>
-                          </span>
-                          <span className="text-border">·</span>
-                          <span className="inline-flex items-center gap-1">
-                            <Clock className="size-3.5 shrink-0 opacity-70" aria-hidden />
-                            {post.readingMinutes} min read
-                          </span>
-                        </div>
-                        <h2 className="text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
-                          {post.title}
-                        </h2>
-                        <p className="text-pretty text-sm leading-relaxed text-muted-foreground">{post.description}</p>
-                        {post.tags.length > 0 ? (
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {post.tags.map((t) => (
-                              <Badge
-                                key={t}
-                                variant="secondary"
-                                className="font-mono text-[10px] font-normal uppercase tracking-wide"
-                              >
-                                {t}
-                              </Badge>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                      <span className="inline-flex shrink-0 items-center gap-1 self-start text-sm font-medium text-primary sm:self-center">
-                        Read
-                        <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      </span>
-                    </Link>
-                  </BlurFade>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-
-          {pagination && pagination.totalPages > 1 ? (
-            <nav
-              className="mt-12 flex flex-wrap items-center justify-start gap-4 border-t border-border/70 pt-8"
-              aria-label="Blog pagination"
-            >
-              <Link
-                href={buildBlogListHref(Math.max(1, pagination.page - 1), activeTopic)}
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors",
-                  pagination.page <= 1
-                    ? "pointer-events-none opacity-40"
-                    : "hover:border-primary/40 hover:bg-muted/50"
-                )}
-                aria-disabled={pagination.page <= 1}
-                scroll={false}
-              >
-                <ChevronLeft className="size-4" aria-hidden />
-                Newer
-              </Link>
-              <span className="font-mono text-xs text-muted-foreground tabular-nums">
-                Page {pagination.page} / {pagination.totalPages}
-                <span className="mx-2 text-border">·</span>
-                {pagination.total} posts
-              </span>
-              <Link
-                href={buildBlogListHref(Math.min(pagination.totalPages, pagination.page + 1), activeTopic)}
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm font-medium transition-colors",
-                  pagination.page >= pagination.totalPages
-                    ? "pointer-events-none opacity-40"
-                    : "hover:border-primary/40 hover:bg-muted/50"
-                )}
-                aria-disabled={pagination.page >= pagination.totalPages}
-                scroll={false}
-              >
-                Older
-                <ChevronRight className="size-4" aria-hidden />
-              </Link>
-            </nav>
-          ) : null}
-          </div>
+    <main className="min-h-dvh w-full pb-16">
+      {/* Header */}
+      <BlurFade delay={DELAY}>
+        <div className="mb-10 space-y-2">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
+            Writing
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Articles</h1>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+            Notes on fullstack engineering, AI in production, and shipping reliable software.
+          </p>
         </div>
+      </BlurFade>
 
-        <aside
-          className="w-full shrink-0 lg:sticky lg:top-24 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:pr-0.5 [scrollbar-gutter:stable]"
-          aria-label="Topics"
-        >
-          <div className="rounded-2xl border border-border bg-card/40 p-5 sm:p-6 dark:bg-card/25">
-            {topics.length === 0 ? (
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                Topic tags load from the blog API. If none appear, check that{" "}
-                <code className="rounded bg-muted px-1 py-0.5 font-mono text-[10px]">GET /blog/topics</code> is reachable.
-              </p>
-            ) : (
-              <nav aria-label="Filter by topic">
-                <p
-                  id="blog-topics-heading"
-                  className="mb-4 flex items-baseline justify-start gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+      {/* Topic filter pills */}
+      {sortedTopics.length > 0 && (
+        <BlurFade delay={DELAY * 2}>
+          <div className="mb-8 flex flex-wrap gap-2">
+            <Link
+              href="/blog"
+              scroll={false}
+              className={cn(
+                "rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+                !activeNorm
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+              )}
+            >
+              All
+            </Link>
+            {sortedTopics.map(({ topic, count }) => {
+              const isActive = activeNorm === topicNorm(topic);
+              return (
+                <Link
+                  key={topic}
+                  href={isActive ? "/blog" : `/blog?topic=${encodeURIComponent(topic)}`}
+                  scroll={false}
+                  title={`${count} post${count === 1 ? "" : "s"}`}
+                  className={cn(
+                    "rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+                    isActive
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  )}
                 >
-                  <span className="text-border" aria-hidden>
-                    |
-                  </span>
-                  <span>Topics</span>
-                </p>
-
-                <div className="flex flex-wrap items-baseline justify-start gap-x-2.5 gap-y-3 text-left leading-snug">
-                  <Link
-                    href="/blog"
-                    scroll={false}
-                    className={cn(
-                      "mr-0.5 shrink-0 font-mono text-[10px] uppercase tracking-wider transition-colors",
-                      !activeNorm ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    All
-                  </Link>
-                  {topicsCloud.map(({ topic, count }) => {
-                    const isActive = activeNorm === topicNorm(topic);
-                    const fontRem = topicCloudFontRem(count, minTopicCount, maxTopicCount);
-                    return (
-                      <Link
-                        key={topic}
-                        href={topicHref(topic)}
-                        scroll={false}
-                        title={`${topic} — ${count} post${count === 1 ? "" : "s"}`}
-                        className={cn(
-                          "inline transition-colors duration-150 hover:text-primary",
-                          topicCloudClasses(count, minTopicCount, maxTopicCount, isActive)
-                        )}
-                        style={{ fontSize: `${fontRem}rem` }}
-                      >
-                        {topic}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </nav>
-            )}
+                  {topic}
+                </Link>
+              );
+            })}
           </div>
-        </aside>
-      </div>
+        </BlurFade>
+      )}
+
+      {error && (
+        <p className="mb-8 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-center text-sm text-destructive" role="alert">
+          {error}
+        </p>
+      )}
+
+      {!error && posts.length === 0 && (
+        <div className="rounded-2xl border border-border bg-card/30 px-4 py-20 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/40 mb-2">
+            {activeTopic ? "no results" : "coming soon"}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {activeTopic ? "No published posts match this topic yet." : "No published posts yet. Check back soon."}
+          </p>
+        </div>
+      )}
+
+      {/* Featured post */}
+      {featured && (
+        <BlurFade delay={DELAY * 3}>
+          <div className="mb-6">
+            <FeaturedPost post={featured} />
+          </div>
+        </BlurFade>
+      )}
+
+      {/* Post grid */}
+      {rest.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {rest.map((post, i) => (
+            <BlurFade key={post.slug} delay={DELAY * 4 + i * 0.03}>
+              <PostCard post={post} />
+            </BlurFade>
+          ))}
+        </div>
+      )}
+
+      {/* Sentinel — IO fires before user reaches the button */}
+      <div ref={sentinelRef} className="mt-8 h-1" aria-hidden />
+
+      {/* Loading skeletons */}
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      )}
+
+      {/* Explicit load more button — visible fallback when IO doesn't trigger */}
+      {hasMore && !loading && !loadError && (
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            onClick={loadMore}
+            className="rounded-full border border-border px-8 py-3 text-sm font-medium text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:text-foreground"
+          >
+            Load more articles
+          </button>
+        </div>
+      )}
+
+      {/* Error + retry */}
+      {loadError && !loading && (
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <p className="font-mono text-xs text-muted-foreground/60">
+            Failed to load — the server may be waking up
+          </p>
+          <button
+            type="button"
+            onClick={() => { setLoadError(false); loadMore(); }}
+            className="rounded-full border border-border px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
+      {/* End marker */}
+      {!hasMore && !loading && posts.length > 0 && (
+        <p className="mt-10 text-center font-mono text-[9px] uppercase tracking-[0.35em] text-muted-foreground/30">
+          · end ·
+        </p>
+      )}
     </main>
   );
 }

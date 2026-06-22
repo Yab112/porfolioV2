@@ -19,7 +19,7 @@ export default function ConnectStripSection() {
 
   return (
     <section id="connect" className="mt-12 mb-4 max-w-4xl mx-auto">
-      <BlurFade delay={BLUR_DELAY * 14}>
+      <BlurFade delay={BLUR_DELAY * 15}>
         <div className=" bg-card/40 p-6 md:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-8">
             <div className="space-y-1 flex-1 min-w-0">

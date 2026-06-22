@@ -5,11 +5,12 @@ import { DATA } from "@/data/resume";
 import Link from "next/link";
 import type { Metadata } from "next";
 import AboutSection from "@/components/section/about-section";
-import ConnectStripSection from "@/components/section/connect-strip-section";
+import TodaysMistakeCard from "@/components/todays-mistake-card";
 import ContactSection from "@/components/section/contact-section";
 import HobbiesSection from "@/components/section/hobbies-section";
 import ProjectsSection from "@/components/section/projects-section";
 import TechStackSection from "@/components/section/tech-stack-section";
+import AchievementsSection from "@/components/section/achievements-section";
 import WorkSection from "@/components/section/work-section";
 import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
 import { TracingBeam } from "@/components/ui/tracing-beam";
@@ -96,15 +97,21 @@ export default function Page() {
       </section>
       <TracingBeam className="pl-12 md:pl-16">
         <AboutSection />
-      <section id="work" className="mt-12 mb-4" >
+      <section id="work" className="mt-12 mb-4">
         <div className="flex min-h-0 flex-col gap-y-6">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <div className="space-y-1">
+            <div className="flex items-center justify-between gap-4">
               <h2 className="text-xl font-bold">Work Experience</h2>
+              <Link
+                href="/work"
+                className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+              >
+                See all →
+              </Link>
             </div>
           </BlurFade>
           <BlurFade delay={BLUR_FADE_DELAY * 6}>
-            <WorkSection />
+            <WorkSection limit={3} />
           </BlurFade>
         </div>
       </section>
@@ -157,14 +164,19 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <AchievementsSection />
       <TechStackSection />
       <section id="projects" className="max-w-4xl mx-auto mb-4">
-        <ProjectsSection />
+        <ProjectsSection limit={4} />
       </section>
       <HobbiesSection />
-      <ConnectStripSection />
+      </TracingBeam>
+
+      <TodaysMistakeCard />
+
+      <TracingBeam className="pl-12 md:pl-16">
         <section id="contact">
-          <BlurFade delay={BLUR_FADE_DELAY * 16}>
+          <BlurFade delay={BLUR_FADE_DELAY * 17}>
             <ContactSection />
           </BlurFade>
         </section>

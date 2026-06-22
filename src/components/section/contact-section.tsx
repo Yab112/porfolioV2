@@ -9,12 +9,9 @@ import { EmailValidator, type EmailRequestType } from "@/lib/validators/emailVal
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Send } from "lucide-react";
+import { Send, Github, Linkedin, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-
-const UPWORK_BANNER_SRC = "/Gemini_Generated_Image_mfpfr2mfpfr2mfpf.png";
 
 export default function ContactSection() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,49 +37,89 @@ export default function ContactSection() {
       });
   }
 
+  const c = DATA.contact;
+
   return (
-    <div className="border rounded-xl p-10 relative overflow-hidden pt-12">
-      <div className="absolute inset-0 top-0 left-0 right-0 h-1/2 rounded-xl overflow-hidden pointer-events-none">
+    <div className="relative overflow-hidden rounded-2xl border border-border">
+      {/* Subtle animated background at the top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40">
         <FlickeringGrid
           className="h-full w-full"
           squareSize={2}
           gridGap={2}
           style={{
-            maskImage: "linear-gradient(to bottom, black, transparent)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, black, transparent)",
+            maskImage: "linear-gradient(to bottom, black 20%, transparent)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 20%, transparent)",
           }}
         />
       </div>
-      <div className="relative flex flex-col items-center gap-6 text-center">
-        <div className="space-y-3 max-w-lg mx-auto">
-          <div className="space-y-1">
-            <h2 className="text-xl font-bold">Get in touch</h2>
-            <p className="text-muted-foreground text-balance text-sm leading-relaxed">
-              {DATA.contact.contactFormIntro}
+
+      <div className="relative grid gap-10 p-8 sm:p-10 md:grid-cols-2 md:gap-16 lg:p-12">
+        {/* Left — intro, links, Upwork callout */}
+        <div className="flex flex-col gap-8">
+          <div className="space-y-2">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.28em] text-primary">
+              Contact
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Let&apos;s work together
+            </h2>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {c.contactFormIntro}
             </p>
           </div>
-          <p className="text-muted-foreground text-balance text-sm leading-relaxed">
-            {DATA.contact.contactFormUpworkNote}{" "}
+
+          {/* Social / CV links */}
+          <div className="flex flex-wrap gap-2">
             <Link
-              href={DATA.contact.upworkUrl}
+              href={c.social.LinkedIn.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-medium hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
             >
-              Open my Upwork profile
+              <Linkedin className="size-3.5 text-[#0077b5]" aria-hidden />
+              LinkedIn
             </Link>
-            .
-          </p>
-          <p className="text-muted-foreground/90 text-balance text-xs leading-relaxed">
-            You can also use the form below to email me directly.
-          </p>
+            <Link
+              href={c.social.GitHub.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
+            >
+              <Github className="size-3.5" aria-hidden />
+              GitHub
+            </Link>
+            <a
+              href={c.resumePdfUrl}
+              download
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
+            >
+              <FileDown className="size-3.5" aria-hidden />
+              Download CV
+            </a>
+          </div>
+
+          {/* Upwork callout */}
+          <div className="rounded-xl border border-border/70 bg-muted/30 p-5 space-y-3">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+              Top Rated · 100% Job Success
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {c.contactFormUpworkNote}
+            </p>
+            <Link
+              href={c.upworkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Hire me on Upwork
+            </Link>
+          </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full max-w-md flex flex-col gap-4 text-left"
-        >
+        {/* Right — contact form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="space-y-2">
             <label htmlFor="contact-email" className="text-sm font-medium text-foreground">
               Email
@@ -101,16 +138,17 @@ export default function ContactSection() {
               <p className="text-xs text-destructive">{errors.email.message}</p>
             )}
           </div>
-          <div className="space-y-2">
+
+          <div className="flex flex-col flex-1 space-y-2">
             <label htmlFor="contact-message" className="text-sm font-medium text-foreground">
               Message
             </label>
             <textarea
               id="contact-message"
               placeholder="Your message..."
-              rows={5}
+              rows={6}
               className={cn(
-                "w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 resize-y min-h-[120px]",
+                "w-full flex-1 rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 resize-none min-h-[180px]",
                 errors.text && "border-destructive focus:ring-destructive"
               )}
               {...register("text")}
@@ -119,50 +157,12 @@ export default function ContactSection() {
               <p className="text-xs text-destructive">{errors.text.message}</p>
             )}
           </div>
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full sm:w-auto gap-2"
-          >
+
+          <Button type="submit" disabled={isLoading} className="gap-2 self-start">
             {isLoading ? "Sending..." : "Send message"}
-            <Send className="text-sm" />
+            <Send className="size-3.5" />
           </Button>
         </form>
-
-        <div className="mt-10 w-full max-w-2xl border-t border-border/70 pt-10 text-center">
-          <h3 className="text-lg font-semibold tracking-tight text-foreground">
-            Prefer Upwork?
-          </h3>
-          <p className="mt-2 text-balance text-sm leading-relaxed text-muted-foreground">
-            Top Rated on Upwork with a 100% job success score. Proof of work spans agents and RAG, secure AI
-            orchestration, and multi-tenant infrastructure.
-          </p>
-          <Link
-            href={DATA.contact.upworkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 block overflow-hidden gap-4 rounded-xl ring-1 ring-border/50 transition-[box-shadow,ring-color] hover:ring-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <Image
-              src={UPWORK_BANNER_SRC}
-              alt={`${DATA.name} on Upwork: Top Rated, 100% job success; agents and RAG architecture, secure AI orchestration, multi-tenant infrastructure.`}
-              width={1200}
-              height={630}
-              className="h-auto w-full"
-              sizes="(max-width: 768px) 100vw, 42rem"
-            />
-          </Link>
-          <p className="mt-8">
-            <Link
-              href={DATA.contact.upworkUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              Hire me on Upwork
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );

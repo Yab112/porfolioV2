@@ -77,6 +77,7 @@ export default async function BlogPage({ searchParams }: Props) {
     const posts = data.items.map(apiListItemToSummary);
     return (
       <BlogIndex
+        key={`${topic ?? "all"}`}
         posts={posts}
         topics={topicItems}
         activeTopic={topic ?? null}

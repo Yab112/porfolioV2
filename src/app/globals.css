@@ -69,8 +69,19 @@
   }
 }
 
+@keyframes scroll-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes scroll-down {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .marquee-track,
+  .scroll-col {
     animation: none !important;
   }
 }

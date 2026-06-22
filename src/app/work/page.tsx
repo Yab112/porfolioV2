@@ -33,5 +33,5 @@ export const metadata: Metadata = {
 };
 
 export default function WorkPage() {
-  return <WorkCaseStudyGrid projects={DATA.projects} />;
+  return <WorkCaseStudyGrid projects={DATA.projects} work={DATA.work} />;
 }

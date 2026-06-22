@@ -1,24 +1,21 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
 import { cn } from "@/lib/utils";
 import { getWikiUrl } from "@/lib/wiki-links";
-import { ArrowUpRight, ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 function ProjectImage({ src, alt }: { src: string; alt: string }) {
-  const [imageError, setImageError] = useState(false);
-  if (!src || imageError) {
-    return <div className="w-full h-48 bg-muted" />;
+  const [error, setError] = useState(false);
+  if (!src || error) {
+    return <div className="w-full aspect-[4/3] bg-muted" />;
   }
   return (
     <img
       src={src}
       alt={alt}
-      className="w-full h-48 object-cover"
-      onError={() => setImageError(true)}
+      className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+      onError={() => setError(true)}
     />
   );
 }
@@ -26,18 +23,13 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
 interface Props {
   title: string;
   href?: string;
-  /** Internal case study URL (e.g. `/work/slug`) — shown as secondary CTA. */
   caseStudyHref?: string;
   description: string;
   dates: string;
   tags: readonly string[];
   image?: string;
   video?: string;
-  links?: readonly {
-    icon: React.ReactNode;
-    type: string;
-    href: string;
-  }[];
+  links?: readonly { icon: React.ReactNode; type: string; href: string }[];
   className?: string;
 }
 
@@ -56,108 +48,93 @@ export function ProjectCard({
   return (
     <div
       className={cn(
-        "flex flex-col border border-border rounded-xl overflow-hidden hover:ring-2 cursor-pointer hover:ring-muted transition-all duration-200",
+        "group flex flex-col rounded-2xl border border-border overflow-hidden bg-card/30 transition-all duration-200 hover:border-primary/30 hover:shadow-sm",
         className
       )}
     >
-      <div className="relative shrink-0">
-        <Link
-          href={href || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block"
-        >
-          {video ? (
-            <video
-              src={video}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-48 object-cover"
-            />
-          ) : image ? (
-            <ProjectImage src={image} alt={title} />
-          ) : (
-            <div className="w-full h-48 bg-muted" />
-          )}
-        </Link>
-        {links && links.length > 0 && (
-          <div className="absolute top-2 right-2 flex flex-wrap gap-2">
-            {links.map((link, idx) => (
-              <Link
-                href={link.href}
-                key={idx}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Badge className="flex items-center gap-1.5 text-xs bg-black text-white hover:bg-black/90" variant="default">
-                  {link.icon}
-                  {link.type}
-                </Badge>
-              </Link>
-            ))}
-          </div>
+      {/* Image */}
+      <div className="relative shrink-0 overflow-hidden">
+        {video ? (
+          <video
+            src={video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full aspect-[4/3] object-cover"
+          />
+        ) : (
+          <ProjectImage src={image ?? ""} alt={title} />
         )}
       </div>
-      <div className="p-6 flex flex-col gap-3">
+
+      {/* Body */}
+      <div className="flex flex-col flex-1 p-5 gap-3">
+        {/* Title row */}
         <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1">
-            <h3 className="font-semibold">{title}</h3>
-            <time className="text-xs text-muted-foreground">{dates}</time>
+          <div>
+            <h3 className="font-semibold text-sm leading-snug text-foreground">{title}</h3>
+            <time className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{dates}</time>
           </div>
-          <Link
-            href={href || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
-            aria-label={`Open ${title}`}
-          >
-            <ArrowUpRight className="h-4 w-4" aria-hidden />
-          </Link>
+          {caseStudyHref && (
+            <Link
+              href={caseStudyHref}
+              className="shrink-0 rounded-full border border-border px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Case study
+            </Link>
+          )}
         </div>
-        <div className="text-xs text-pretty font-sans leading-relaxed text-muted-foreground">
-          <TextWithWikiLinks text={description} />
-        </div>
-        {caseStudyHref ? (
-          <Link
-            href={caseStudyHref}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <FileText className="size-3.5 shrink-0" aria-hidden />
-            Case study
-          </Link>
-        ) : null}
-        {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
+
+        {/* Description */}
+        <p className="text-xs leading-relaxed text-muted-foreground line-clamp-2 flex-1">
+          {description}
+        </p>
+
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => {
               const url = getWikiUrl(tag);
-              const badge = (
-                <Badge
-                  className="text-[11px] font-medium border border-border h-6 w-fit px-2 inline-flex items-center gap-1"
-                  variant="outline"
-                >
+              const chip = (
+                <span className="rounded-full border border-border/60 bg-muted/30 px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wide text-muted-foreground transition-colors hover:text-primary">
                   {tag}
-                  {url && <ExternalLink className="h-2.5 w-2.5 opacity-70 shrink-0" aria-hidden />}
-                </Badge>
+                </span>
               );
               return url ? (
                 <a
+                  key={tag}
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  key={tag}
                   onClick={(e) => e.stopPropagation()}
-                  className="hover:opacity-90 transition-opacity"
                 >
-                  {badge}
+                  {chip}
                 </a>
               ) : (
-                <span key={tag}>{badge}</span>
+                <span key={tag}>{chip}</span>
               );
             })}
+          </div>
+        )}
+
+        {/* Links */}
+        {links && links.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 border-t border-border/50 pt-3">
+            {links.map((link, i) => (
+              <Link
+                key={i}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              >
+                {link.icon}
+                {link.type}
+              </Link>
+            ))}
           </div>
         )}
       </div>
