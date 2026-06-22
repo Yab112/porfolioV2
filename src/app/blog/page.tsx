@@ -1,7 +1,9 @@
 import { BlogIndex } from "@/components/blog/blog-index";
+import { JsonLd } from "@/components/json-ld";
 import { DATA } from "@/data/resume";
 import { OG_ROUTES } from "@/data/seo-routes";
 import { apiListItemToSummary, fetchBlogList, fetchBlogTopics } from "@/lib/blog-api";
+import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -52,6 +54,16 @@ function blogListPath(page: number, topic: string | undefined): string {
   return q ? `/blog?${q}` : "/blog";
 }
 
+const blogJsonLd = buildCollectionPageJsonLd({
+  name: blogTitle,
+  description: blogDescription,
+  url: `${site}/blog`,
+  breadcrumbs: [
+    { name: "Home", item: site },
+    { name: "Blog", item: `${site}/blog` },
+  ],
+});
+
 export default async function BlogPage({ searchParams }: Props) {
   const sp = await searchParams;
   const requested = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
@@ -76,31 +88,37 @@ export default async function BlogPage({ searchParams }: Props) {
 
     const posts = data.items.map(apiListItemToSummary);
     return (
-      <BlogIndex
-        key={`${topic ?? "all"}`}
-        posts={posts}
-        topics={topicItems}
-        activeTopic={topic ?? null}
-        pagination={
-          totalPages > 1
-            ? {
-                page: data.page,
-                pageSize: data.page_size,
-                total: data.total,
-                totalPages,
-              }
-            : undefined
-        }
-      />
+      <>
+        <JsonLd data={blogJsonLd} />
+        <BlogIndex
+          key={`${topic ?? "all"}`}
+          posts={posts}
+          topics={topicItems}
+          activeTopic={topic ?? null}
+          pagination={
+            totalPages > 1
+              ? {
+                  page: data.page,
+                  pageSize: data.page_size,
+                  total: data.total,
+                  totalPages,
+                }
+              : undefined
+          }
+        />
+      </>
     );
   } catch {
     return (
-      <BlogIndex
-        posts={[]}
-        topics={topicItems}
-        activeTopic={topic ?? null}
-        error="Could not load posts. The blog API may be unreachable—try again later."
-      />
+      <>
+        <JsonLd data={blogJsonLd} />
+        <BlogIndex
+          posts={[]}
+          topics={topicItems}
+          activeTopic={topic ?? null}
+          error="Could not load posts. The blog API may be unreachable—try again later."
+        />
+      </>
     );
   }
 }

@@ -1,10 +1,12 @@
 import { BlogPostBody } from "@/components/blog/blog-post-body";
 import { BlogPostShare } from "@/components/blog/blog-post-share";
+import { JsonLd } from "@/components/json-ld";
 import BlurFade from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import { resolveMediaUrl } from "@/lib/blog";
 import { apiDetailToPageData, fetchBlogPost } from "@/lib/blog-api";
+import { buildBlogPostingJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, CalendarDays, Clock, ExternalLink } from "lucide-react";
@@ -130,8 +132,26 @@ export default async function BlogPostPage({ params }: Props) {
   const shareUrl =
     canonicalRaw && /^https?:\/\//i.test(canonicalRaw) ? canonicalRaw : `${siteOrigin}/blog/${slug}`;
 
+  const jsonLdData = buildBlogPostingJsonLd(
+    {
+      title: post.title,
+      description: post.description,
+      date: post.date,
+      updated: post.updated,
+      image:
+        post.ogImage
+          ? resolveMediaUrl(siteOrigin, post.ogImage) ?? undefined
+          : post.image
+            ? resolveMediaUrl(siteOrigin, post.image) ?? undefined
+            : undefined,
+      imageAlt: post.imageAlt,
+    },
+    slug
+  );
+
   return (
     <main className="min-h-dvh pb-12">
+      <JsonLd data={jsonLdData} />
       <BlurFade delay={0.04}>
         <nav aria-label="Breadcrumb">
           <Link
