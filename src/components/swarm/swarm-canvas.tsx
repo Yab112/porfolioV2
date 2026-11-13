@@ -1,13 +1,13 @@
 "use client";
 
 import { DATA } from "@/data/resume";
-import { onShapeRequest, STATIONS, stationForPath, type SwarmShape } from "@/lib/swarm-bus";
+import { isStationPath, onShapeRequest, STATIONS, stationForPath, type SwarmShape } from "@/lib/swarm-bus";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type * as THREE_NS from "three";
-import { buildFormation, cloud, fromImage, type Formation } from "./shapes";
+import { buildFormation, cloud, fromImage, fromText, type Formation } from "./shapes";
 
-const FALLBACK_PORTRAIT = "/Icon Color Version@700x.png";
+const FALLBACK_PORTRAIT = "/logo_papu.png";
 
 const VERT = /* glsl */ `
   attribute vec3 aFrom;
@@ -180,12 +180,13 @@ export function SwarmCanvas() {
         const key = shape === "portrait" ? `portrait-${isDark()}` : shape;
         let f = cache.get(key);
         if (!f) {
-          f =
-            shape === "portrait"
+          f = shape.startsWith("word:")
+            ? fromText(N, shape.slice(5))
+            : shape === "portrait"
               ? portraitImg
                 ? fromImage(N, portraitImg, portraitImg.naturalWidth, portraitImg.naturalHeight, isDark())
                 : buildFormation("network", N)
-              : buildFormation(shape, N);
+              : buildFormation(shape as Exclude<SwarmShape, "portrait" | `word:${string}`>, N);
           cache.set(key, f);
         }
         return f;
@@ -219,6 +220,7 @@ export function SwarmCanvas() {
 
       // ── placement: where the figure sits for each page ────────────────────
       let route = stationForPath(window.location.pathname);
+      let onStation = isStationPath(window.location.pathname);
       let preview: SwarmShape | null = null;
       const goal = { x: 0, y: 0, scale: 1, opacity: 1 };
       const place = () => {
@@ -226,19 +228,22 @@ export function SwarmCanvas() {
         const h = window.innerHeight;
         const viewH = 2 * Math.tan((35 * Math.PI) / 360) * camera.position.z;
         const viewW = viewH * (w / h);
-        const home = route.href === "/";
-        const scrolled = Math.min(1, window.scrollY / (h * 0.7));
+        const home = route.href === "/" && onStation;
+        const scrolled = Math.min(1, window.scrollY / (h * 0.45));
         if (w >= 1024) {
           goal.scale = home ? Math.min(1.08, viewW / 6.2) : 0.62;
-          goal.x = home ? viewW * 0.23 : viewW / 2 - 1.35;
+          goal.x = home ? viewW * 0.23 : viewW / 2 - 1.5;
           goal.y = home ? 0.25 : viewH / 2 - 1.25;
-          goal.opacity = home ? 1 : 0.55 - scrolled * 0.25;
+          // Home keeps its figure beside the narrow text column; every other page
+          // shows it in the header and clears it once reading starts.
+          goal.opacity = home ? 1 : 0.7 * (1 - scrolled);
         } else {
           goal.scale = home ? Math.min(0.8, viewW / 3.6) : 0.5;
           goal.x = home ? 0 : viewW / 2 - 0.9;
           goal.y = home ? viewH * 0.17 : viewH / 2 - 1.0;
-          goal.opacity = home ? 1 - scrolled * 0.82 : 0.32 - scrolled * 0.2;
+          goal.opacity = (home ? 1 : 0.4) * (1 - scrolled);
         }
+        if (!onStation) goal.opacity = 0;
         if (preview) goal.opacity = Math.max(goal.opacity, 0.9);
       };
 
@@ -246,7 +251,9 @@ export function SwarmCanvas() {
         const shape = preview ?? current ?? route.shape;
         const st = stationForPath(route.href);
         const figureFor = (sh: SwarmShape) =>
-          sh === "network"
+          sh.startsWith("word:")
+            ? `spelling ${sh.slice(5).toUpperCase()}`
+            : sh === "network"
             ? "arranged as a neural network, one path lit"
             : (STATIONS.find((x) => x.shape === sh)?.figure ?? st.figure);
         const text = figureFor(shape);
@@ -265,7 +272,9 @@ export function SwarmCanvas() {
       };
 
       // A page section can borrow the figure while it is on screen.
-      let sectionShape: SwarmShape | null = null;
+      // A page that mounted before WebGL was ready leaves its request here.
+      let sectionShape: SwarmShape | null =
+        (window as unknown as { __swarmSection?: SwarmShape | null }).__swarmSection ?? null;
       const refresh = () => {
         show(preview ?? sectionShape ?? route.shape);
         place();
@@ -274,6 +283,7 @@ export function SwarmCanvas() {
       apiRef.current = {
         setRoute: (path) => {
           route = stationForPath(path);
+          onStation = isStationPath(path);
           sectionShape = null;
           preview = null;
           refresh();
@@ -317,7 +327,7 @@ export function SwarmCanvas() {
         applyTheme();
         if (current === "portrait") morphTo("portrait", true);
       });
-      themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+      themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-palette"] });
 
       resize();
       refresh();
@@ -341,7 +351,8 @@ export function SwarmCanvas() {
         group.scale.setScalar(s);
         uniforms.uOpacity.value += (Math.max(0, goal.opacity) - uniforms.uOpacity.value) * k;
 
-        const flat = current === "portrait" || current === "pages" || current === "network";
+        const flat =
+          current === "portrait" || current === "pages" || current === "network" || !!current?.startsWith("word:");
         if (!reduce) spin += dt * (current === "globe" ? 0.22 : flat ? 0 : 0.12);
         const targetY = (flat ? 0 : spin) + sway.x * (flat ? 0.22 : 0.35);
         const targetX = (current === "surface" || current === "layers" ? 0.42 : 0) - sway.y * 0.16;

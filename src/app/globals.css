@@ -69,6 +69,46 @@
   --ring: #45e896;
 }
 
+/* Colour options. Purple stays the ink and green the signal in every one;
+   what changes is the shade of each and the temperature of the page.
+   Chosen so body text clears 4.5:1 and large type 3:1 on its background. */
+
+/* 2 · Orchid & Lime: brighter, more contrast between the two, violet-tinted page */
+:root[data-palette="orchid"] {
+  --purple: #7a2fc2; --purple-soft: #ecdffa; --green: #3d7a0f; --green-fill: #b9ee5a; --on-green: #131c05;
+  --background: #f8f4fc; --foreground: #1a0d2b; --card: #ffffff; --primary: #7a2fc2; --secondary: #ece4f5;
+  --muted: #efe8f7; --muted-foreground: #5b4a73; --accent: #ecdffa; --border: #d9cbe9; --input: #d9cbe9; --ring: #3d7a0f;
+}
+.dark[data-palette="orchid"] {
+  --purple: #c99cff; --purple-soft: #2c1746; --green: #c3f26b; --green-fill: #c3f26b; --on-green: #131c05;
+  --background: #140a22; --foreground: #f5eefd; --card: #1d102f; --primary: #c99cff; --secondary: #2c1746;
+  --muted: #23133a; --muted-foreground: #b3a0cc; --accent: #2c1746; --border: #3d2560; --input: #3d2560; --ring: #c3f26b;
+}
+
+/* 3 · Plum & Sage: quieter and warmer, both colours desaturated, green-tinted page */
+:root[data-palette="sage"] {
+  --purple: #5c3d78; --purple-soft: #e6dfe9; --green: #2f6b4a; --green-fill: #8fd3a8; --on-green: #0c1a12;
+  --background: #f1f3ee; --foreground: #1c1a21; --card: #fbfcf9; --primary: #5c3d78; --secondary: #e3e7df;
+  --muted: #e7eae3; --muted-foreground: #54584f; --accent: #e6dfe9; --border: #cdd3c8; --input: #cdd3c8; --ring: #2f6b4a;
+}
+.dark[data-palette="sage"] {
+  --purple: #c5a8e0; --purple-soft: #2a2433; --green: #9ad6ae; --green-fill: #9ad6ae; --on-green: #0c1a12;
+  --background: #121614; --foreground: #eef1ec; --card: #191e1b; --primary: #c5a8e0; --secondary: #232a26;
+  --muted: #1e2421; --muted-foreground: #a3ab9f; --accent: #2a2433; --border: #2f3833; --input: #2f3833; --ring: #9ad6ae;
+}
+
+/* 4 · Ink: neutral black-and-white page, so purple and green are the only colour on it */
+:root[data-palette="ink"] {
+  --purple: #6d28d9; --purple-soft: #ede9fe; --green: #15803d; --green-fill: #4ade80; --on-green: #052e16;
+  --background: #fafafa; --foreground: #0a0a0a; --card: #ffffff; --primary: #6d28d9; --secondary: #f0f0f0;
+  --muted: #f2f2f2; --muted-foreground: #525252; --accent: #ede9fe; --border: #dcdcdc; --input: #dcdcdc; --ring: #15803d;
+}
+.dark[data-palette="ink"] {
+  --purple: #a78bfa; --purple-soft: #1f1933; --green: #4ade80; --green-fill: #4ade80; --on-green: #052e16;
+  --background: #0b0b0d; --foreground: #f5f5f5; --card: #131316; --primary: #a78bfa; --secondary: #1c1c21;
+  --muted: #18181c; --muted-foreground: #a1a1aa; --accent: #1f1933; --border: #2a2a31; --input: #2a2a31; --ring: #4ade80;
+}
+
 @layer base {
   * {
     @apply border-border;

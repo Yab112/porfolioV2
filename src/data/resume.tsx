@@ -115,7 +115,7 @@ export const DATA = {
       },
     },
     /** PDF in /public (download link in Connect strip) */
-    resumePdfUrl: "/yabibal-Eshetie-FlowCV-Resume-20250418.pdf",
+    resumePdfUrl: "/Yabibal-Eshetie-Molla-CV.pdf",
     upworkUrl: "https://www.upwork.com/freelancers/~01d3355c4ac6227baf",
     /** Short intro shown between Hobbies and Contact (links on the right) */
     connectIntro:

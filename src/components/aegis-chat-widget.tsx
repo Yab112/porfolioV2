@@ -239,10 +239,6 @@ export function AegisChatWidget() {
             aria-modal="true"
           >
             {/* Agent shell: status bar */}
-            <div
-              className="h-1 w-full bg-signal"
-              aria-hidden
-            />
 
             <header className="border-b border-border/80 bg-muted/20 px-4 pb-3.5 pt-5 dark:bg-muted/10">
               <div className="flex items-start gap-3">
