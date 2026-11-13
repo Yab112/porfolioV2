@@ -56,8 +56,9 @@ export default function WorkSection({ limit }: { limit?: number }) {
               )}
             </h3>
             <p className="mt-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
-              {[selected.start, selected.end].filter(Boolean).join(" — ")}
-              {selected.location?.trim() ? ` · ${selected.location}` : ""}
+              {[[selected.start, selected.end].filter(Boolean).join(" — "), selected.location?.trim()]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           </div>
 

@@ -120,7 +120,7 @@ export function DescentLab() {
       paintField();
       draw();
     });
-    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-palette"] });
     window.addEventListener("resize", size);
 
     let raf = 0;

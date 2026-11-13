@@ -1,6 +1,7 @@
 "use client";
 
 import { ModeToggle } from "@/components/mode-toggle";
+import { PaletteSwitch } from "@/components/palette-switch";
 import { DATA } from "@/data/resume";
 import { requestShape, STATIONS, stationForPath } from "@/lib/swarm-bus";
 import { cn } from "@/lib/utils";
@@ -92,6 +93,7 @@ export default function Rail() {
         >
           <Search className="size-4" aria-hidden />
         </button>
+        <PaletteSwitch className="flex h-14 w-10 items-center justify-center lg:h-12 lg:w-full" />
         <div className="relative flex h-14 w-12 items-center justify-center text-muted-foreground lg:h-12 lg:w-full">
           <ModeToggle className="size-9 rounded-none hover:bg-transparent hover:text-signal" />
         </div>
