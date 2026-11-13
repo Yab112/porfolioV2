@@ -1,7 +1,7 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import { ProjectCard } from "@/components/project-card";
 import { DATA } from "@/data/resume";
-import Link from "next/link";
+import { SectionHeading } from "@/components/fx/section-heading";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -10,25 +10,21 @@ export default function ProjectsSection({ limit }: { limit?: number }) {
 
   return (
     <section id="projects">
-      <div className="flex min-h-0 flex-col gap-y-6">
+      <div className="flex min-h-0 flex-col gap-y-10">
         <BlurFade delay={BLUR_FADE_DELAY * 11}>
-          <div className="flex items-center justify-between gap-4">
-            <h2 className="text-xl font-bold">Projects</h2>
-            {limit && DATA.projects.length > limit && (
-              <Link
-                href="/work"
-                className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
-              >
-                See all →
-              </Link>
-            )}
-          </div>
+          <SectionHeading
+            kicker="Selected work"
+            title="Products that are live, used and paid for."
+            href={limit && DATA.projects.length > limit ? "/work" : undefined}
+            hrefLabel="All case studies"
+          />
         </BlurFade>
 
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 max-w-4xl mx-auto items-start">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {projects.map((project, id) => (
               <BlurFade
+                className="h-full"
                 key={project.title}
                 delay={BLUR_FADE_DELAY * 12 + id * 0.05}
               >

@@ -131,6 +131,13 @@ export function AegisChatWidget() {
     }
   }, [open]);
 
+  // Lets other UI (hero button, command palette) open the chat.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("aegis:open", onOpen);
+    return () => window.removeEventListener("aegis:open", onOpen);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {

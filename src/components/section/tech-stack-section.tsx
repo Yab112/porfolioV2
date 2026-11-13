@@ -4,6 +4,8 @@ import BlurFade from "@/components/magicui/blur-fade";
 import { DATA } from "@/data/resume";
 import { getTechLogoUrl } from "@/lib/tech-logos";
 import { getWikiUrl } from "@/lib/wiki-links";
+import { SectionHeading } from "@/components/fx/section-heading";
+import { SpotlightCard } from "@/components/fx/spotlight-card";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -41,7 +43,7 @@ function TechChip({ item }: { item: string }) {
   );
 
   const chipClass = cn(
-    "inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-medium text-foreground transition-colors",
+    "inline-flex items-center gap-1.5 relative z-10 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground transition-colors",
     wikiUrl && "hover:border-primary/40 hover:bg-muted hover:text-primary"
   );
 
@@ -58,25 +60,29 @@ function TechChip({ item }: { item: string }) {
 
 export default function TechStackSection() {
   return (
-    <section id="skills" className="mt-12 mb-4">
-      <div className="flex min-h-0 flex-col gap-y-6">
+    <section id="skills">
+      <div className="flex min-h-0 flex-col gap-y-10">
         <BlurFade delay={BLUR_DELAY * 9}>
-          <h2 className="text-xl font-bold">Tech Stack</h2>
+          <SectionHeading kicker="Toolbox" title="The stack I reach for." />
         </BlurFade>
 
-        <div className="flex flex-col divide-y divide-border border-y border-border">
+        <div className="grid gap-4 md:grid-cols-2">
           {DATA.techStack.map((group, i) => (
-            <BlurFade key={group.label} delay={BLUR_DELAY * 10 + i * 0.04}>
-              <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-start sm:gap-8">
-                <p className="w-full shrink-0 pt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 sm:w-36">
-                  {group.label}
-                </p>
-                <div className="flex flex-wrap gap-2">
+            <BlurFade key={group.label} delay={BLUR_DELAY * 4 + i * 0.05} className="h-full">
+              <SpotlightCard className="flex h-full flex-col gap-4 p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-display text-lg font-semibold tracking-tight">{group.label}</h3>
+                  <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60">
+                    {String(group.items.length).padStart(2, "0")} tools
+                  </span>
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">{group.description}</p>
+                <div className="mt-auto flex flex-wrap gap-2 pt-1">
                   {group.items.map((item) => (
                     <TechChip key={item} item={item} />
                   ))}
                 </div>
-              </div>
+              </SpotlightCard>
             </BlurFade>
           ))}
         </div>

@@ -1,20 +1,34 @@
 "use client";
 
+import { GenerativeCover } from "@/components/fx/generative-cover";
+import { SpotlightCard } from "@/components/fx/spotlight-card";
 import { cn } from "@/lib/utils";
 import { getWikiUrl } from "@/lib/wiki-links";
 import Link from "next/link";
 import { useState } from "react";
 
+/** Stock placeholders are not real screenshots — render generated cover art instead. */
+function isPlaceholder(src: string): boolean {
+  return !src || src.includes("picsum.photos");
+}
+
 function ProjectImage({ src, alt }: { src: string; alt: string }) {
   const [error, setError] = useState(false);
-  if (!src || error) {
-    return <div className="w-full aspect-[4/3] bg-muted" />;
+  if (isPlaceholder(src) || error) {
+    return (
+      <GenerativeCover
+        seed={alt}
+        label={alt}
+        className="aspect-[16/10] w-full transition-transform duration-700 group-hover:scale-[1.05]"
+      />
+    );
   }
   return (
     <img
       src={src}
       alt={alt}
-      className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+      loading="lazy"
+      className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
       onError={() => setError(true)}
     />
   );
@@ -46,14 +60,10 @@ export function ProjectCard({
   className,
 }: Props) {
   return (
-    <div
-      className={cn(
-        "group flex flex-col rounded-2xl border border-border overflow-hidden bg-card/30 transition-all duration-200 hover:border-primary/30 hover:shadow-sm",
-        className
-      )}
-    >
+    <SpotlightCard tilt={4} className={cn("group flex h-full flex-col overflow-hidden", className)}>
       {/* Image */}
-      <div className="relative shrink-0 overflow-hidden">
+      <div className="relative shrink-0 overflow-hidden rounded-t-[1.2rem]">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-black/40 to-transparent" aria-hidden />
         {video ? (
           <video
             src={video}
@@ -61,7 +71,7 @@ export function ProjectCard({
             loop
             muted
             playsInline
-            className="w-full aspect-[4/3] object-cover"
+            className="aspect-[16/10] w-full object-cover"
           />
         ) : (
           <ProjectImage src={image ?? ""} alt={title} />
@@ -69,11 +79,11 @@ export function ProjectCard({
       </div>
 
       {/* Body */}
-      <div className="flex flex-col flex-1 p-5 gap-3">
+      <div className="flex flex-1 flex-col gap-3.5 p-5 sm:p-6">
         {/* Title row */}
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-semibold text-sm leading-snug text-foreground">{title}</h3>
+            <h3 className="font-display text-lg font-semibold leading-snug tracking-tight text-foreground">{title}</h3>
             <time className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{dates}</time>
           </div>
           {caseStudyHref && (
@@ -88,7 +98,7 @@ export function ProjectCard({
         </div>
 
         {/* Description */}
-        <p className="text-xs leading-relaxed text-muted-foreground line-clamp-2 flex-1">
+        <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
 
@@ -138,6 +148,6 @@ export function ProjectCard({
           </div>
         )}
       </div>
-    </div>
+    </SpotlightCard>
   );
 }
