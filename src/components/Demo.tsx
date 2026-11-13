@@ -12,7 +12,7 @@ export function SVGMaskEffectDemo() {
                         second rule of MRR Club is you DO NOT talk about MRR Club.
                     </p>
                 }
-                className="h-[40rem] border rounded-md text-gray-700"
+                className="h-[40rem] border rounded-none text-gray-700"
             >
                 The first rule of <span className="text-red-500">MRR Club</span> is you
                 do not talk about MRR Club. The second rule of MRR Club is you DO NOT

@@ -18,7 +18,7 @@ export default function HobbiesSection() {
         <BlurFade delay={BLUR_DELAY * 12}>
           <div className="space-y-1">
             <p className="section-kicker">Off the clock</p>
-            <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">Hobbies.</h2>
+            <h2 className="poster text-5xl sm:text-6xl">Hobbies.</h2>
             <p className="text-sm text-muted-foreground max-w-xl">{h.intro}</p>
           </div>
         </BlurFade>
@@ -28,7 +28,7 @@ export default function HobbiesSection() {
             href={h.bookAmazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-auto md:mx-0 block w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm bg-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mx-auto md:mx-0 block w-full max-w-[200px] rounded-none overflow-hidden border border-border shadow-sm bg-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <img
               src={h.bookImage}

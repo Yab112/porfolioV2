@@ -38,7 +38,7 @@ function ScrollColumn({
         {DOUBLED.map((lesson, i) => (
           <div
             key={i}
-            className="rounded-lg border border-border bg-muted/40 px-3 py-2.5 space-y-1"
+            className="rounded-none border border-border bg-muted/40 px-3 py-2.5 space-y-1"
           >
             <span className="block text-[9px] font-mono tracking-[0.2em] uppercase text-muted-foreground/50">
               {lessonFlavorLabel(lesson.flavor)}
@@ -134,7 +134,7 @@ export default function TodaysMistakeCard() {
             onClick={handleShuffle}
             disabled={index === null}
             className={cn(
-              "rounded-full border border-border px-6 py-2.5 text-sm font-medium transition-all duration-200",
+              "rounded-none border border-border px-6 py-2.5 text-sm font-medium transition-all duration-200",
               "text-muted-foreground hover:border-primary/50 hover:text-foreground",
               "disabled:cursor-not-allowed disabled:opacity-40"
             )}

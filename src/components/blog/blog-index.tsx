@@ -54,13 +54,13 @@ function fmtDate(iso: string) {
 
 function CardSkeleton() {
   return (
-    <div className="rounded-2xl border border-border overflow-hidden animate-pulse">
+    <div className="rounded-none border border-border overflow-hidden animate-pulse">
       <div className="aspect-[3/2] bg-muted" />
       <div className="p-5 space-y-2.5">
-        <div className="h-2.5 w-20 rounded-full bg-muted" />
+        <div className="h-2.5 w-20 rounded-none bg-muted" />
         <div className="h-4 w-full rounded bg-muted" />
         <div className="h-3 w-5/6 rounded bg-muted" />
-        <div className="h-2.5 w-24 rounded-full bg-muted mt-2" />
+        <div className="h-2.5 w-24 rounded-none bg-muted mt-2" />
       </div>
     </div>
   );
@@ -71,7 +71,7 @@ function FeaturedPost({ post }: { post: BlogPostSummary }) {
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group relative block rounded-2xl overflow-hidden border border-border"
+        className="group relative block rounded-none overflow-hidden border border-border"
       >
         <div className="relative w-full aspect-[21/9] overflow-hidden">
           <img
@@ -88,7 +88,7 @@ function FeaturedPost({ post }: { post: BlogPostSummary }) {
               {post.tags.slice(0, 3).map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-border/50 bg-background/50 backdrop-blur-sm px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-foreground/70"
+                  className="rounded-none border border-border/50 bg-background/50 backdrop-blur-sm px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-foreground/70"
                 >
                   {t}
                 </span>
@@ -113,7 +113,7 @@ function FeaturedPost({ post }: { post: BlogPostSummary }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group block rounded-2xl border border-border bg-muted/20 hover:bg-muted/30 transition-colors"
+      className="group block rounded-none border border-border bg-muted/20 hover:bg-muted/30 transition-colors"
     >
       <div className="p-8 sm:p-10 lg:p-12 space-y-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">Featured</p>
@@ -145,7 +145,7 @@ function PostCard({ post }: { post: BlogPostSummary }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col h-full rounded-2xl overflow-hidden border border-border bg-card/30 hover:bg-muted/20 transition-colors"
+      className="group flex flex-col h-full rounded-none overflow-hidden border border-border bg-card/30 hover:bg-muted/20 transition-colors"
     >
       {post.image && (
         <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted/20 shrink-0">
@@ -261,12 +261,10 @@ export function BlogIndex({
     <main className="min-h-dvh w-full pb-16">
       {/* Header */}
       <BlurFade delay={DELAY}>
-        <div className="mb-10 space-y-2">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
-            Writing
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Articles</h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+        <div className="mb-12 space-y-5 pt-8 lg:pt-10">
+          <p className="section-kicker">Station 04</p>
+          <h1 className="poster text-[clamp(3.5rem,11vw,9rem)]">Articles<span className="text-ink-purple">.</span></h1>
+          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
             Notes on fullstack engineering, AI in production, and shipping reliable software.
           </p>
         </div>
@@ -280,7 +278,7 @@ export function BlogIndex({
               href="/blog"
               scroll={false}
               className={cn(
-                "rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+                "rounded-none border px-4 py-1.5 text-xs font-medium transition-all duration-200",
                 !activeNorm
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -297,7 +295,7 @@ export function BlogIndex({
                   scroll={false}
                   title={`${count} post${count === 1 ? "" : "s"}`}
                   className={cn(
-                    "rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+                    "rounded-none border px-4 py-1.5 text-xs font-medium transition-all duration-200",
                     isActive
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -312,13 +310,13 @@ export function BlogIndex({
       )}
 
       {error && (
-        <p className="mb-8 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-center text-sm text-destructive" role="alert">
+        <p className="mb-8 rounded-none border border-destructive/30 bg-destructive/5 px-4 py-3 text-center text-sm text-destructive" role="alert">
           {error}
         </p>
       )}
 
       {!error && posts.length === 0 && (
-        <div className="rounded-2xl border border-border bg-card/30 px-4 py-20 text-center">
+        <div className="rounded-none border border-border bg-card/30 px-4 py-20 text-center">
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/40 mb-2">
             {activeTopic ? "no results" : "coming soon"}
           </p>
@@ -366,7 +364,7 @@ export function BlogIndex({
           <button
             type="button"
             onClick={loadMore}
-            className="rounded-full border border-border px-8 py-3 text-sm font-medium text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:text-foreground"
+            className="rounded-none border border-border px-8 py-3 text-sm font-medium text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:text-foreground"
           >
             Load more articles
           </button>
@@ -382,7 +380,7 @@ export function BlogIndex({
           <button
             type="button"
             onClick={() => { setLoadError(false); loadMore(); }}
-            className="rounded-full border border-border px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+            className="rounded-none border border-border px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
           >
             Try again
           </button>

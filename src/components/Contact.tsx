@@ -66,7 +66,7 @@ const Contact = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex flex-col gap-2">
           <input
-            className="w-full outline-none border focus:ring-1 focus:ring-black rounded-lg py-2 px-4"
+            className="w-full outline-none border focus:ring-1 focus:ring-black rounded-none py-2 px-4"
 
             {...register('email')}
             type="email"
@@ -82,7 +82,7 @@ const Contact = () => {
             placeholder="Your message"
 
             cols={30}
-            className="w-full border h-52 px-4 py-2  rounded-lg"
+            className="w-full border h-52 px-4 py-2  rounded-none"
           ></textarea>
           {errors?.text && (
             <p className='px-1 text-xs text-red-600'>{errors.text.message}</p>
@@ -91,7 +91,7 @@ const Contact = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className=" flex items-center disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:scale-100 disabled:active:scale-100 cursor-pointer gap-2 px-4 py-1 text-[16px] bg-black border border-gray-300 rounded-full text-white font-Poppins hover:scale-110 active:scale-105"
+              className=" flex items-center disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:scale-100 disabled:active:scale-100 cursor-pointer gap-2 px-4 py-1 text-[16px] bg-black border border-gray-300 rounded-none text-white font-Poppins hover:scale-110 active:scale-105"
             >
               Send
               <BsSend className="text-[12px]" />

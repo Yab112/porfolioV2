@@ -1,14 +1,14 @@
 import Footer from "@/components/Footer";
-import Navbar from "@/components/navbar";
+import Rail from "@/components/rail";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
+import { Big_Shoulders, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteBackdrop } from "@/components/fx/site-backdrop";
+import { SwarmCanvas } from "@/components/swarm/swarm-canvas";
 import { ScrollProgress } from "@/components/fx/scroll-progress";
 import { CommandPalette } from "@/components/command-palette";
 import { AegisChatWidget } from "@/components/aegis-chat-widget";
@@ -20,10 +20,11 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const display = Bricolage_Grotesque({
+const display = Big_Shoulders({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["500", "600", "700"],
+  weight: ["700", "800", "900"],
+  adjustFontFallback: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -120,13 +121,15 @@ export default function RootLayout({
           <GeoJsonLd />
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
-            <SiteBackdrop />
+            <SwarmCanvas />
             <ScrollProgress />
-            <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-5 py-10 pb-28 sm:px-8 sm:py-16 sm:pb-32">
-              <div className="flex-1">{children}</div>
-              <Footer />
+            <div className="relative z-10 lg:pl-[4.5rem]">
+              <div className="mx-auto flex min-h-dvh w-full max-w-[88rem] flex-col px-5 pb-24 sm:px-10 lg:pb-10">
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
             </div>
-            <Navbar />
+            <Rail />
             <AegisChatWidget />
             <CommandPalette />
           </TooltipProvider>

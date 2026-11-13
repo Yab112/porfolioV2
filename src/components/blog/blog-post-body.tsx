@@ -49,7 +49,7 @@ const components = {
       <img
         src={src.trim()}
         alt={alt?.trim() ? alt : ""}
-        className="my-8 w-full max-w-full rounded-xl border border-border/60 bg-muted/20 object-contain shadow-sm [max-height:min(72vh,640px)]"
+        className="my-8 w-full max-w-full rounded-none border border-border/60 bg-muted/20 object-contain shadow-sm [max-height:min(72vh,640px)]"
         loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer-when-downgrade"
@@ -68,7 +68,7 @@ const components = {
     );
   },
   pre: ({ children }: { children?: React.ReactNode }) => (
-    <pre className="my-6 overflow-x-auto rounded-xl border border-border/70 bg-muted/40 p-4 font-mono text-[13px] leading-relaxed dark:bg-muted/25">
+    <pre className="my-6 overflow-x-auto rounded-none border border-border/70 bg-muted/40 p-4 font-mono text-[13px] leading-relaxed dark:bg-muted/25">
       {children}
     </pre>
   ),
@@ -79,7 +79,7 @@ const components = {
   ),
   hr: () => <hr className="my-10 border-border/80" />,
   table: ({ children }: { children?: React.ReactNode }) => (
-    <div className="my-8 w-full overflow-x-auto rounded-xl border border-border/70 bg-card/30 shadow-sm">
+    <div className="my-8 w-full overflow-x-auto rounded-none border border-border/70 bg-card/30 shadow-sm">
       <table className="w-full min-w-[min(100%,36rem)] border-collapse text-left text-[14px] leading-snug">{children}</table>
     </div>
   ),

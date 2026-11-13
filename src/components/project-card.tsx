@@ -63,8 +63,7 @@ export function ProjectCard({
     <SpotlightCard tilt={4} className={cn("group flex h-full flex-col overflow-hidden", className)}>
       {/* Image */}
       <div className="relative shrink-0 overflow-hidden rounded-t-[1.2rem]">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-black/40 to-transparent" aria-hidden />
-        {video ? (
+                {video ? (
           <video
             src={video}
             autoPlay
@@ -83,13 +82,13 @@ export function ProjectCard({
         {/* Title row */}
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-display text-lg font-semibold leading-snug tracking-tight text-foreground">{title}</h3>
+            <h3 className="poster text-2xl leading-snug tracking-tight text-foreground">{title}</h3>
             <time className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{dates}</time>
           </div>
           {caseStudyHref && (
             <Link
               href={caseStudyHref}
-              className="shrink-0 rounded-full border border-border px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
+              className="shrink-0 rounded-none border border-border px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
               onClick={(e) => e.stopPropagation()}
             >
               Case study
@@ -108,7 +107,7 @@ export function ProjectCard({
             {tags.map((tag) => {
               const url = getWikiUrl(tag);
               const chip = (
-                <span className="rounded-full border border-border/60 bg-muted/30 px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wide text-muted-foreground transition-colors hover:text-primary">
+                <span className="rounded-none border border-border/60 bg-muted/30 px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wide text-muted-foreground transition-colors hover:text-primary">
                   {tag}
                 </span>
               );
@@ -139,7 +138,7 @@ export function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-none border border-border bg-background/60 px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
               >
                 {link.icon}
                 {link.type}
