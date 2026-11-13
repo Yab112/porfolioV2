@@ -368,8 +368,8 @@ export const DATA = {
       active: true,
       client: true,
       description:
-        "Production-ready dual-agent system where a Planner agent decomposes user goals into structured subtasks and a Worker agent executes them with isolated context. Implements structured handoff protocols, error recovery, and observable step-by-step output so failures surface at the right layer. Deployed as an interactive Next.js demo; the patterns map directly to production LLM workflows.",
-      technologies: ["TypeScript", "Next.js", "OpenAI", "AI"],
+        "A deliberation tool for architecture decisions. You describe a design problem; two AI advisors, one on Claude and one on OpenAI, argue it over several rounds, and an arbiter returns a recommendation with a confidence score. The result includes where the advisors agreed and disagreed, the key risks, implementation notes, a scorecard across eight engineering principles, generated system and sequence diagrams, and the token count and cost of every round. The debate runs as an n8n workflow; the React app starts it and follows its progress through Supabase.",
+      technologies: ["React", "TypeScript", "Vite", "n8n", "Claude", "OpenAI", "Supabase", "Mermaid"],
       links: [
         { type: "Live", href: "https://dual-agent-architecture-ai.vercel.app", icon: <Icons.globe className="size-3" /> },
         { type: "GitHub", href: "https://github.com/Yab112/Dual-Agent-Architecture-AI", icon: <Icons.github className="size-3" /> },
@@ -385,11 +385,10 @@ export const DATA = {
       active: true,
       client: true,
       description:
-        "Full marketing and e-commerce web presence for Eset Coffee, an Ethiopian specialty coffee brand. Covers product storytelling, origin traceability pages, and ordering touchpoints — built with Next.js and TypeScript for fast load times and strong SEO.",
-      technologies: ["Next.js", "TypeScript", "React"],
+        "A three-app system for an Ethiopian specialty coffee brand, in one repository. A public website in four languages (English, Arabic, Chinese, Amharic) presents coffees, origins, quality, export and a journal, and takes buyer enquiries and newsletter sign-ups. A staff admin manages all of that content, email campaigns, roles and permissions with an approval flow and an audit log. Guests in the cafes scan a QR code to answer a feedback questionnaire, which staff review by location. One Fastify API owns the database, email and uploads; the website and admin reach it server to server.",
+      technologies: ["Next.js 16", "Fastify 5", "TypeORM", "PostgreSQL", "Tailwind CSS v4", "Zod", "pnpm workspaces"],
       links: [
         { type: "Website", href: "https://www.esetcoffee.com/", icon: <Icons.globe className="size-3" /> },
-        { type: "GitHub", href: "https://github.com/Yab112/essetcoffee", icon: <Icons.github className="size-3" /> },
       ],
       image: "https://picsum.photos/seed/eset-coffee/800/400",
       video: "",
@@ -402,8 +401,8 @@ export const DATA = {
       active: true,
       client: true,
       description:
-        "Ethiopian art discovery platform — curated galleries, artist portfolio pages, and category-based browsing. Built with Next.js and TypeScript for fast SEO-friendly artwork discovery.",
-      technologies: ["TypeScript", "React", "Next.js"],
+        "An online art marketplace: a storefront where collectors browse artworks, follow artists, save favourites and collections, and buy through a cart and checkout; and a NestJS backend that handles orders, payments, delivery confirmation, disputes between buyers and sellers, and seller withdrawals. Accounts support email and password, Google sign-in and two-factor authentication.",
+      technologies: ["React", "TypeScript", "NestJS", "Prisma", "PostgreSQL", "WebSockets", "S3"],
       links: [
         { type: "Website", href: "https://www.arthopia.com.et/", icon: <Icons.globe className="size-3" /> },
         { type: "GitHub", href: "https://github.com/Yab112/art-gallery", icon: <Icons.github className="size-3" /> },
@@ -423,7 +422,6 @@ export const DATA = {
       technologies: ["TypeScript", "React", "Next.js", "AI"],
       links: [
         { type: "Website", href: "https://personlized.arthopia.com.et/", icon: <Icons.globe className="size-3" /> },
-        { type: "GitHub", href: "https://github.com/Yab112/Personalized-Portfolio-artists", icon: <Icons.github className="size-3" /> },
       ],
       image: "https://picsum.photos/seed/personalized-arthopia/800/400",
       video: "",
@@ -479,12 +477,12 @@ export const DATA = {
     {
       title: "Local Context Orchestrator",
       slug: "local-context-orchestrator",
-      href: "https://github.com/Yab112",
+      href: "https://github.com/Yab112/Context-Orchestrator",
       dates: "2024",
       active: true,
       description:
-        "MCP Server with a superadmin dashboard for managing admin behaviors, CRUD operations, and KPI tracking. Next.js frontend for a responsive interface and Node.js backend for secure data handling, enabling seamless control over admin actions and data management.",
-      technologies: ["Next.js", "Node.js", "TypeScript", "MCP"],
+        "A local MCP server that sends an AI coding assistant small, relevant slices of code instead of whole files, to cut API cost and context drift. It indexes a project locally using syntax-tree parsing, language-server understanding and a dependency graph, caches context, and exposes six tools to MCP clients such as Cursor. A CLI sets up a project in one command, rebuilds the index, reports token and cache metrics and benchmarks the token savings.",
+      technologies: ["Python", "MCP", "AST", "LSP", "uv"],
       links: [
         { type: "GitHub", href: "https://github.com/Yab112", icon: <Icons.github className="size-3" /> },
       ],
@@ -507,12 +505,12 @@ export const DATA = {
     {
       title: "Compliance Navigator",
       slug: "compliance-navigator",
-      href: "https://github.com/Yab112",
+      href: "https://github.com/Yab112/Compliance-Navigator-Api",
       dates: "In progress",
       active: true,
       description:
-        "A graph-based decision-support platform for Ethiopian business compliance. It maps regulatory and public-service requirements into step-by-step roadmaps, and includes an English and Amharic AI assistant that answers from legal and service-catalog sources with references to the supporting material. Built on a Neo4j knowledge graph with PostgreSQL and pgvector.",
-      technologies: ["FastAPI", "Next.js", "PostgreSQL", "pgvector", "Neo4j", "RAG"],
+        "Graph-based decision support for Ethiopian business compliance. It maps regulatory requirements as a dependency graph and produces a step-by-step roadmap to a goal such as a passport, a TIN or a trade licence, per sub-city. Each step shows the office, the fee, the documents, the legal basis and whether it can be done at a MESOB one-stop centre. It mirrors the MESOB service catalogue (24 institutions, about 470 services in English and Amharic, 19 centres), runs a registry of licensed errand agents, and has an English and Amharic assistant with voice that builds roadmaps and cites its sources.",
+      technologies: ["FastAPI", "Neo4j", "PostgreSQL", "pgvector", "Next.js", "TanStack Query", "Zustand", "Ollama", "Claude"],
       links: [],
       image: "",
       video: "",
@@ -524,8 +522,8 @@ export const DATA = {
       dates: "2026 – Present",
       active: true,
       description:
-        "An expense-sharing platform with itemized purchases, custom splits, live-derived balances, settlement recommendations and payment requests. Adds spending analytics, real-time room chat and an assistant that answers from verified balances and expense history. Core purchase, balance, ledger and insights logic is covered by 26 unit tests.",
-      technologies: ["Flutter", "FastAPI", "Supabase"],
+        "A house bill-splitting app. Housemates share a room with chat, split each purchase item by item, and see balances that are never stored: they are recomputed from purchases and payments every time. Anyone can settle at any time by paying through Telebirr and uploading the screenshot, which the backend verifies. It also has spending insights, an assistant that answers from the room's real balances and history, and an admin app.",
+      technologies: ["Flutter", "FastAPI", "Supabase", "PostgreSQL", "Telebirr"],
       links: [],
       image: "",
       video: "",
