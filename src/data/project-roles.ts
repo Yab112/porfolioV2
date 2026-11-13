@@ -69,8 +69,8 @@ export const PROJECT_ROLES: Record<string, ProjectRole> = {
     ],
   },
   billshare: {
-    role: "Designer and engineer",
-    forWhom: "My own product, for shared households in Ethiopia",
+    role: "Founder and engineer",
+    forWhom: "My own product, for shared households in Ethiopia. Going to market in November 2026.",
     period: "2026 – Present",
     did: [
       "Designed the ledger so that no balance is ever stored: every balance is recomputed from purchases and payments.",
@@ -82,9 +82,8 @@ export const PROJECT_ROLES: Record<string, ProjectRole> = {
     ],
   },
   "compliance-navigator": {
-    role: "Designer and engineer",
-    forWhom: "My own project, for people and businesses dealing with Ethiopian public services",
-    period: "In progress",
+    role: "Founder and engineer",
+    forWhom: "My own product, for people and businesses dealing with Ethiopian public services. Going to market in November 2026.",
     did: [
       "Modelled requirements as a dependency graph in Neo4j, and built the roadmap engine that turns a goal and a sub-city into ordered steps with office, fee, documents and legal basis.",
       "Built the pipeline that mirrors the MESOB service catalogue (24 institutions, about 470 services in English and Amharic, 19 centres) into the graph and embeds it for retrieval.",
@@ -113,6 +112,31 @@ export const PROJECT_ROLES: Record<string, ProjectRole> = {
       "Built what happens when a sale goes wrong or completes: disputes for buyers and sellers, and seller withdrawals.",
       "Built authentication with email and password, Google sign-in and two-factor codes.",
       "Built the storefront that collectors and artists use.",
+    ],
+  },
+  feedlane: {
+    role: "Founder and engineer",
+    forWhom: "My own product, for hotels, restaurants and cafes. Going to market in November 2026.",
+    did: [
+      "Designed the product loop: create a form, test it, share it, collect responses, act on them.",
+      "Built three ways to start a form: a category template, a paper questionnaire uploaded as a PDF, or a description in English or Amharic. The result is always a draft the business checks before publishing.",
+      "Built sharing by public link, branded QR code, print template and embed.",
+      "Built response management: an inbox with status, notes, assignment and alerts, plus AI categories and summaries, reports and export.",
+      "Let each business choose where its data lives: the cloud, a webhook to its own API, its own database, or self-hosted.",
+      "Built it as three front ends (business dashboard, staff admin, public form) on a FastAPI backend, with a single check script that CI also runs.",
+    ],
+  },
+  coursebox: {
+    role: "Creator and engineer",
+    forWhom: "An open-source tool for self-taught learners",
+    period: "2026",
+    did: [
+      "Built the importer: a course zip is unpacked in a Web Worker and stored in the browser, with no server and no account.",
+      "Wrote the structure detection: MIT OpenCourseWare units and sessions, lecture videos with their notes and captions, problem sets paired with locked solutions, and sensible handling of any other folder layout.",
+      "Made sure nothing is lost: files no rule recognises go to Additional Materials, and an All files view shows where every file went.",
+      "Built the viewers: PDF that resumes where you stopped, video and audio with speed and captions, Markdown, code, Jupyter notebooks and nested zips.",
+      "Built the learning flow: progress in the sidebar, continue where you left off, study time counted only while the tab is visible, and keyboard shortcuts.",
+      "Added optional accounts that save courses through presigned uploads and sync progress across devices, and end-to-end tests with Playwright.",
     ],
   },
 };

@@ -528,5 +528,33 @@ export const DATA = {
       image: "",
       video: "",
     },
+    {
+      title: "Feedlane",
+      slug: "feedlane",
+      href: "https://github.com/Yab112",
+      dates: "2026 – Present",
+      active: true,
+      description:
+        "Feedlane helps a business know what its customers really think: branded feedback forms, QR codes, AI insights and response management. A business creates a form from a category template, from its own paper questionnaire uploaded as a PDF, or from a description written in English or Amharic. It tests the form, then shares it by link, branded QR code, print template or embed. Responses arrive in an inbox with status, assignment, alerts, AI categories and summaries, reports and export. It is built first for hotels, guesthouses, restaurants and cafes in Addis Ababa, and the business chooses where its data lives: the cloud, a webhook to its own API, its own database, or self-hosted.",
+      technologies: ["FastAPI", "React", "TypeScript", "PostgreSQL", "AI insights"],
+      links: [],
+      image: "",
+      video: "",
+    },
+    {
+      title: "CourseBox",
+      slug: "coursebox",
+      href: "https://github.com/Yab112/coursebox",
+      dates: "2026",
+      active: true,
+      description:
+        "CourseBox turns a downloaded course zip into your own Coursera-style learning space. Drop in an MIT OpenCourseWare export, a Udemy-style download or any folder of videos, PDFs and notes; it works out the structure (units, sessions, lectures, problem sets paired with their solutions) and gives you a course player with progress tracking. The zip is unpacked in a Web Worker and stored in the browser, so reading needs no account and no server. It has viewers for PDF, video with captions, Markdown, code and Jupyter notebooks, keyboard shortcuts and study-time tracking. An optional free account saves courses and syncs progress across devices. Open source.",
+      technologies: ["Next.js", "TypeScript", "IndexedDB", "Web Workers", "Playwright", "S3"],
+      links: [
+        { type: "GitHub", href: "https://github.com/Yab112/coursebox", icon: <Icons.github className="size-3" /> },
+      ],
+      image: "/projects/coursebox.png",
+      video: "",
+    },
   ],
 } as const;
