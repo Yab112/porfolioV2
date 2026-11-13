@@ -13,25 +13,18 @@ export function getProjectBySlug(slug: string): ProjectWithSlug | null {
   return found ? (found as ProjectWithSlug) : null;
 }
 
+/** Without a hand-written case study, say only what is known: what it is, what was built, the stack. */
 export function buildDefaultCaseStudySections(project: ProjectWithSlug): CaseStudySection[] {
-  return [
-    {
-      id: "overview",
-      heading: "Overview",
-      content: project.description,
-    },
-    {
-      id: "scope",
-      heading: "Scope",
-      content:
-        "End-to-end product work: shipping user-facing surfaces, integrating services, and keeping releases maintainable—with attention to performance, clarity, and ops-friendly boundaries.",
-    },
-    {
-      id: "technologies",
-      heading: "Technologies",
-      content: `Primary tools and stack: ${project.technologies.join(", ")}.`,
-    },
-  ];
+  const sentences = project.description
+    .split(/(?<=[.!?])\s+/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  const sections: CaseStudySection[] = [{ id: "overview", heading: "What it is", content: sentences[0] ?? project.description }];
+  if (sentences.length > 1) {
+    sections.push({ id: "built", heading: "What I built", content: sentences.slice(1).join(" ") });
+  }
+  sections.push({ id: "technologies", heading: "Stack", content: project.technologies.join(", ") + "." });
+  return sections;
 }
 
 export function getCaseStudySections(project: ProjectWithSlug): CaseStudySection[] {

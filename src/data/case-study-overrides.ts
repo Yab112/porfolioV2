@@ -63,4 +63,81 @@ export const CASE_STUDY_OVERRIDES: Partial<Record<string, CaseStudySection[]>> =
         "Python, FastAPI, LangGraph-oriented flows, RAG with pgvector on Supabase, Gemini for model calls, Google Calendar API for booking—not a toy demo, but a structure you can extend with evals and monitoring as traffic grows.",
     },
   ],
+  "compliance-navigator": [
+    {
+      id: "context",
+      heading: "Context",
+      content:
+        "Starting or running a business in Ethiopia means working out which licences, registrations and public-service steps apply to you, in what order, and at which office. Compliance Navigator is a graph-based decision-support platform that maps those requirements into step-by-step roadmaps.",
+    },
+    {
+      id: "approach",
+      heading: "Approach",
+      content:
+        "A Neo4j knowledge graph holds the structured relationships between regulatory and public-service requirements, and PostgreSQL with pgvector handles retrieval.",
+    },
+    {
+      id: "assistant",
+      heading: "The assistant",
+      content:
+        "An AI assistant answers in English or Amharic. It retrieves from legal and service-catalog sources and returns references to the supporting material.",
+    },
+    {
+      id: "status",
+      heading: "Status",
+      content:
+        "In progress. The stack is FastAPI, Next.js, PostgreSQL with pgvector, and Neo4j.",
+    },
+  ],
+  billshare: [
+    {
+      id: "context",
+      heading: "Context",
+      content:
+        "Splitting shared costs gets messy as soon as a purchase has several items and not everyone shares every item. BillShare is an expense-sharing platform for groups that need that level of detail: itemized purchases, custom splits, and a clear answer to who owes whom.",
+    },
+    {
+      id: "design",
+      heading: "Design",
+      content:
+        "Balances are derived live. From them the app recommends settlements and lets members send payment requests. It also has spending analytics and real-time room chat.",
+    },
+    {
+      id: "assistant",
+      heading: "The assistant",
+      content:
+        "The in-app assistant answers questions about a group's money by retrieving from verified balances and expense history.",
+    },
+    {
+      id: "quality",
+      heading: "Testing",
+      content:
+        "The core purchase, balance, ledger and insights logic is covered by 26 unit tests. Built with Flutter, FastAPI and Supabase. Work is ongoing.",
+    },
+  ],
+  "rag-evaluation-framework": [
+    {
+      id: "context",
+      heading: "Context",
+      content:
+        "An evaluation workflow for retrieval-augmented generation applications, so that a change to a RAG app is judged by measured results.",
+    },
+    {
+      id: "how",
+      heading: "How it works",
+      content:
+        "It combines automated test generation, golden datasets, multi-dimensional scoring and hallucination checks, and ends in a deterministic pass/fail evaluation.",
+    },
+    {
+      id: "tracking",
+      heading: "Regression tracking",
+      content:
+        "Runs are tracked as MLflow experiments, with regression tracking across versions.",
+    },
+    {
+      id: "stack",
+      heading: "Stack",
+      content: "Python and MLflow.",
+    },
+  ],
 };

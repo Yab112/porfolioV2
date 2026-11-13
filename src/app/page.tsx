@@ -50,9 +50,9 @@ export default function Page() {
       >
         <div className="note flex flex-wrap items-start justify-between gap-x-10 gap-y-3">
           <p>
-            Senior fullstack engineer
+            {DATA.headline}
             <br />
-            AI systems · automation · multi-tenant SaaS
+            LLM apps · agents · ML evaluation · multi-tenant SaaS
           </p>
           <p className="text-right max-lg:hidden">
             {DATA.location}
@@ -64,7 +64,7 @@ export default function Page() {
               <span className="pulse-ring absolute inset-0 bg-signal [animation:pulse-ring_1.8s_ease-out_infinite]" />
               <span className="relative size-2 bg-signal" />
             </span>
-            Taking new projects
+            {DATA.availability}
           </p>
         </div>
 
@@ -77,8 +77,8 @@ export default function Page() {
 
           <div className="grid gap-8 border-t border-border pt-7 lg:grid-cols-[minmax(0,34rem)_1fr] lg:items-end">
             <p className="text-pretty text-lg leading-relaxed sm:text-xl">
-              I build AI systems that keep working after the demo: agents with a human in the loop, automation that
-              heals itself, and SaaS that isolates every tenant.
+              {DATA.statement} Three years shipping LLM applications, multi-agent automation and multi-tenant SaaS
+              for international clients.
             </p>
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3 lg:justify-end">
               <Link href="/contact" className="act act-solid">

@@ -30,7 +30,8 @@ export function buildLlmsTxt(): string {
     "",
     "## Identity",
     `- Full name: ${DATA.name}`,
-    "- Role: Fullstack engineer (AI security, automation, multi-tenant systems)",
+    "- Role: Full-stack and AI engineer (LLM applications, multi-agent automation, ML benchmarks and evaluation, multi-tenant SaaS)",
+    `- Availability: ${DATA.availability}. Working hours overlap Europe and US mornings.`,
     `- Location: ${DATA.location}`,
     `- Canonical site: ${base}/`,
     `- Sitemap: ${base}/sitemap.xml`,
@@ -41,7 +42,7 @@ export function buildLlmsTxt(): string {
     "",
     "## Experience",
     ...DATA.work.map(
-      (w) => `- ${w.title}, ${w.company} (${[w.start, w.end].filter(Boolean).join(" to ")}${w.location ? `, ${w.location}` : ""}): ${w.description.split(/(?<=[.!?])\s/)[0]}`
+      (w) => `- ${w.title}, ${w.company} (${[[w.start, w.end].filter(Boolean).join(" to "), w.location].filter(Boolean).join(", ")}): ${w.description.split(/(?<=[.!?])\s/)[0]}`
     ),
     "",
     "## Education",
@@ -52,7 +53,10 @@ export function buildLlmsTxt(): string {
     "",
     "## Currently studying",
     LEARNING.intro,
-    ...LEARNING.tracks.map((t) => `- ${t.title} (${t.platform}): ${t.status === "next" ? "next" : t.status === "done" ? "completed" : "in progress"}`),
+    ...LEARNING.tracks.map((t) => `- ${t.title}: ${t.status === "next" ? "next" : t.status === "done" ? "completed" : "in progress"}`),
+    "",
+    "## Completed certificates",
+    ...LEARNING.certificates.map((c) => `- ${c}`),
     "",
     "## How the main systems work",
     ...Object.entries(ARCHITECTURES).map(([slug, a]) => `- ${slug}: ${a.summary} Diagram: ${base}/work/${slug}#how-it-works`),
