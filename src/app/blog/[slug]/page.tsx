@@ -103,14 +103,14 @@ function BlogPostUnavailable() {
           </Link>
         </nav>
       </BlurFade>
-      <div className="mt-10 rounded-2xl border border-border bg-card/40 px-6 py-10 text-center dark:bg-card/25">
+      <div className="mt-10 rounded-none border border-border bg-card/40 px-6 py-10 text-center dark:bg-card/25">
         <h1 className="text-lg font-semibold tracking-tight">Could not load this post</h1>
         <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
           The blog service returned an error or timed out. Refresh the page, or try again later.
         </p>
         <Link
           href="/blog"
-          className="mt-6 inline-flex items-center justify-center rounded-lg border border-border bg-muted/30 px-4 py-2 text-sm font-medium transition-colors hover:border-primary/40 hover:bg-muted/50"
+          className="mt-6 inline-flex items-center justify-center rounded-none border border-border bg-muted/30 px-4 py-2 text-sm font-medium transition-colors hover:border-primary/40 hover:bg-muted/50"
         >
           Back to blog
         </Link>
@@ -178,7 +178,7 @@ export default async function BlogPostPage({ params }: Props) {
                 {post.readingMinutes} min read
               </span>
             </div>
-            <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
+            <h1 className="poster mt-4 text-balance text-4xl sm:text-6xl">{post.title}</h1>
             <p className="mt-4 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground">
               {post.description}
             </p>
@@ -194,7 +194,7 @@ export default async function BlogPostPage({ params }: Props) {
           </header>
 
           {post.image ? (
-            <div className="mt-8 overflow-hidden rounded-2xl border border-border/70 bg-muted/20 shadow-sm">
+            <div className="mt-8 overflow-hidden rounded-none border border-border/70 bg-muted/20 shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={post.image}
@@ -226,7 +226,7 @@ export default async function BlogPostPage({ params }: Props) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex flex-col gap-1 rounded-xl border border-border bg-card/40 p-4 transition-colors hover:border-primary/30 hover:bg-muted/20"
+                      className="group flex flex-col gap-1 rounded-none border border-border bg-card/40 p-4 transition-colors hover:border-primary/30 hover:bg-muted/20"
                     >
                       <span className="flex items-start justify-between gap-2 font-medium text-foreground">
                         {link.title}
@@ -253,7 +253,7 @@ export default async function BlogPostPage({ params }: Props) {
                   <li key={r.slug}>
                     <Link
                       href={`/blog/${r.slug}`}
-                      className="group block rounded-xl border border-border bg-card/30 p-4 transition-colors hover:border-primary/30 hover:bg-muted/25"
+                      className="group block rounded-none border border-border bg-card/30 p-4 transition-colors hover:border-primary/30 hover:bg-muted/25"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <span className="font-medium text-foreground group-hover:text-primary">{r.title}</span>

@@ -102,13 +102,12 @@ export function CommandPalette() {
     const ext = (href: string) => () => window.open(href, "_blank", "noopener,noreferrer");
     const social = DATA.contact.social;
     return [
-      { id: "home", group: "Go to", label: "Home", icon: Home, run: go("/") },
-      { id: "work", group: "Go to", label: "Work & case studies", icon: Briefcase, keywords: "projects portfolio", run: go("/work") },
-      { id: "blog", group: "Go to", label: "Blog", icon: BookOpen, keywords: "articles writing posts", run: go("/blog") },
-      { id: "about", group: "Go to", label: "What I do", icon: Hash, keywords: "about services", run: go("/#about") },
-      { id: "exp", group: "Go to", label: "Experience", icon: Hash, keywords: "career jobs", run: go("/#work") },
-      { id: "stack", group: "Go to", label: "Tech stack", icon: Hash, keywords: "skills tools", run: go("/#skills") },
-      { id: "contact", group: "Go to", label: "Contact", icon: Mail, keywords: "hire email message", run: go("/#contact") },
+      { id: "home", group: "Go to", label: "Home", hint: "0", icon: Home, run: go("/") },
+      { id: "work", group: "Go to", label: "Work & case studies", hint: "1", icon: Briefcase, keywords: "projects portfolio", run: go("/work") },
+      { id: "about", group: "Go to", label: "About: experience, stack, education", hint: "2", icon: Hash, keywords: "career jobs skills background cv", run: go("/about") },
+      { id: "lab", group: "Go to", label: "Lab: what I am learning", hint: "3", icon: Hash, keywords: "machine learning deep ml coursera gradient descent playground", run: go("/learning") },
+      { id: "blog", group: "Go to", label: "Writing", hint: "4", icon: BookOpen, keywords: "articles blog posts", run: go("/blog") },
+      { id: "contact", group: "Go to", label: "Contact", hint: "5", icon: Mail, keywords: "hire email message", run: go("/contact") },
       {
         id: "aegis",
         group: "Actions",
@@ -213,9 +212,9 @@ export function CommandPalette() {
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
             onKeyDown={onKeyDown}
-            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-card shadow-[0_40px_120px_-30px_var(--glow-2)]"
+            className="relative w-full max-w-xl overflow-hidden rounded-none border border-border bg-card"
           >
-            <div className="bg-gradient-brand absolute inset-x-0 top-0 h-px opacity-70" aria-hidden />
+            <div className="bg-signal absolute inset-x-0 top-0 h-[3px]" aria-hidden />
             <div className="flex items-center gap-3 border-b border-border px-4">
               <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
               <input
@@ -231,7 +230,7 @@ export function CommandPalette() {
                 autoComplete="off"
                 spellCheck={false}
               />
-              <kbd className="shrink-0 rounded-md border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+              <kbd className="shrink-0 rounded-none border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                 esc
               </kbd>
             </div>
@@ -263,26 +262,26 @@ export function CommandPalette() {
                         onMouseMove={() => setCursor(i)}
                         onClick={() => choose(it)}
                         className={cn(
-                          "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
-                          active ? "bg-accent text-accent-foreground" : "text-foreground/90"
+                          "flex w-full items-center gap-3 rounded-none px-3 py-2.5 text-left text-sm transition-colors",
+                          active ? "bg-signal" : "text-foreground/90"
                         )}
                       >
                         <span
                           className={cn(
-                            "flex size-8 shrink-0 items-center justify-center rounded-lg border border-border",
-                            active ? "bg-background text-primary" : "bg-muted/60 text-muted-foreground"
+                            "flex size-8 shrink-0 items-center justify-center rounded-none border border-border",
+                            active ? "bg-background text-foreground" : "bg-muted/60 text-muted-foreground"
                           )}
                         >
                           <Icon className="size-4" aria-hidden />
                         </span>
                         <span className="min-w-0 flex-1 truncate">{it.label}</span>
                         {it.hint && (
-                          <span className="hidden shrink-0 truncate font-mono text-[11px] text-muted-foreground sm:block">
+                          <span className={cn("hidden shrink-0 truncate font-mono text-[11px] sm:block", !active && "text-muted-foreground")}>
                             {it.hint}
                           </span>
                         )}
                         {active && (
-                          <span className="shrink-0 font-mono text-[11px] text-muted-foreground" aria-hidden>
+                          <span className="shrink-0 font-mono text-[11px]" aria-hidden>
                             ↵
                           </span>
                         )}

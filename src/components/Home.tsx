@@ -91,7 +91,7 @@ const Button = () => {
       }}
     >
       <a
-        className=" bg-white z-[1000]  px-4 py-2 shadow-lg  flex items-center gap-2 rounded-full outline-none focus:scale-110   active:scale-105 transition cursor-pointer border"
+        className=" bg-white z-[1000]  px-4 py-2 shadow-lg  flex items-center gap-2 rounded-none outline-none focus:scale-110   active:scale-105 transition cursor-pointer border"
         href="/yabibal Resume v2.pdf"
         download
       >
@@ -99,24 +99,24 @@ const Button = () => {
       </a>
 
       <Link
-        className="px-4 py-2 border bg-black text-white font-Poppins shadow-md rounded-full flex gap-2 justify-center items-center hover:bg-white hover:border-slate-400 hover:text-gray-900 active:scale-105 cursor-pointer group transition-all duration-200"
+        className="px-4 py-2 border bg-black text-white font-Poppins shadow-md rounded-none flex gap-2 justify-center items-center hover:bg-white hover:border-slate-400 hover:text-gray-900 active:scale-105 cursor-pointer group transition-all duration-200"
         href="#contact"
       >
         Contact me
         <AiOutlineArrowRight
-          className="opacity-60 group-hover:opacity-100 group-hover:bg-black group-hover:rounded-full group-hover:text-white transition-all duration-200 p-1 text-white"
+          className="opacity-60 group-hover:opacity-100 group-hover:bg-black group-hover:rounded-none group-hover:text-white transition-all duration-200 p-1 text-white"
         />
       </Link>
 
       <a
-        className="bg-white p-3 text-gray-700 flex  shadow-lg  items-center gap-2 text-[1.35rem] rounded-full focus:scale-[1.15] hover:scale-[1.15] hover:text-gray-950 active:scale-105 transition cursor-pointer border"
+        className="bg-white p-3 text-gray-700 flex  shadow-lg  items-center gap-2 text-[1.35rem] rounded-none focus:scale-[1.15] hover:scale-[1.15] hover:text-gray-950 active:scale-105 transition cursor-pointer border"
         href="https://github.com/Yab112"
         target="_blank"
       >
         <FaGithubSquare className="text-red-500" />
       </a>
       <a
-        className="bg-white p-3 text-gray-700 flex  shadow-lg  items-center gap-2 text-[1.35rem] rounded-full focus:scale-[1.15] hover:scale-[1.15] hover:text-gray-950 active:scale-105 transition cursor-pointer border"
+        className="bg-white p-3 text-gray-700 flex  shadow-lg  items-center gap-2 text-[1.35rem] rounded-none focus:scale-[1.15] hover:scale-[1.15] hover:text-gray-950 active:scale-105 transition cursor-pointer border"
         href="https://www.linkedin.com/in/yabibal-eshetie-262097333/"
         target="_blank"
       >

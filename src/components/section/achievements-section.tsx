@@ -22,7 +22,7 @@ export default function AchievementsSection() {
             {items.map((item) => (
               <div key={item.title} className="flex flex-col gap-1 py-6">
                 <div className="mb-2 flex shrink-0 items-center gap-3">
-                  <span className="rounded-full bg-primary/10 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-primary">
+                  <span className="rounded-none bg-primary/10 px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-primary">
                     {item.organization}
                   </span>
                   <span className="font-mono text-[10px] tabular-nums text-muted-foreground/50">
@@ -31,7 +31,7 @@ export default function AchievementsSection() {
                 </div>
                 <div className="flex flex-col gap-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-display text-lg font-semibold text-foreground">{item.title}</span>
+                    <span className="poster text-2xl text-foreground">{item.title}</span>
                     {item.url && (
                       <Link
                         href={item.url}

@@ -35,7 +35,7 @@ function TechChip({ item }: { item: string }) {
       )}
       <span>{item}</span>
       {isAmbassador && (
-        <span className="rounded-full bg-primary/15 px-1.5 py-px font-mono text-[8px] uppercase tracking-widest text-primary">
+        <span className="rounded-none bg-primary/15 px-1.5 py-px font-mono text-[8px] uppercase tracking-widest text-primary">
           Ambassador
         </span>
       )}
@@ -43,7 +43,7 @@ function TechChip({ item }: { item: string }) {
   );
 
   const chipClass = cn(
-    "inline-flex items-center gap-1.5 relative z-10 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground transition-colors",
+    "inline-flex items-center gap-1.5 relative z-10 rounded-none border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground transition-colors",
     wikiUrl && "hover:border-primary/40 hover:bg-muted hover:text-primary"
   );
 
@@ -71,7 +71,7 @@ export default function TechStackSection() {
             <BlurFade key={group.label} delay={BLUR_DELAY * 4 + i * 0.05} className="h-full">
               <SpotlightCard className="flex h-full flex-col gap-4 p-6">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="font-display text-lg font-semibold tracking-tight">{group.label}</h3>
+                  <h3 className="poster text-2xl tracking-tight">{group.label}</h3>
                   <span className="font-mono text-[10px] tabular-nums text-muted-foreground/60">
                     {String(group.items.length).padStart(2, "0")} tools
                   </span>

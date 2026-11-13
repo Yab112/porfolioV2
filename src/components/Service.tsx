@@ -98,7 +98,7 @@ const ServiceItem = ({ tag, headerText }: { tag: string, headerText: string }) =
         >
             {/* <motion.div
                 variants={variants}
-                className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white "
+                className="flex flex-row rounded-none border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white "
             >
 
                 <p className="text-xs text-neutral-500">
@@ -107,10 +107,10 @@ const ServiceItem = ({ tag, headerText }: { tag: string, headerText: string }) =
             </motion.div> */}
             <motion.div
                 variants={variantsSecond}
-                className="flex flex-row rounded-full border border-cyan-100 dark:border-white/[0.2] p-2 items-center justify-end space-x-2 w-3/4 ml-auto bg-gray-100 "
+                className="flex flex-row rounded-none border border-cyan-100 dark:border-white/[0.2] p-2 items-center justify-end space-x-2 w-3/4 ml-auto bg-gray-100 "
             >
                 <p className="text-xs text-neutral-800 capitalize">{tag}</p>
-                <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-400/30 to-cyan-400 flex-shrink-0" />
+                <div className="h-6 w-6 rounded-none bg-gradient-to-r from-purple-400/30 to-cyan-400 flex-shrink-0" />
             </motion.div>
         </motion.div>
     );

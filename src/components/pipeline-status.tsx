@@ -47,7 +47,7 @@ function tone(job: PipelineJob): { dot: string; label: string } {
   if (!job.enabled) return { dot: "bg-muted-foreground", label: "paused" };
   if (job.last_status === "running") return { dot: "bg-sky-400", label: "running" };
   if (job.last_status === "failed") return { dot: "bg-amber-400", label: "retrying" };
-  return { dot: "bg-emerald-500", label: "healthy" };
+  return { dot: "bg-signal", label: "healthy" };
 }
 
 /**
@@ -83,17 +83,17 @@ export function PipelineStatus({ className }: { className?: string }) {
     <SpotlightCard className={cn("p-6 sm:p-8", className)}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-xl space-y-2">
-          <p className="section-kicker">Live system</p>
-          <h3 className="font-display text-2xl font-semibold tracking-tight">This blog runs itself.</h3>
+          <p className="note">Live system</p>
+          <h3 className="poster text-3xl">This blog runs itself.</h3>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Three scheduled agents inside my own backend find ideas, write and publish — no third-party cron.
             These are their real schedules, read live from the API.
           </p>
         </div>
-        <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        <span className="inline-flex items-center gap-2 rounded-none border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
           <span className="relative flex size-1.5">
-            <span className="pulse-ring absolute inset-0 rounded-full bg-emerald-500 [animation:pulse-ring_1.8s_ease-out_infinite]" />
-            <span className="relative size-1.5 rounded-full bg-emerald-500" />
+            <span className="pulse-ring absolute inset-0 rounded-none bg-signal [animation:pulse-ring_1.8s_ease-out_infinite]" />
+            <span className="relative size-1.5 rounded-none bg-signal" />
           </span>
           live
         </span>
@@ -110,7 +110,7 @@ export function PipelineStatus({ className }: { className?: string }) {
             x2="69%"
             y1="0"
             y2="0"
-            stroke="var(--glow-2)"
+            stroke="var(--green)"
             strokeWidth="1.5"
             strokeDasharray="4 8"
             className="flow-dash opacity-60 [animation:flow-dash_1.2s_linear_infinite]"
@@ -121,9 +121,9 @@ export function PipelineStatus({ className }: { className?: string }) {
           const t = tone(job);
           return (
             <li key={job.name} className="relative flex gap-4 md:flex-col md:gap-5">
-              <div className="relative z-10 flex size-14 shrink-0 items-center justify-center rounded-2xl border border-border bg-card shadow-[0_0_30px_-8px_var(--glow-2)]">
-                <Icon className="size-5 text-primary" aria-hidden />
-                <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full border border-border bg-background font-mono text-[9px] text-muted-foreground">
+              <div className="relative z-10 flex size-14 shrink-0 items-center justify-center rounded-none border border-border bg-card">
+                <Icon className="size-5 text-ink-purple" aria-hidden />
+                <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-none border border-border bg-background font-mono text-[9px] text-muted-foreground">
                   {i + 1}
                 </span>
               </div>
@@ -131,7 +131,7 @@ export function PipelineStatus({ className }: { className?: string }) {
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm font-semibold">{job.title}</h4>
                   <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    <span className={cn("size-1.5 rounded-full", t.dot)} />
+                    <span className={cn("size-1.5 rounded-none", t.dot)} />
                     {t.label}
                   </span>
                 </div>

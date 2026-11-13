@@ -62,7 +62,7 @@ export default async function CaseStudyPage({ params }: Props) {
       <BlurFade delay={0.06}>
         <header className="mt-8 border-b border-border/80 pb-8">
           <p className="font-mono text-[11px] text-muted-foreground">{project.dates}</p>
-          <h1 className="mt-2 text-balance text-3xl font-bold tracking-tight sm:text-4xl">{project.title}</h1>
+          <h1 className="poster mt-3 text-balance text-5xl sm:text-7xl">{project.title}</h1>
           <p className="mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
             {project.description}
           </p>
@@ -74,7 +74,7 @@ export default async function CaseStudyPage({ params }: Props) {
             ))}
           </div>
           {project.image ? (
-            <div className="mt-8 overflow-hidden rounded-2xl border border-border/70 bg-muted/20">
+            <div className="mt-8 overflow-hidden rounded-none border border-border/70 bg-muted/20">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={project.image}
@@ -97,7 +97,7 @@ export default async function CaseStudyPage({ params }: Props) {
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="shrink-0 rounded-full border border-border bg-card/50 px-3 py-1.5 text-left text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/40 hover:text-foreground lg:rounded-lg lg:border-transparent lg:bg-transparent lg:px-2 lg:py-1.5 lg:text-sm"
+                className="shrink-0 rounded-none border border-border bg-card/50 px-3 py-1.5 text-left text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/40 hover:text-foreground lg:rounded-none lg:border-transparent lg:bg-transparent lg:px-2 lg:py-1.5 lg:text-sm"
               >
                 {s.heading}
               </a>
@@ -105,7 +105,7 @@ export default async function CaseStudyPage({ params }: Props) {
             {hasLinks ? (
               <a
                 href="#links"
-                className="shrink-0 rounded-full border border-border bg-card/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/40 hover:text-foreground lg:rounded-lg lg:border-transparent lg:bg-transparent lg:px-2 lg:py-1.5 lg:text-sm"
+                className="shrink-0 rounded-none border border-border bg-card/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-muted/40 hover:text-foreground lg:rounded-none lg:border-transparent lg:bg-transparent lg:px-2 lg:py-1.5 lg:text-sm"
               >
                 Links
               </a>
@@ -137,7 +137,7 @@ export default async function CaseStudyPage({ params }: Props) {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/40 px-4 py-3 text-sm font-medium transition-colors hover:border-primary/40 hover:bg-muted/30"
+                      className="inline-flex items-center gap-2 rounded-none border border-border bg-card/40 px-4 py-3 text-sm font-medium transition-colors hover:border-primary/40 hover:bg-muted/30"
                     >
                       <span className="text-muted-foreground">{link.icon}</span>
                       {link.type}

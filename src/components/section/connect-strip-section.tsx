@@ -7,7 +7,7 @@ import Link from "next/link";
 const BLUR_DELAY = 0.04;
 
 const linkClass = cn(
-  "inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground",
+  "inline-flex items-center gap-2 rounded-none border border-border bg-background px-3 py-2 text-sm font-medium text-foreground",
   "transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 );
 
