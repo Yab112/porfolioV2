@@ -1,79 +1,54 @@
-"use client";
-
-import { useState } from "react";
-import BlurFade from "@/components/magicui/blur-fade";
-import { InfiniteMarquee } from "@/components/ui/infinite-marquee";
+import { Reveal } from "@/components/fx/reveal";
+import { SectionHeading } from "@/components/fx/section-heading";
+import { SpotlightCard } from "@/components/fx/spotlight-card";
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
+import { BrainCircuit, Layers, Network, Workflow, type LucideIcon } from "lucide-react";
 
-const BLUR_DELAY = 0.04;
+const ICONS: LucideIcon[] = [Layers, BrainCircuit, Workflow, Network];
+// Bento rhythm on large screens: wide / narrow, then narrow / wide.
+const SPANS = ["lg:col-span-3", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3"];
 
 export default function AboutSection() {
-  const [active, setActive] = useState<number | null>(0);
-  const serviceNames = DATA.aboutFocusAreas.map((a) => a.title);
-
   return (
-    <section id="about">
-      <div className="flex min-h-0 flex-col gap-y-6">
-        <BlurFade delay={BLUR_DELAY * 3}>
-          <h2 className="text-xl font-bold">About</h2>
-        </BlurFade>
+    <section id="about" className="space-y-10">
+      <Reveal>
+        <SectionHeading
+          kicker="What I do"
+          title={
+            <>
+              Four disciplines, <span className="text-gradient">one engineer</span> accountable for the outcome.
+            </>
+          }
+        />
+      </Reveal>
 
-        <div className="py-2 -mx-4 md:-mx-6">
-          <InfiniteMarquee items={serviceNames} speed="normal" direction="left" />
-        </div>
-
-        <BlurFade delay={BLUR_DELAY * 5}>
-          <div className="border-y border-border divide-y divide-border">
-              {DATA.aboutFocusAreas.map((area, i) => {
-                const isOpen = active === i;
-                return (
-                  <div key={area.title}>
-                    <button
-                      type="button"
-                      onClick={() => setActive(isOpen ? null : i)}
-                      className="w-full flex items-center gap-4 py-4 text-left group"
-                    >
-                      <span className="text-[11px] font-mono tabular-nums shrink-0 text-muted-foreground/40 w-5">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span
-                        className={cn(
-                          "flex-1 text-sm font-semibold transition-colors duration-200",
-                          isOpen
-                            ? "text-foreground"
-                            : "text-muted-foreground group-hover:text-foreground"
-                        )}
-                      >
-                        {area.title}
-                      </span>
-                      <span
-                        className={cn(
-                          "text-xl font-light text-muted-foreground transition-transform duration-300 select-none leading-none",
-                          isOpen ? "rotate-45" : "rotate-0"
-                        )}
-                      >
-                        +
-                      </span>
-                    </button>
-
-                    <div
-                      className={cn(
-                        "overflow-hidden transition-all duration-300 ease-in-out",
-                        isOpen ? "max-h-[200px] pb-5" : "max-h-0"
-                      )}
-                    >
-                      <div className="pl-9 pr-2">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {area.whatIBring}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-        </BlurFade>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {DATA.aboutFocusAreas.map((area, i) => {
+          const Icon = ICONS[i % ICONS.length];
+          return (
+            <Reveal key={area.title} delay={i * 0.07} className={cn("h-full", SPANS[i % SPANS.length])}>
+              <SpotlightCard className="group flex h-full flex-col gap-5 p-6 sm:p-7">
+                <div className="flex items-center justify-between">
+                  <span className="flex size-11 items-center justify-center rounded-xl border border-border bg-background/60 text-primary transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <Icon className="size-5" aria-hidden />
+                  </span>
+                  <span className="font-mono text-xs tabular-nums text-muted-foreground/50">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="space-y-2.5">
+                  <h3 className="font-display text-xl font-semibold tracking-tight">{area.title}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{area.whatIBring}</p>
+                </div>
+                <p className="mt-auto border-t border-border/70 pt-4 text-[13px] leading-relaxed text-muted-foreground/90">
+                  <span className="mr-2 font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Proof</span>
+                  {area.whyGood}
+                </p>
+              </SpotlightCard>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

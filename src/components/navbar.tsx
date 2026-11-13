@@ -8,12 +8,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
+import { PaletteTrigger } from "@/components/palette-trigger";
 import Link from "next/link";
 
 export default function Navbar() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-30">
-      <Dock className="z-50 pointer-events-auto relative h-14 p-2 w-fit mx-auto flex gap-2 border border-border bg-card/90 backdrop-blur-3xl rounded-2xl">
+      <Dock className="z-50 pointer-events-auto relative h-14 p-2 w-fit mx-auto flex gap-2 glass rounded-2xl">
         {DATA.navbar.map((item) => {
           const isExternal = item.href.startsWith("http");
           const NavIcon = item.icon;
@@ -46,7 +47,7 @@ export default function Navbar() {
             </Tooltip>
           );
         })}
-        <Separator orientation="vertical" className="h-2/3 m-auto w-px bg-border" />
+        <Separator orientation="vertical" className="hidden h-2/3 m-auto w-px bg-border sm:block" />
         {Object.entries(DATA.contact.social)
           .filter(([, social]) => social.navbar)
           .map(([name, social]) => {
@@ -57,6 +58,7 @@ export default function Navbar() {
                 <TooltipTrigger asChild>
                   <a
                     href={social.url}
+                    className="hidden sm:inline-flex"
                     target={isExternal ? "_blank" : undefined}
                     rel={isExternal ? "noopener noreferrer" : undefined}
                   >
@@ -77,6 +79,21 @@ export default function Navbar() {
             );
           })}
         <Separator orientation="vertical" className="h-2/3 m-auto w-px bg-border" />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DockIcon className="rounded-3xl cursor-pointer size-full bg-background p-0 text-muted-foreground hover:text-foreground hover:bg-muted backdrop-blur-3xl border border-border transition-colors">
+              <PaletteTrigger />
+            </DockIcon>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            sideOffset={8}
+            className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm"
+          >
+            <p>Search · ⌘K</p>
+            <TooltipArrow className="fill-primary" />
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <DockIcon className="rounded-3xl cursor-pointer size-full bg-background p-0 text-muted-foreground hover:text-foreground hover:bg-muted backdrop-blur-3xl border border-border transition-colors">

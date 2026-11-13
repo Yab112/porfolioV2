@@ -1,3 +1,4 @@
+import { PipelineStatus } from "@/components/pipeline-status";
 import { BlogIndex } from "@/components/blog/blog-index";
 import { JsonLd } from "@/components/json-ld";
 import { DATA } from "@/data/resume";
@@ -106,6 +107,9 @@ export default async function BlogPage({ searchParams }: Props) {
               : undefined
           }
         />
+        <div className="mx-auto mt-16 w-full max-w-6xl">
+          <PipelineStatus />
+        </div>
       </>
     );
   } catch {

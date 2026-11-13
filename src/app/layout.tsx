@@ -6,9 +6,11 @@ import { DATA } from "@/data/resume";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import { SiteBackdrop } from "@/components/fx/site-backdrop";
+import { ScrollProgress } from "@/components/fx/scroll-progress";
+import { CommandPalette } from "@/components/command-palette";
 import { AegisChatWidget } from "@/components/aegis-chat-widget";
 import { GeoJsonLd } from "@/components/geo-json-ld";
 
@@ -16,6 +18,12 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600", "700"],
+});
+
+const display = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -104,31 +112,23 @@ export default function RootLayout({
         className={cn(
           "min-h-screen overflow-x-hidden bg-background font-sans antialiased relative",
           inter.variable,
+          display.variable,
           jetbrainsMono.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <GeoJsonLd />
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
-            <div className="absolute inset-0 top-0 left-0 right-0 h-[100px] overflow-hidden z-0">
-              <FlickeringGrid
-                className="h-full w-full"
-                squareSize={2}
-                gridGap={2}
-                style={{
-                  maskImage: "linear-gradient(to bottom, black, transparent)",
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, black, transparent)",
-                }}
-              />
-            </div>
-            <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-12 pb-28 sm:px-8 sm:py-24 sm:pb-32">
+            <SiteBackdrop />
+            <ScrollProgress />
+            <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-5 py-10 pb-28 sm:px-8 sm:py-16 sm:pb-32">
               <div className="flex-1">{children}</div>
               <Footer />
             </div>
             <Navbar />
             <AegisChatWidget />
+            <CommandPalette />
           </TooltipProvider>
         </ThemeProvider>
       </body>
