@@ -4,7 +4,9 @@ import { PipelineStatus } from "@/components/pipeline-status";
 import AboutSection from "@/components/section/about-section";
 import { SwarmSection } from "@/components/swarm/swarm-section";
 import { LEARNING } from "@/data/learning";
+import { EthiopiaFlag } from "@/components/ethiopia-flag";
 import { DATA } from "@/data/resume";
+import { VENTURES, VENTURES_STATUS } from "@/data/ventures";
 import { OG_ROUTES } from "@/data/seo-routes";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -55,7 +57,7 @@ export default function Page() {
             LLM apps · agents · ML evaluation · multi-tenant SaaS
           </p>
           <p className="text-right max-lg:hidden">
-            {DATA.location}
+            {DATA.location} <EthiopiaFlag className="ml-1 inline-block h-[0.8em] w-auto align-[-0.05em]" />
             <br />
             <AddisClock />
           </p>
@@ -133,10 +135,38 @@ export default function Page() {
           </div>
         </SwarmSection>
 
+        {/* 03 — founder */}
+        <SwarmSection shape="tree" id="founder" className="space-y-10">
+          <SectionHeading
+            kicker="03 · Founder"
+            title="Three products of my own."
+            description={`${VENTURES_STATUS}. I designed and built each one end to end.`}
+          />
+          <div>
+            {VENTURES.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/work/${v.slug}`}
+                className="row group grid grid-cols-[3.5rem_minmax(0,1fr)_auto] items-center gap-x-5 gap-y-1 px-2 py-6"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={v.logo} alt="" width={56} height={56} className="size-14 border border-border bg-card object-contain p-1.5" />
+                <span className="min-w-0">
+                  <span className="poster block text-3xl sm:text-4xl">{v.name}</span>
+                  <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">{v.line}</span>
+                </span>
+                <span className="font-mono text-xs text-muted-foreground transition-colors group-hover:text-signal" aria-hidden>
+                  →
+                </span>
+              </Link>
+            ))}
+          </div>
+        </SwarmSection>
+
         {/* 03 — currently training */}
         <SwarmSection shape="curve" id="lab" className="space-y-10">
           <SectionHeading
-            kicker="03 · Currently training"
+            kicker="04 · Currently training"
             title="Back under the hood."
             description={LEARNING.intro}
             href="/learning"
@@ -160,15 +190,19 @@ export default function Page() {
 
         {/* 04 — the blog that writes itself */}
         <SwarmSection shape="embedding" id="writing" className="space-y-10">
-          <SectionHeading kicker="04 · Writing" title="Notes from production." href="/blog" hrefLabel="Read the blog" />
+          <SectionHeading kicker="05 · Writing" title="Notes from production." href="/blog" hrefLabel="Read the blog" />
           <PipelineStatus />
         </SwarmSection>
 
         {/* 05 — contact */}
         <SwarmSection shape="globe" id="contact" className="space-y-8">
           <SectionHeading
-            kicker="05 · Contact"
-            title="Addis Ababa. Working worldwide."
+            kicker="06 · Contact"
+            title={
+              <>
+                Addis Ababa <EthiopiaFlag />. Working worldwide.
+              </>
+            }
             description={DATA.contact.contactFormIntro}
           />
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
