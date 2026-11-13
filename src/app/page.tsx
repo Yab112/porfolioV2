@@ -134,7 +134,7 @@ export default function Page() {
         </SwarmSection>
 
         {/* 03 — currently training */}
-        <SwarmSection shape="surface" id="lab" className="space-y-10">
+        <SwarmSection shape="curve" id="lab" className="space-y-10">
           <SectionHeading
             kicker="03 · Currently training"
             title="Back under the hood."
@@ -159,7 +159,7 @@ export default function Page() {
         </SwarmSection>
 
         {/* 04 — the blog that writes itself */}
-        <SwarmSection shape="pages" id="writing" className="space-y-10">
+        <SwarmSection shape="embedding" id="writing" className="space-y-10">
           <SectionHeading kicker="04 · Writing" title="Notes from production." href="/blog" hrefLabel="Read the blog" />
           <PipelineStatus />
         </SwarmSection>
