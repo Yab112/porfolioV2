@@ -1,14 +1,17 @@
 import Footer from "@/components/Footer";
-import Navbar from "@/components/navbar";
+import Rail from "@/components/rail";
+import { WorkWithMe } from "@/components/work-with-me";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
 import { Toaster } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Big_Shoulders, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { FlickeringGrid } from "@/components/magicui/flickering-grid";
+import { SwarmCanvas } from "@/components/swarm/swarm-canvas";
+import { ScrollProgress } from "@/components/fx/scroll-progress";
+import { CommandPalette } from "@/components/command-palette";
 import { AegisChatWidget } from "@/components/aegis-chat-widget";
 import { GeoJsonLd } from "@/components/geo-json-ld";
 
@@ -16,6 +19,13 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   weight: ["400", "500", "600", "700"],
+});
+
+const display = Big_Shoulders({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["700", "800", "900"],
+  adjustFontFallback: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -104,31 +114,26 @@ export default function RootLayout({
         className={cn(
           "min-h-screen overflow-x-hidden bg-background font-sans antialiased relative",
           inter.variable,
+          display.variable,
           jetbrainsMono.variable
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <GeoJsonLd />
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
-            <div className="absolute inset-0 top-0 left-0 right-0 h-[100px] overflow-hidden z-0">
-              <FlickeringGrid
-                className="h-full w-full"
-                squareSize={2}
-                gridGap={2}
-                style={{
-                  maskImage: "linear-gradient(to bottom, black, transparent)",
-                  WebkitMaskImage:
-                    "linear-gradient(to bottom, black, transparent)",
-                }}
-              />
+            <SwarmCanvas />
+            <ScrollProgress />
+            <div className="relative z-10 lg:pl-[4.5rem]">
+              <div className="mx-auto flex min-h-dvh w-full max-w-[88rem] flex-col px-5 pb-24 sm:px-10 lg:pb-10">
+                <div className="flex-1">{children}</div>
+                <WorkWithMe />
+                <Footer />
+              </div>
             </div>
-            <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-6 py-12 pb-28 sm:px-8 sm:py-24 sm:pb-32">
-              <div className="flex-1">{children}</div>
-              <Footer />
-            </div>
-            <Navbar />
+            <Rail />
             <AegisChatWidget />
+            <CommandPalette />
           </TooltipProvider>
         </ThemeProvider>
       </body>

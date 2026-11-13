@@ -53,6 +53,7 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", defaultTheme.fontFamily.sans],
         mono: ["var(--font-mono)", defaultTheme.fontFamily.mono],
+        display: ["var(--font-display)", "var(--font-sans)", defaultTheme.fontFamily.sans],
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",

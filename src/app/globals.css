@@ -2,52 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Yabibal brand palette */
+/* Yabibal design language — "Field notes"
+   The site is a lab notebook around one living figure (the dot swarm).
+   PURPLE is the ink: identity and structure. GREEN is the signal: action,
+   live state, the path through the data. Flat colour, thin rules, condensed
+   poster type, mono annotations. No gradients, glass, glows or pills. */
 :root {
   --brand-primary: #8e62a9;
   --brand-primary-dark: #3f2d72;
   --brand-bg-deep: #1a0b2e;
   --brand-pattern: #8a56ac;
 
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-  --radius: 0.75rem;
-  --background: #faf9fc;
-  --foreground: #1a0b2e;
-  --card: #ffffff;
-  --card-foreground: #1a0b2e;
-  --primary: #8e62a9;
-  --primary-foreground: #ffffff;
-  --secondary: #f0ebf5;
-  --secondary-foreground: #3f2d72;
-  --muted: #f0ebf5;
-  --muted-foreground: #5a4a6e;
-  --accent: #e8e0f0;
-  --accent-foreground: #3f2d72;
-  --destructive: #dc2626;
-  --border: #e8e0f0;
-  --input: #e8e0f0;
-  --ring: #8e62a9;
+  --purple: #6b3f8f;
+  --purple-soft: #e7dcf0;
+  --green: #0b7a45; /* green as text / line */
+  --green-fill: #36d98a; /* green as a filled surface */
+  --on-green: #08130d;
+  --ink: #1b0f26;
+  --dot: rgba(27, 15, 38, 0.13);
+  --shadow-offset: var(--ink);
+
+  --radius: 0.25rem;
+  --background: #f4efe6;
+  --foreground: #1b0f26;
+  --card: #fffcf5;
+  --card-foreground: #1b0f26;
+  --primary: #6b3f8f;
+  --primary-foreground: #fffcf5;
+  --secondary: #e9e1d4;
+  --secondary-foreground: #1b0f26;
+  --muted: #ebe4d8;
+  --muted-foreground: #57496a;
+  --accent: #e7dcf0;
+  --accent-foreground: #3d2257;
+  --destructive: #c2261d;
+  --border: #cfc4b6;
+  --input: #cfc4b6;
+  --ring: #0b7a45;
 }
 
 .dark {
-  --background: #1a0b2e;
-  --foreground: #f0ebf5;
-  --card: #251840;
-  --card-foreground: #f0ebf5;
-  --primary: #8e62a9;
-  --primary-foreground: #ffffff;
-  --secondary: #3f2d72;
-  --secondary-foreground: #f0ebf5;
-  --muted: #251840;
-  --muted-foreground: #b8a9c9;
-  --accent: #3f2d72;
-  --accent-foreground: #f0ebf5;
-  --destructive: #ef4444;
-  --border: rgba(142, 98, 169, 0.2);
-  --input: rgba(142, 98, 169, 0.15);
-  --ring: #8e62a9;
+  --purple: #b48ad6;
+  --purple-soft: #2b1b3d;
+  --green: #45e896;
+  --green-fill: #45e896;
+  --on-green: #08130d;
+  --ink: #0f0817;
+  --dot: rgba(180, 138, 214, 0.16);
+  --shadow-offset: #45e896;
+
+  --background: #120a1b;
+  --foreground: #f2ecf8;
+  --card: #1a1026;
+  --card-foreground: #f2ecf8;
+  --primary: #b48ad6;
+  --primary-foreground: #120a1b;
+  --secondary: #2b1b3d;
+  --secondary-foreground: #f2ecf8;
+  --muted: #21152f;
+  --muted-foreground: #ab9cbf;
+  --accent: #2b1b3d;
+  --accent-foreground: #f2ecf8;
+  --destructive: #ff7a70;
+  --border: #382649;
+  --input: #382649;
+  --ring: #45e896;
 }
 
 @layer base {
@@ -82,6 +101,201 @@
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
   .scroll-col {
+    animation: none !important;
+  }
+}
+
+/* ── Visual system: Field notes ─────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+::selection {
+  background: var(--green-fill);
+  color: var(--on-green);
+}
+
+@layer utilities {
+  .text-signal {
+    color: var(--green);
+  }
+  .text-ink-purple {
+    color: var(--purple);
+  }
+  .bg-signal {
+    background: var(--green-fill);
+    color: var(--on-green);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Poster headline: condensed, uppercase, tight. */
+  .poster {
+    font-family: var(--font-display), var(--font-sans), sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+  }
+  /* Mono annotation, like a figure caption or axis label. */
+  .note {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+}
+
+/* Action link: text on a rule that fills green from the left on hover. */
+.act {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem 0.9rem 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--foreground);
+  isolation: isolate;
+  transition: color 0.25s, padding 0.25s;
+}
+.act::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -2px 0;
+  background: var(--green-fill);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.7, 0, 0.2, 1);
+  z-index: -1;
+}
+.act:hover,
+.act:focus-visible {
+  color: var(--on-green);
+  padding-left: 1.1rem;
+  outline: none;
+}
+.act:hover::before,
+.act:focus-visible::before {
+  transform: scaleX(1);
+}
+.act-solid {
+  padding-left: 1.1rem;
+  background: var(--green-fill);
+  color: var(--on-green);
+  border-color: var(--green-fill);
+}
+.act-solid::before {
+  background: var(--purple);
+}
+.act-solid:hover,
+.act-solid:focus-visible {
+  color: var(--background);
+}
+
+/* Tag: square mono label. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.55rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+/* Sheet: the only "card". A flat panel with a purple tick top-left and a green tick bottom-right. */
+.spotlight-card,
+.glass {
+  position: relative;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  border: 1px solid var(--border);
+}
+.spotlight-card::before,
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+.spotlight-card::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--purple);
+  border-left: 2px solid var(--purple);
+}
+.spotlight-card::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--green);
+  border-right: 2px solid var(--green);
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.section-kicker::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--green-fill);
+}
+
+/* Ruled index row (work list, disciplines, curriculum). */
+.row {
+  border-top: 1px solid var(--border);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.row:last-child {
+  border-bottom: 1px solid var(--border);
+}
+a.row:hover,
+a.row:focus-visible {
+  background: var(--purple-soft);
+  border-top-color: var(--purple);
+  outline: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .pulse-ring,
+  .flow-dash {
     animation: none !important;
   }
 }

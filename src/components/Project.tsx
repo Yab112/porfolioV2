@@ -15,7 +15,7 @@ const Project = ({ title, description, tags, imageUrl, href }: ProjectProp) => {
   const opacityProgess = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
   return (
     <motion.div
-      className="group my-8 bg-cyan-100/20 border h-[300px] rounded-lg opacity-100 relative overflow-hidden text-[15px]"
+      className="group my-8 bg-cyan-100/20 border h-[300px] rounded-none opacity-100 relative overflow-hidden text-[15px]"
       ref={ref}
       style={{
         scale: scaleProgess,
@@ -35,7 +35,7 @@ const Project = ({ title, description, tags, imageUrl, href }: ProjectProp) => {
           <ul className="flex flex-wrap mt-auto gap-2 ">
             {tags.map((tag, index) => (
               <li
-                className="bg-cyan-100/[0.1] border border-x-cyan-500 px-3 py-1 text-[0.7rem] uppercase tracking-wider text-black rounded-full"
+                className="bg-cyan-100/[0.1] border border-x-cyan-500 px-3 py-1 text-[0.7rem] uppercase tracking-wider text-black rounded-none"
                 key={index}
               >
                 {tag}
@@ -59,7 +59,7 @@ const Project = ({ title, description, tags, imageUrl, href }: ProjectProp) => {
             group-even:group-hover:rotate-2
 
             group-even:-left-48
-            absolute hidden sm:block top-8 -right-48 w-[25.25rem] rounded-t-lg shadow-2xl"
+            absolute hidden sm:block top-8 -right-48 w-[25.25rem] rounded-t-none shadow-2xl"
         />
       </a>
     </motion.div>

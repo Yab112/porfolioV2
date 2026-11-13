@@ -45,7 +45,7 @@ export function TextWithWikiLinks({
             <TooltipContent
               side="top"
               sideOffset={6}
-              className="z-[9999] max-w-xs rounded-xl border border-border bg-card p-3 text-left shadow-lg"
+              className="z-[9999] max-w-xs rounded-none border border-border bg-card p-3 text-left shadow-lg"
             >
               <span className="text-xs text-muted-foreground">Look up on Wikipedia</span>
             </TooltipContent>

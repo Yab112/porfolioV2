@@ -38,7 +38,7 @@ export function BlogPostShare({ url, title, className }: BlogPostShareProps) {
   };
 
   const btn =
-    "inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-border bg-card/60 px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+    "inline-flex h-9 items-center justify-center gap-2 rounded-none border border-border bg-card/60 px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
   return (
     <section aria-label="Share this post" className={cn("space-y-3", className)}>

@@ -32,7 +32,7 @@ export default function WorkSection({ limit }: { limit?: number }) {
               type="button"
               onClick={() => setSelectedIndex(i)}
               className={cn(
-                "shrink-0 rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                "shrink-0 rounded-none px-3 py-2 text-left text-sm transition-colors",
                 "min-w-max md:min-w-0 md:w-full",
                 isActive
                   ? "bg-muted text-primary font-semibold"
@@ -64,7 +64,7 @@ export default function WorkSection({ limit }: { limit?: number }) {
           <ul className="space-y-2">
             {bullets.map((line, i) => (
               <li key={i} className="flex gap-2.5 text-sm text-muted-foreground leading-relaxed">
-                <span className="mt-2 size-1 shrink-0 rounded-full bg-primary" aria-hidden />
+                <span className="mt-2 size-1 shrink-0 rounded-none bg-primary" aria-hidden />
                 <TextWithWikiLinks text={line} />
               </li>
             ))}
