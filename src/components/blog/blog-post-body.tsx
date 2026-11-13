@@ -12,23 +12,23 @@ const components = {
     </h1>
   ),
   h2: ({ children }: { children?: React.ReactNode }) => (
-    <h2 className="mt-10 scroll-m-20 border-b border-border/60 pb-2 text-xl font-semibold tracking-tight text-foreground first:mt-0">
+    <h2 className="poster mt-14 scroll-m-20 border-t border-border pt-6 text-3xl text-foreground first:mt-0 first:border-t-0 first:pt-0 sm:text-4xl">
       {children}
     </h2>
   ),
   h3: ({ children }: { children?: React.ReactNode }) => (
-    <h3 className="mt-8 scroll-m-20 text-lg font-semibold tracking-tight text-foreground">{children}</h3>
+    <h3 className="mt-10 scroll-m-20 text-xl font-semibold tracking-tight text-foreground">{children}</h3>
   ),
   p: ({ children }: { children?: React.ReactNode }) => (
-    <p className="mt-4 text-[15px] leading-[1.75] text-foreground/90 first:mt-0">{children}</p>
+    <p className="mt-5 text-[17px] leading-[1.8] text-foreground/90 first:mt-0">{children}</p>
   ),
   ul: ({ children }: { children?: React.ReactNode }) => (
-    <ul className="my-4 list-disc space-y-2 pl-6 text-[15px] leading-relaxed text-foreground/90">{children}</ul>
+    <ul className="my-4 list-disc space-y-2 pl-6 text-[17px] leading-[1.75] text-foreground/90">{children}</ul>
   ),
   ol: ({ children }: { children?: React.ReactNode }) => (
-    <ol className="my-4 list-decimal space-y-2 pl-6 text-[15px] leading-relaxed text-foreground/90">{children}</ol>
+    <ol className="my-4 list-decimal space-y-2 pl-6 text-[17px] leading-[1.75] text-foreground/90">{children}</ol>
   ),
-  li: ({ children }: { children?: React.ReactNode }) => <li className="pl-1 marker:text-primary">{children}</li>,
+  li: ({ children }: { children?: React.ReactNode }) => <li className="pl-1 marker:text-[var(--green)]">{children}</li>,
   strong: ({ children }: { children?: React.ReactNode }) => (
     <strong className="font-semibold text-foreground">{children}</strong>
   ),
@@ -68,12 +68,12 @@ const components = {
     );
   },
   pre: ({ children }: { children?: React.ReactNode }) => (
-    <pre className="my-6 overflow-x-auto rounded-none border border-border/70 bg-muted/40 p-4 font-mono text-[13px] leading-relaxed dark:bg-muted/25">
+    <pre className="my-8 overflow-x-auto rounded-none border border-border border-l-4 border-l-[var(--purple)] bg-card p-5 font-mono text-[13px] leading-relaxed dark:bg-muted/25">
       {children}
     </pre>
   ),
   blockquote: ({ children }: { children?: React.ReactNode }) => (
-    <blockquote className="my-6 border-l-[3px] border-primary/50 pl-4 text-[15px] italic text-muted-foreground">
+    <blockquote className="my-8 border-l-4 border-[var(--green)] pl-5 text-xl leading-relaxed text-foreground">
       {children}
     </blockquote>
   ),
@@ -102,7 +102,7 @@ const components = {
 export function BlogPostBody({ content }: { content: string }) {
   const prepared = prepareBlogMarkdown(content);
   return (
-    <div className="max-w-[52rem]">
+    <div className="max-w-[42rem]">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {prepared}
       </ReactMarkdown>

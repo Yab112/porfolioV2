@@ -1,4 +1,4 @@
-import type { SwarmShape } from "@/lib/swarm-bus";
+import type { BaseShape } from "@/lib/swarm-bus";
 
 /** A formation: xyz per point plus a 0..1 "signal" flag (signal points render green). */
 export interface Formation {
@@ -291,7 +291,27 @@ export function fromImage(n: number, img: CanvasImageSource, w: number, h: numbe
   return f;
 }
 
-export function buildFormation(shape: Exclude<SwarmShape, "portrait">, n: number): Formation {
+/** A short word set in heavy type and traced in points. */
+export function fromText(n: number, text: string): Formation {
+  const word = text.toUpperCase().slice(0, 14);
+  const c = document.createElement("canvas");
+  const font = "900 200px Impact, 'Arial Black', 'Helvetica Neue', sans-serif";
+  const probe = c.getContext("2d");
+  if (!probe) return make(n);
+  probe.font = font;
+  const w = Math.max(200, Math.ceil(probe.measureText(word).width) + 20);
+  c.width = w;
+  c.height = 220;
+  const ctx = c.getContext("2d");
+  if (!ctx) return make(n);
+  ctx.font = font;
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#000";
+  ctx.fillText(word, 10, 118);
+  return fromImage(n, c, c.width, c.height, true);
+}
+
+export function buildFormation(shape: Exclude<BaseShape, "portrait">, n: number): Formation {
   switch (shape) {
     case "network":
       return network(n);

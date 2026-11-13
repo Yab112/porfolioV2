@@ -3,11 +3,13 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import type { BlogTopicItem } from "@/lib/blog-api";
 import type { BlogPostSummary } from "@/lib/blog";
+import { GenerativeCover } from "@/components/fx/generative-cover";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const PAGE_SIZE = 12;
+const TOPIC_LIMIT = 7;
 const DELAY = 0.04;
 
 export type BlogPaginationProps = {
@@ -66,114 +68,58 @@ function CardSkeleton() {
   );
 }
 
+/** The newest post, set large: words on the left, a dot field drawn from its title on the right. */
 function FeaturedPost({ post }: { post: BlogPostSummary }) {
-  if (post.image) {
-    return (
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group relative block rounded-none overflow-hidden border border-border"
-      >
-        <div className="relative w-full aspect-[21/9] overflow-hidden">
-          <img
-            src={post.image}
-            alt={post.imageAlt ?? ""}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-10 space-y-3">
-          {post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {post.tags.slice(0, 3).map((t) => (
-                <span
-                  key={t}
-                  className="rounded-none border border-border/50 bg-background/50 backdrop-blur-sm px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-foreground/70"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-foreground">
-            {post.title}
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 max-w-2xl">
-            {post.description}
-          </p>
-          <p className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">
-            {fmtDate(post.date)}
-            {post.readingMinutes ? ` · ${post.readingMinutes} min read` : ""}
-          </p>
-        </div>
-      </Link>
-    );
-  }
-
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group block rounded-none border border-border bg-muted/20 hover:bg-muted/30 transition-colors"
+      className="spotlight-card group grid overflow-hidden bg-card transition-colors hover:border-foreground md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]"
     >
-      <div className="p-8 sm:p-10 lg:p-12 space-y-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">Featured</p>
-        {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-3">
-            {post.tags.slice(0, 3).map((t) => (
-              <span key={t} className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/50">
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors">
-          {post.title}
-        </h2>
-        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
-          {post.description}
-        </p>
-        <p className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
+      <div className="flex flex-col gap-5 p-7 sm:p-10">
+        <p className="note flex items-center gap-2">
+          <span className="size-2 bg-signal" aria-hidden />
+          Latest
+          <span aria-hidden>·</span>
           {fmtDate(post.date)}
           {post.readingMinutes ? ` · ${post.readingMinutes} min read` : ""}
         </p>
+        <h2 className="poster text-balance text-4xl sm:text-5xl lg:text-6xl">{post.title}</h2>
+        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">{post.description}</p>
+        <p className="mt-auto flex flex-wrap items-center gap-2 pt-2">
+          {post.tags.slice(0, 3).map((t) => (
+            <span key={t} className="tag">
+              {t}
+            </span>
+          ))}
+          <span className="ml-auto font-mono text-xs uppercase tracking-wider text-signal transition-transform group-hover:translate-x-1">
+            Read →
+          </span>
+        </p>
       </div>
+      <GenerativeCover seed={post.slug} label={post.tags[0] ?? post.title} className="min-h-[12rem] border-t border-border md:border-l md:border-t-0" />
     </Link>
   );
 }
 
-function PostCard({ post }: { post: BlogPostSummary }) {
+/** Text only: every post is judged by its headline, not a stock image. */
+function PostCard({ post, index }: { post: BlogPostSummary; index: number }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col h-full rounded-none overflow-hidden border border-border bg-card/30 hover:bg-muted/20 transition-colors"
+      className="group flex h-full flex-col gap-4 border border-border bg-card p-6 transition-colors hover:border-foreground"
     >
-      {post.image && (
-        <div className="relative w-full aspect-[3/2] overflow-hidden bg-muted/20 shrink-0">
-          <img
-            src={post.image}
-            alt={post.imageAlt ?? ""}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            loading="lazy"
-          />
-        </div>
-      )}
-      <div className="flex flex-col flex-1 p-5 space-y-2.5">
-        {post.tags.length > 0 && (
-          <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/50">
-            {post.tags.slice(0, 2).join(" · ")}
-          </p>
-        )}
-        <h3 className="font-bold text-sm sm:text-base leading-snug text-foreground group-hover:text-primary transition-colors flex-1">
-          {post.title}
-        </h3>
-        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {post.description}
-        </p>
-        <p className="font-mono text-[10px] text-muted-foreground/40 tabular-nums pt-1">
-          {fmtDate(post.date)}
-          {post.readingMinutes ? ` · ${post.readingMinutes} min` : ""}
-        </p>
-      </div>
+      <p className="note flex items-center justify-between gap-3">
+        <span className="text-signal">{post.tags[0] ?? "note"}</span>
+        <span className="tabular-nums">{String(index + 2).padStart(2, "0")}</span>
+      </p>
+      <h3 className="poster flex-1 text-balance text-2xl transition-colors group-hover:text-[var(--purple)] sm:text-3xl">
+        {post.title}
+      </h3>
+      <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{post.description}</p>
+      <p className="note border-t border-border pt-3 tabular-nums">
+        {fmtDate(post.date)}
+        {post.readingMinutes ? ` · ${post.readingMinutes} min` : ""}
+      </p>
     </Link>
   );
 }
@@ -255,6 +201,11 @@ export function BlogIndex({
   const topicNorm = (t: string) => t.trim().toLowerCase();
   const activeNorm = activeTopic ? topicNorm(activeTopic) : null;
   const sortedTopics = [...topics].sort((a, b) => b.count - a.count);
+  const [showAllTopics, setShowAllTopics] = useState(false);
+  // Keep the row short; always keep the active topic visible.
+  const visibleTopics = showAllTopics
+    ? sortedTopics
+    : sortedTopics.filter((t, i) => i < TOPIC_LIMIT || activeNorm === topicNorm(t.topic));
   const [featured, ...rest] = posts;
 
   return (
@@ -273,38 +224,44 @@ export function BlogIndex({
       {/* Topic filter pills */}
       {sortedTopics.length > 0 && (
         <BlurFade delay={DELAY * 2}>
-          <div className="mb-8 flex flex-wrap gap-2">
+          <div className="mb-10 flex flex-wrap items-center gap-2">
+            <span className="note mr-1">Topics</span>
             <Link
               href="/blog"
               scroll={false}
               className={cn(
-                "rounded-none border px-4 py-1.5 text-xs font-medium transition-all duration-200",
-                !activeNorm
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                "border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+                !activeNorm ? "border-transparent bg-signal" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
               )}
             >
               All
             </Link>
-            {sortedTopics.map(({ topic, count }) => {
+            {visibleTopics.map(({ topic, count }) => {
               const isActive = activeNorm === topicNorm(topic);
               return (
                 <Link
                   key={topic}
                   href={isActive ? "/blog" : `/blog?topic=${encodeURIComponent(topic)}`}
                   scroll={false}
-                  title={`${count} post${count === 1 ? "" : "s"}`}
                   className={cn(
-                    "rounded-none border px-4 py-1.5 text-xs font-medium transition-all duration-200",
-                    isActive
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    "border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+                    isActive ? "border-transparent bg-signal" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
                   )}
                 >
-                  {topic}
+                  {topic} <span className="opacity-60">{count}</span>
                 </Link>
               );
             })}
+            {sortedTopics.length > TOPIC_LIMIT && (
+              <button
+                type="button"
+                onClick={() => setShowAllTopics((v) => !v)}
+                aria-expanded={showAllTopics}
+                className="px-2 py-1.5 font-mono text-[11px] uppercase tracking-wider text-signal underline-offset-4 hover:underline"
+              >
+                {showAllTopics ? "Fewer" : `+${sortedTopics.length - TOPIC_LIMIT} more`}
+              </button>
+            )}
           </div>
         </BlurFade>
       )}
@@ -340,7 +297,7 @@ export function BlogIndex({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {rest.map((post, i) => (
             <BlurFade key={post.slug} delay={DELAY * 4 + i * 0.03}>
-              <PostCard post={post} />
+              <PostCard post={post} index={i} />
             </BlurFade>
           ))}
         </div>

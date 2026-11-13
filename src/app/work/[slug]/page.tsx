@@ -1,3 +1,4 @@
+import { SwarmWord } from "@/components/swarm/swarm-word";
 import BlurFade from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
@@ -90,6 +91,7 @@ export default async function CaseStudyPage({ params }: Props) {
         </header>
       </BlurFade>
 
+      <SwarmWord text={project.title.split(/[\s-]+/)[0]} />
       {PROJECT_ROLES[project.slug] ? (
         <section id="my-role" className="mt-14 scroll-mt-28">
           <div className="spotlight-card grid lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]">
