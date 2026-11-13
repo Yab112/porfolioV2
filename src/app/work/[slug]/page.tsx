@@ -1,6 +1,8 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
+import { ArchitectureDiagram } from "@/components/architecture-diagram";
+import { ARCHITECTURES } from "@/data/architectures";
 import { DATA } from "@/data/resume";
 import { getCaseStudySections, getProjectBySlug } from "@/lib/case-studies";
 import type { Metadata } from "next";
@@ -87,6 +89,16 @@ export default async function CaseStudyPage({ params }: Props) {
         </header>
       </BlurFade>
 
+      {ARCHITECTURES[project.slug] ? (
+        <section id="how-it-works" className="mt-14 scroll-mt-28 space-y-6">
+          <div className="max-w-2xl space-y-3">
+            <p className="section-kicker">How it works</p>
+            <h2 className="poster text-4xl sm:text-5xl">The system, part by part.</h2>
+            <p className="leading-relaxed text-muted-foreground">{ARCHITECTURES[project.slug].summary}</p>
+          </div>
+          <ArchitectureDiagram arch={ARCHITECTURES[project.slug]} />
+        </section>
+      ) : null}
       <div className="mt-10 lg:grid lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[14rem_minmax(0,1fr)] xl:gap-14">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="mb-3 hidden font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground lg:block">
