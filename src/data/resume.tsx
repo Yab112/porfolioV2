@@ -8,13 +8,17 @@ export const DATA = {
   location: "Addis Ababa, Ethiopia",
   locationLink: "https://www.google.com/maps/place/addis+ababa",
   description:
-    "Fullstack Engineer specializing in AI security, self-healing automation, and production-grade multi-tenant systems.",
+    "Full-stack and AI engineer building LLM applications, multi-agent automation and multi-tenant SaaS that keep working after launch day.",
   /** Open Graph / Twitter / social preview (`public/SEO.png`) */
   ogImage: "/SEO.png",
   ogImageAlt:
     "Yabibal Eshetie Molla - Fullstack engineer, AI security, automation, Addis Ababa",
   summary:
-    "I'm a fullstack engineer specializing in AI security and production-grade automation systems. I design and implement end-to-end solutions that prioritize reliability, security, and maintainability. My work focuses on building intelligent systems that can operate autonomously while maintaining human oversight and control.\n\nCurrent focus: AI security patterns (human-in-the-loop, self-healing), production automation with AWS, multi-tenant architecture, test-driven development for AI workflows, LLM agent development, and RAG system implementation.",
+    "I build AI systems that keep working after launch day. I'm a full-stack and AI engineer with three years of production experience shipping LLM applications, multi-agent automation, and multi-tenant SaaS for international clients.\n\nHow I work: I measure before I claim. I build evaluation harnesses with golden datasets and regression tracking, so an AI feature that passes on day one still passes in month six. Alongside client work I design machine learning benchmark challenges and evaluate model behaviour, and I am strengthening my foundations in mathematics, statistics and machine learning, with deep learning next.\n\nOpen to remote AI engineering and full-stack roles. Based in Addis Ababa (EAT), with working hours that overlap Europe and US mornings.",
+  /** One line, in my own words, for the home page. */
+  statement: "I build AI systems that keep working after launch day.",
+  availability: "Open to remote AI and full-stack roles",
+  headline: "Full-stack and AI engineer",
   aboutFocusAreas: [
     {
       title: "Full-Stack Engineering",
@@ -111,7 +115,7 @@ export const DATA = {
       },
     },
     /** PDF in /public (download link in Connect strip) */
-    resumePdfUrl: "/yabibal-Eshetie-FlowCV-Resume-20250418.pdf",
+    resumePdfUrl: "/Yabibal-Eshetie-Molla-CV.pdf",
     upworkUrl: "https://www.upwork.com/freelancers/~01d3355c4ac6227baf",
     /** Short intro shown between Hobbies and Contact (links on the right) */
     connectIntro:
@@ -130,22 +134,69 @@ export const DATA = {
       location: "Remote",
       title: "Senior Full-stack Developer",
       logoUrl: "",
-      start: "2026",
+      start: "Oct 2026",
       end: "Present",
       description:
         "Production SaaS managing complex payroll workflows and tax advisor data with strict RBAC and Row-Level Security. Implemented Next.js 15 Partial Pre-rendering: static shell served from the edge in <50ms with user-specific data streamed via React Server Components. Dynamic per-tenant cache tagging for granular CDN purges, JWT verification, and tenant context injection at the middleware edge layer. Maintained 194+ Playwright tests (E2E, API, UI) ensuring zero-regression production deployments.",
+    },
+    {
+      company: "Shipd",
+      href: "#",
+      badges: [],
+      location: "Remote",
+      title: "AI Benchmark & ML Challenge Developer",
+      logoUrl: "",
+      start: "Oct 2026",
+      end: "Present",
+      description:
+        "Design, validate and publish competitive machine learning benchmark challenges, with prompt-hardening evaluation rules and dataset verification pipelines. Engineer end-to-end solutions for prize-pool benchmark challenges, optimising data processing, model scoring and accuracy. Build containerised Docker and Python execution environments that enforce precise model evaluation and keep every benchmark solvable.",
+    },
+    {
+      company: "Revelo",
+      href: "#",
+      badges: [],
+      location: "Remote",
+      title: "AI / ML Evaluation & Full-Stack Engineer",
+      logoUrl: "",
+      start: "Oct 2025",
+      end: "Present",
+      description:
+        "Designed competitive machine learning challenges, prompt-hardening evaluation rules and multi-stage dataset verification pipelines for LLM capability testing. Developed solution pipelines for competitive ML benchmark pools, focused on complex dataset processing and model output verification. Evaluated LLM performance, alignment and security across diverse domain tasks, both qualitatively and quantitatively. Built full-stack features and REST and GraphQL APIs while enforcing security audits, input sanitisation and access control.",
     },
     {
       company: "Orizon Technology",
       href: "#",
       badges: [],
       location: "Addis Ababa, Ethiopia · Hybrid",
-      title: "Senior Lead, AI Engineering",
+      title: "Senior Lead, AI Engineering → Software Developer",
       logoUrl: "",
       start: "Aug 2025",
-      end: "May 2026",
+      end: "Present",
       description:
         "Led architecture, development, and deployment of ML-driven intelligent applications for enterprise clients. Partnered with cross-functional teams to translate business requirements into scalable AI solutions; mentored junior developers and set engineering standards. Designed human-in-the-loop validation pipelines, automated monitoring, and self-healing recovery for production LLM deployments. Drove responsible AI practices: ethical use frameworks, bias audits, and model evaluation protocols.",
+    },
+    {
+      company: "Turing",
+      href: "#",
+      badges: [],
+      location: "Remote",
+      title: "RLHF, Benchmarking & Python Development",
+      logoUrl: "",
+      start: "",
+      end: "",
+      description:
+        "Worked on tasks involving reinforcement learning from human feedback (RLHF), AI benchmarking and Python development.",
+    },
+    {
+      company: "Deccan AI",
+      href: "#",
+      badges: [],
+      location: "Remote",
+      title: "Benchmark Engineer",
+      logoUrl: "",
+      start: "",
+      end: "",
+      description: "Contributed to AI benchmarking work focused on evaluating model performance.",
     },
     {
       company: "Pest Leads Pro",
@@ -196,7 +247,7 @@ export const DATA = {
         "Delivered end-to-end solutions for two international clients on the TapToSign digital-signature platform: high-performance REST APIs with Go (Gin/net/http), PostgreSQL, and Redis for low-latency backend services. Developed a responsive Preact + TypeScript SPA with Tailwind CSS, containerized services with Docker, and set up CI/CD pipelines via GitHub Actions.",
     },
     {
-      company: "Aldia",
+      company: "Aladia",
       href: "#",
       badges: [],
       location: "Remote",
@@ -227,12 +278,22 @@ export const DATA = {
       school: "Addis Ababa University",
       href: "https://www.aau.edu.et/",
       degree:
-        "B.Sc. Information Science",
+        "B.Sc. Information Science · passed the national exit exam",
       description:
         "Studied at Ethiopia’s flagship university, with coursework spanning algorithms, software engineering, databases, and systems design through an information science lens. Built a strong foundation in problem-solving, research, and building reliable software, skills I still lean on when designing fullstack systems, AI workflows, and production automation today.",
       logoUrl: "/addis%20ababa.png",
-      start: "2015",
-      end: "2019",
+      start: "2020",
+      end: "2025",
+    },
+    {
+      school: "A2SV (Africa to Silicon Valley)",
+      href: "https://a2sv.org/",
+      degree: "Data Structures & Algorithms program",
+      description:
+        "A 16-month intensive program in data structures and algorithms: dynamic programming, graphs, trees, sorting and algorithmic problem-solving in Python and C++.",
+      logoUrl: "",
+      start: "2024",
+      end: "2025",
     },
   ],
   achievements: [
@@ -242,6 +303,13 @@ export const DATA = {
       year: "2026",
       description: "Recognized as an official n8n Ambassador for contributions to workflow automation and production-grade n8n implementations.",
       url: "https://n8n.io/",
+    },
+    {
+      title: "Top Rated, 100% Job Success",
+      organization: "Upwork",
+      year: "",
+      description: "Top Rated freelancer with a 100% Job Success score, delivering software and automation projects for international clients.",
+      url: "https://www.upwork.com/freelancers/~01d3355c4ac6227baf",
     },
   ],
   projects: [
@@ -427,30 +495,39 @@ export const DATA = {
       title: "RAG Evaluation Framework",
       slug: "rag-evaluation-framework",
       href: "https://github.com/Yab112",
-      dates: "2025",
+      dates: "",
       active: true,
       description:
-        "Automated test generation, multi-dimensional scoring, and hallucination detection for retrieval-augmented generation apps. Deterministic pass/fail harness with golden datasets and regression tracking (SWE-bench-style AI evaluation architecture). Continuous evaluation pipeline with MLflow experiment tracking and performance regression alerting.",
-      technologies: ["Python", "RAG", "MLflow", "LLM", "Evaluation", "FastAPI"],
-      links: [
-        { type: "GitHub", href: "https://github.com/Yab112", icon: <Icons.github className="size-3" /> },
-      ],
-      image: "https://picsum.photos/seed/rag-eval-framework/800/400",
+        "An evaluation workflow for retrieval-augmented generation apps: automated test generation, multi-dimensional scoring, hallucination checks, golden datasets and regression tracking. Deterministic pass/fail evaluation with MLflow experiment tracking, so a RAG feature that passes today is proven to still pass after the next change.",
+      technologies: ["Python", "MLflow", "RAG", "LLM evaluation"],
+      links: [],
+      image: "",
       video: "",
     },
     {
       title: "Compliance Navigator",
       slug: "compliance-navigator",
       href: "https://github.com/Yab112",
-      dates: "2025",
+      dates: "In progress",
       active: true,
       description:
-        "Maps regulatory frameworks (SOC 2, GDPR, HIPAA) to operational business processes with automated violation detection and actionable remediation guidance. Pluggable rule engine with custom compliance rules, weighted severity scoring (Critical → Info), and allow/deny decision trees. Tamper-proof audit trail using cryptographic hash chaining for immutable, verifiable compliance decision history.",
-      technologies: ["TypeScript", "Node.js", "PostgreSQL", "Compliance", "Rule Engine"],
-      links: [
-        { type: "GitHub", href: "https://github.com/Yab112", icon: <Icons.github className="size-3" /> },
-      ],
-      image: "https://picsum.photos/seed/compliance-nav/800/400",
+        "A graph-based decision-support platform for Ethiopian business compliance. It maps regulatory and public-service requirements into step-by-step roadmaps, and includes an English and Amharic AI assistant that answers from legal and service-catalog sources with references to the supporting material. Built on a Neo4j knowledge graph with PostgreSQL and pgvector.",
+      technologies: ["FastAPI", "Next.js", "PostgreSQL", "pgvector", "Neo4j", "RAG"],
+      links: [],
+      image: "",
+      video: "",
+    },
+    {
+      title: "BillShare",
+      slug: "billshare",
+      href: "https://github.com/Yab112",
+      dates: "2026 – Present",
+      active: true,
+      description:
+        "An expense-sharing platform with itemized purchases, custom splits, live-derived balances, settlement recommendations and payment requests. Adds spending analytics, real-time room chat and an assistant that answers from verified balances and expense history. Core purchase, balance, ledger and insights logic is covered by 26 unit tests.",
+      technologies: ["Flutter", "FastAPI", "Supabase"],
+      links: [],
+      image: "",
       video: "",
     },
   ],

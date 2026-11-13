@@ -1,14 +1,16 @@
 /** The dot swarm is one persistent figure; pages and nav ask it to take a shape. */
 
 export const SHAPES = ["portrait", "network", "layers", "helix", "surface", "pages", "globe"] as const;
-export type SwarmShape = (typeof SHAPES)[number];
+export type BaseShape = (typeof SHAPES)[number];
+/** A named figure, or any short word spelled out in points (`word:AEGIS`). */
+export type SwarmShape = BaseShape | `word:${string}`;
 
 export interface Station {
   key: string;
   href: string;
   label: string;
   /** What the swarm becomes at this station. */
-  shape: SwarmShape;
+  shape: BaseShape;
   /** One-line caption shown under the figure. */
   figure: string;
 }
@@ -39,4 +41,9 @@ export function onShapeRequest(fn: (shape: SwarmShape | null) => void): () => vo
   const handler = (e: Event) => fn((e as CustomEvent<SwarmShape | null>).detail);
   window.addEventListener(SHAPE_EVENT, handler);
   return () => window.removeEventListener(SHAPE_EVENT, handler);
+}
+
+/** True when the path belongs to one of the stations (the figure is hidden elsewhere, e.g. legal pages). */
+export function isStationPath(pathname: string): boolean {
+  return pathname === "/" || STATIONS.slice(1).some((s) => pathname === s.href || pathname.startsWith(`${s.href}/`));
 }

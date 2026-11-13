@@ -1,3 +1,4 @@
+import { SwarmWord } from "@/components/swarm/swarm-word";
 import { BlogPostBody } from "@/components/blog/blog-post-body";
 import { BlogPostShare } from "@/components/blog/blog-post-share";
 import { JsonLd } from "@/components/json-ld";
@@ -193,7 +194,8 @@ export default async function BlogPostPage({ params }: Props) {
             ) : null}
           </header>
 
-          {post.image ? (
+          <SwarmWord text={post.tags[0] ?? "read"} />
+          {post.image && !post.relatedPosts.some((r) => r.image === post.image) ? (
             <div className="mt-8 overflow-hidden rounded-none border border-border/70 bg-muted/20 shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
