@@ -182,34 +182,257 @@ export const ARCHITECTURES: Record<string, Architecture> = {
 
   "dual-agent-architecture-ai": {
     summary:
-      "Two agents with separate jobs and separate context: a Planner breaks a goal into steps, a Worker executes one step at a time, and a structured handoff keeps failures visible.",
+      "Two advisors on different models argue a design question over several rounds; an arbiter decides and explains why. The debate runs as an n8n workflow, and the app follows it live.",
     nodes: [
-      { id: "user", label: "User", kind: "person", at: [0, 1], detail: "States a goal in plain language." },
-      { id: "ui", label: "Next.js demo", kind: "surface", at: [1, 1], detail: "Shows the plan and each step's output as it happens." },
-      { id: "planner", label: "Planner agent", kind: "agent", at: [2, 1], detail: "Decomposes the goal into structured subtasks. It never executes anything itself." },
-      { id: "handoff", label: "Handoff protocol", kind: "service", at: [3, 1], detail: "A typed contract between the agents: one subtask, its inputs and what done looks like." },
-      { id: "worker", label: "Worker agent", kind: "agent", at: [4, 1], detail: "Executes one subtask with isolated context, so an earlier step cannot contaminate a later one." },
-      { id: "out", label: "Step output", kind: "data", at: [5, 1], detail: "Observable, step-by-step results. A failure surfaces at the step that caused it." },
-      { id: "llm", label: "OpenAI", kind: "external", at: [3, 0], detail: "Both agents call the model, with different instructions and different context." },
+      { id: "user", label: "Engineer", kind: "person", at: [0, 1], detail: "Brings a design or architecture question they want a second and third opinion on." },
+      { id: "app", label: "React app", kind: "surface", at: [1, 1], detail: "Starts a deliberation and shows the verdict: recommendation, confidence, agreement and disagreement, risks, scorecard, diagrams and cost." },
+      { id: "wf", label: "n8n workflow", kind: "service", at: [2, 1], detail: "Runs the rounds. It is started by a webhook and reports an execution id the app can follow." },
+      { id: "a", label: "Advisor A · Claude", kind: "agent", at: [3, 0], detail: "Argues its position each round. Its raw answer, parsed answer and token use are kept in the transcript." },
+      { id: "b", label: "Advisor B · OpenAI", kind: "agent", at: [3, 2], detail: "A different model, so the two advisors do not share the same blind spots." },
+      { id: "align", label: "Agreement check", kind: "service", at: [3, 1], detail: "After each round, records where the two advisors align and where they still differ." },
+      { id: "arb", label: "Arbiter", kind: "agent", at: [4, 1], detail: "Reads the debate and returns a recommendation, a confidence score, the winning advisor and its reasoning, scored across eight engineering principles." },
+      { id: "result", label: "Verdict", kind: "data", at: [5, 1], detail: "Consensus and dissenting points, key risks, implementation notes, a system-architecture diagram, a sequence diagram, and the cost of each round." },
+      { id: "status", label: "Run status", kind: "data", at: [2, 2], detail: "A Supabase table the workflow writes progress to and the app reads from until the run is finished." },
     ],
     edges: [
-      ["user", "ui"], ["ui", "planner"], ["planner", "handoff"], ["handoff", "worker"], ["worker", "out"],
-      ["planner", "llm"], ["worker", "llm"], ["out", "ui"],
+      ["user", "app"], ["app", "wf"], ["wf", "a"], ["wf", "b"], ["a", "align"], ["b", "align"],
+      ["align", "arb"], ["arb", "result"], ["wf", "status"], ["app", "status"],
     ],
     flows: [
       {
-        name: "A goal is planned, then executed",
+        name: "A design question is argued",
         steps: [
-          { at: "user", note: "Describes what they want done." },
-          { at: "ui", note: "Goal sent to the Planner." },
-          { at: "planner", note: "Goal split into ordered subtasks." },
-          { at: "handoff", note: "First subtask packaged with only what it needs." },
-          { at: "worker", note: "Subtask executed in a clean context." },
-          { at: "out", note: "Result recorded for that step." },
-          { at: "ui", note: "User watches each step land." },
+          { at: "user", note: "Describes the design problem." },
+          { at: "app", note: "Calls the workflow's webhook and gets an execution id." },
+          { at: "wf", note: "Round one begins." },
+          { at: "a", note: "Claude gives its position." },
+          { at: "align", note: "Agreement between the two is measured." },
+          { at: "b", note: "OpenAI gives its position; further rounds repeat." },
+          { at: "align", note: "Remaining disagreements are recorded." },
+          { at: "arb", note: "The arbiter picks a recommendation and scores eight principles." },
+          { at: "result", note: "Verdict, risks, diagrams and per-round cost are assembled." },
+        ],
+      },
+      {
+        name: "The app follows the run",
+        steps: [
+          { at: "wf", note: "Writes its progress as it goes." },
+          { at: "status", note: "Progress is stored against the execution id." },
+          { at: "app", note: "Reads the status until the result is ready, then renders it." },
         ],
       },
     ],
   },
 
+  "eset-coffee": {
+    summary:
+      "Three apps and one API. Only the API can touch the database, email and uploads; the website and the admin talk to it server to server, so nothing sensitive reaches a browser.",
+    nodes: [
+      { id: "buyer", label: "Buyer or reader", kind: "person", at: [0, 0], detail: "Reads about the coffees and origins, in English, Arabic, Chinese or Amharic, and can send an enquiry or join the newsletter." },
+      { id: "web", label: "Website", kind: "surface", at: [1, 0], detail: "Coffees, origins, quality, export, journal, contact and meeting pages. Pages are cached and refreshed only when their content changes. It contains no admin code at all." },
+      { id: "guest", label: "Cafe guest", kind: "person", at: [0, 1], detail: "Scans a QR code on the table. The feedback pages are not linked from the website and are hidden from search engines." },
+      { id: "form", label: "Feedback form", kind: "surface", at: [1, 1], detail: "A questionnaire reached only through QR codes that staff print from the admin, one per location." },
+      { id: "staff", label: "Staff", kind: "person", at: [0, 2], detail: "Invited by an owner and given a role." },
+      { id: "admin", label: "Staff admin", kind: "surface", at: [1, 2], detail: "Coffees, categories, page text, photos, journal, menu, enquiries, email campaigns, subscribers, feedback insights, locations and QR codes, roles and staff. Deployed separately from the website." },
+      { id: "api", label: "Fastify API", kind: "service", at: [2, 1], detail: "The only holder of database, email and upload credentials. Every operation is listed in one registry and marked public or staff-only; nothing else is reachable." },
+      { id: "access", label: "Permissions + audit", kind: "service", at: [3, 2], detail: "On every staff call the API checks the session and the permission, routes sensitive changes through approvals, and writes the audit log." },
+      { id: "db", label: "PostgreSQL", kind: "data", at: [3, 1], detail: "Content, menu, locations, feedback, enquiries, email and staff, through TypeORM." },
+      { id: "mail", label: "Email", kind: "external", at: [3, 0], detail: "Newsletter confirmation and unsubscribe links, and campaigns sent from a queue." },
+      { id: "media", label: "Image storage", kind: "external", at: [2, 0], detail: "Uploaded photos for coffees, pages and the journal." },
+    ],
+    edges: [
+      ["buyer", "web"], ["guest", "form"], ["staff", "admin"], ["web", "api"], ["form", "api"], ["admin", "api"],
+      ["api", "db"], ["api", "access"], ["api", "mail"], ["api", "media"],
+    ],
+    flows: [
+      {
+        name: "Staff change a coffee and the site updates",
+        steps: [
+          { at: "staff", note: "Edits a coffee in the admin." },
+          { at: "admin", note: "Sends the change to the API with the staff session." },
+          { at: "api", note: "Finds the operation in the registry: staff-only." },
+          { at: "access", note: "Session and permission checked; the change is written to the audit log." },
+          { at: "api", note: "Saves, then tells the website exactly which content changed." },
+          { at: "db", note: "The new content is stored." },
+          { at: "api", note: "The website drops only that cached content." },
+          { at: "web", note: "The next visitor sees the update; everything else stays cached." },
+        ],
+      },
+      {
+        name: "A buyer sends an enquiry",
+        steps: [
+          { at: "buyer", note: "Fills in the enquiry form on the export page." },
+          { at: "web", note: "A server action forwards it, with the visitor's address for spam limits." },
+          { at: "api", note: "Validated and rate-limited; this operation is public." },
+          { at: "db", note: "Stored for staff." },
+          { at: "api", note: "It appears in the admin's enquiries." },
+          { at: "admin", note: "Staff open and answer it." },
+        ],
+      },
+      {
+        name: "A guest leaves feedback",
+        steps: [
+          { at: "guest", note: "Scans the QR code for that cafe." },
+          { at: "form", note: "Answers the questionnaire." },
+          { at: "api", note: "The answers arrive tagged with the location." },
+          { at: "db", note: "Stored." },
+          { at: "api", note: "Aggregated for the insights view." },
+          { at: "admin", note: "Staff see feedback by location." },
+        ],
+      },
+    ],
+  },
+
+  billshare: {
+    summary:
+      "The ledger of purchases and payments is the only record of money. Balances are derived from it on demand and never stored, so they cannot drift.",
+    nodes: [
+      { id: "member", label: "Housemate", kind: "person", at: [0, 1], detail: "Shares a room with the people they split bills with." },
+      { id: "app", label: "Flutter app", kind: "surface", at: [1, 1], detail: "Rooms, purchases, balances, insights, an assistant and chat. Mobile first; the same code can target the web." },
+      { id: "api", label: "FastAPI", kind: "service", at: [2, 1], detail: "Owns balance derivation, the Telebirr integration and the cycle-close job." },
+      { id: "ledger", label: "Purchases + payments", kind: "data", at: [3, 1], detail: "Every purchase with its per-item splits, and every payment. There is no balance column anywhere." },
+      { id: "bal", label: "Balance derivation", kind: "service", at: [4, 0], detail: "Recomputes who owes whom from the ledger each time it is asked." },
+      { id: "assistant", label: "Assistant", kind: "agent", at: [4, 1], detail: "Answers questions about the room's money from its real balances and expense history." },
+      { id: "tele", label: "Telebirr check", kind: "service", at: [3, 2], detail: "A member pays through Telebirr and uploads the screenshot; the backend verifies it before recording the payment." },
+      { id: "cycle", label: "Cycle close", kind: "service", at: [4, 2], detail: "A job that closes a billing cycle." },
+      { id: "chat", label: "Room chat", kind: "surface", at: [1, 2], detail: "Real-time chat in each room." },
+      { id: "supa", label: "Supabase", kind: "external", at: [2, 2], detail: "Postgres, auth, realtime and file storage." },
+      { id: "admin", label: "Admin app", kind: "surface", at: [2, 0], detail: "Operations, roles and permissions, and insights for the team running the product." },
+    ],
+    edges: [
+      ["member", "app"], ["app", "api"], ["api", "ledger"], ["ledger", "bal"], ["ledger", "assistant"],
+      ["api", "tele"], ["tele", "ledger"], ["cycle", "ledger"], ["app", "chat"], ["chat", "supa"], ["admin", "api"],
+    ],
+    flows: [
+      {
+        name: "A receipt is split item by item",
+        steps: [
+          { at: "member", note: "Adds a purchase with several items." },
+          { at: "app", note: "Chooses who shares each item." },
+          { at: "api", note: "Validates the split." },
+          { at: "ledger", note: "The purchase is recorded once." },
+          { at: "bal", note: "Balances are recomputed from the ledger, not updated in place." },
+        ],
+      },
+      {
+        name: "Settling up with Telebirr",
+        steps: [
+          { at: "member", note: "Pays a housemate in Telebirr and takes a screenshot." },
+          { at: "app", note: "Uploads the screenshot." },
+          { at: "api", note: "Receives the payment claim." },
+          { at: "tele", note: "The screenshot is verified." },
+          { at: "ledger", note: "Only then is the payment recorded." },
+          { at: "bal", note: "The next balance reflects it." },
+        ],
+      },
+    ],
+  },
+
+  "compliance-navigator": {
+    summary:
+      "Requirements live in a graph, so a goal can be turned into ordered steps. A catalogue sync keeps the graph and the search index current, and the assistant answers only from those sources.",
+    nodes: [
+      { id: "person", label: "Citizen or business", kind: "person", at: [0, 1], detail: "Wants a passport, a TIN, a trade licence or another service, and needs to know the steps in their sub-city." },
+      { id: "web", label: "Public site", kind: "surface", at: [1, 1], detail: "Roadmaps, a searchable service catalogue, the errand-agent directory and the assistant." },
+      { id: "api", label: "FastAPI", kind: "service", at: [2, 1], detail: "One backend for the public site and the staff app." },
+      { id: "road", label: "Roadmap engine", kind: "service", at: [3, 0], detail: "Walks the dependency graph from a goal and a sub-city to ordered steps. Each step carries the office, the fee, the documents, the legal basis and whether MESOB offers it." },
+      { id: "neo", label: "Neo4j graph", kind: "data", at: [4, 0], detail: "Requirements and services as nodes, dependencies as edges. Staff can view and edit it, and query it read-only." },
+      { id: "asst", label: "Assistant", kind: "agent", at: [3, 1], detail: "Chat in English or Amharic, with voice. It extracts the goal, the sub-city and the documents the person already has, builds a roadmap and cites its references." },
+      { id: "pg", label: "PostgreSQL + pgvector", kind: "data", at: [4, 1], detail: "Embedded catalogue entries and legal text for retrieval, plus accounts, conversations, feedback and the agent registry." },
+      { id: "llm", label: "Model provider", kind: "external", at: [4, 2], detail: "Ollama, Claude, or an offline keyword mode. Staff switch between them from the dashboard." },
+      { id: "sync", label: "Catalogue sync", kind: "service", at: [5, 1], detail: "Scrapes the public MESOB catalogue, mirrors it into the graph and embeds it for the assistant. Each run is recorded for staff." },
+      { id: "mesob", label: "MESOB catalogue", kind: "external", at: [5, 0], detail: "The government one-stop service catalogue: 24 institutions, about 470 services in English and Amharic, 19 centres." },
+      { id: "agents", label: "Guday Geday", kind: "service", at: [2, 2], detail: "A registry of licensed errand agents: self-registration with ID upload, staff review, a public directory, client requests and ratings." },
+      { id: "staff", label: "Staff", kind: "person", at: [0, 2], detail: "Review agents, watch data-source runs and maintain the graph." },
+      { id: "admin", label: "Staff app", kind: "surface", at: [1, 2], detail: "Metrics, data-source runs, catalogue, graph viewer and editor, AI status and testing, agent management, feedback queue, users and roles." },
+    ],
+    edges: [
+      ["person", "web"], ["web", "api"], ["api", "road"], ["road", "neo"], ["api", "asst"], ["asst", "road"],
+      ["asst", "pg"], ["asst", "llm"], ["mesob", "sync"], ["sync", "neo"], ["sync", "pg"], ["api", "agents"],
+      ["staff", "admin"], ["admin", "api"],
+    ],
+    flows: [
+      {
+        name: "A goal becomes a roadmap",
+        steps: [
+          { at: "person", note: "Picks a goal and their sub-city." },
+          { at: "web", note: "Asks the API for a roadmap." },
+          { at: "api", note: "Hands the goal to the roadmap engine." },
+          { at: "road", note: "Finds everything the goal depends on." },
+          { at: "neo", note: "Dependencies give the order." },
+          { at: "road", note: "Returns steps with office, fee, documents and legal basis." },
+        ],
+      },
+      {
+        name: "A question asked in Amharic",
+        steps: [
+          { at: "person", note: "Asks by text or voice, in Amharic." },
+          { at: "web", note: "Sent to the API." },
+          { at: "api", note: "Routed to the assistant." },
+          { at: "asst", note: "Extracts the goal, sub-city and documents on hand." },
+          { at: "pg", note: "Retrieves matching catalogue and legal passages." },
+          { at: "asst", note: "Builds the roadmap through the engine." },
+          { at: "road", note: "Ordered steps come back." },
+          { at: "asst", note: "Answers in Amharic and cites its references." },
+        ],
+      },
+      {
+        name: "The catalogue stays current",
+        steps: [
+          { at: "mesob", note: "The public catalogue changes." },
+          { at: "sync", note: "A sync run scrapes it." },
+          { at: "neo", note: "Services are mirrored into the graph." },
+          { at: "sync", note: "The same entries are embedded." },
+          { at: "pg", note: "The assistant can now retrieve them." },
+        ],
+      },
+    ],
+  },
+
+  "local-context-orchestrator": {
+    summary:
+      "It sits between an AI coding assistant and your code. Instead of pasting whole files into the model, the assistant asks this server, which answers with the few slices that matter.",
+    nodes: [
+      { id: "dev", label: "Developer", kind: "person", at: [0, 1], detail: "Works in an editor with an AI assistant." },
+      { id: "editor", label: "MCP client", kind: "external", at: [1, 1], detail: "Cursor or any client that speaks the Model Context Protocol. It starts the server automatically." },
+      { id: "model", label: "AI model", kind: "external", at: [1, 0], detail: "Receives less text, so each request costs less and stays on topic." },
+      { id: "server", label: "MCP server", kind: "service", at: [2, 1], detail: "Runs locally over stdio and exposes six tools for finding and returning code context." },
+      { id: "cache", label: "Context cache", kind: "data", at: [2, 2], detail: "Remembers context already assembled, and feeds the token and cache metrics." },
+      { id: "index", label: "Code index", kind: "data", at: [3, 1], detail: "Built and stored inside the project, on the developer's machine." },
+      { id: "parse", label: "AST · LSP · deps", kind: "service", at: [4, 1], detail: "Understands structure rather than matching text: syntax trees, language-server lookups and a dependency graph." },
+      { id: "files", label: "Project files", kind: "data", at: [5, 1], detail: "Read locally. Nothing is uploaded to build the index." },
+      { id: "cli", label: "CLI", kind: "surface", at: [3, 2], detail: "One command sets up a project and writes the editor's MCP configuration. Others rebuild the index, check the install, show metrics and benchmark token savings." },
+    ],
+    edges: [
+      ["dev", "editor"], ["editor", "model"], ["editor", "server"], ["server", "cache"], ["server", "index"],
+      ["index", "parse"], ["parse", "files"], ["cli", "index"],
+    ],
+    flows: [
+      {
+        name: "The assistant needs context",
+        steps: [
+          { at: "dev", note: "Asks the assistant to change something." },
+          { at: "editor", note: "The assistant calls one of the server's tools." },
+          { at: "server", note: "Checks whether this context was assembled before." },
+          { at: "cache", note: "Not cached yet." },
+          { at: "server", note: "Queries the index." },
+          { at: "index", note: "Finds the relevant symbols." },
+          { at: "parse", note: "Follows definitions and dependencies to the exact slices." },
+          { at: "index", note: "Slices returned." },
+          { at: "server", note: "Sends back a few slices, not whole files." },
+          { at: "editor", note: "Passes them to the model." },
+          { at: "model", note: "Answers from a small, relevant context." },
+        ],
+      },
+      {
+        name: "Setting up a project",
+        steps: [
+          { at: "cli", note: "One setup command in the project folder." },
+          { at: "index", note: "The index is created inside the project." },
+          { at: "parse", note: "Every source file is parsed." },
+          { at: "files", note: "Read locally." },
+        ],
+      },
+    ],
+  },
 };
