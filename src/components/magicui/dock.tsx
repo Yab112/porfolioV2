@@ -50,7 +50,7 @@ const Dock = ({
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         className={cn(
-          "mx-auto w-max h-full flex items-end justify-center overflow-visible rounded-full border",
+          "mx-auto w-max h-full flex items-end justify-center overflow-visible rounded-none border",
           className
         )}
       >
@@ -89,7 +89,7 @@ const DockIcon = ({ className, children }: DockIconProps) => {
       ref={ref}
       style={{ width: containerSize, height: containerSize }}
       className={cn(
-        "relative flex aspect-square items-center justify-center rounded-full shrink-0",
+        "relative flex aspect-square items-center justify-center rounded-none shrink-0",
         className
       )}
     >

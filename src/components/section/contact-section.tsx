@@ -40,7 +40,7 @@ export default function ContactSection() {
   const c = DATA.contact;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border">
+    <div className="relative overflow-hidden rounded-none border border-border">
       {/* Subtle animated background at the top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40">
         <FlickeringGrid
@@ -75,7 +75,7 @@ export default function ContactSection() {
               href={c.social.LinkedIn.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
+              className="inline-flex items-center gap-2 rounded-none border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
             >
               <Linkedin className="size-3.5 text-[#0077b5]" aria-hidden />
               LinkedIn
@@ -84,7 +84,7 @@ export default function ContactSection() {
               href={c.social.GitHub.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
+              className="inline-flex items-center gap-2 rounded-none border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
             >
               <Github className="size-3.5" aria-hidden />
               GitHub
@@ -92,7 +92,7 @@ export default function ContactSection() {
             <a
               href={c.resumePdfUrl}
               download
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
+              className="inline-flex items-center gap-2 rounded-none border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-muted/50"
             >
               <FileDown className="size-3.5" aria-hidden />
               Download CV
@@ -100,7 +100,7 @@ export default function ContactSection() {
           </div>
 
           {/* Upwork callout */}
-          <div className="rounded-xl border border-border/70 bg-muted/30 p-5 space-y-3">
+          <div className="rounded-none border border-border/70 bg-muted/30 p-5 space-y-3">
             <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-primary/70">
               Top Rated · 100% Job Success
             </p>
@@ -111,7 +111,7 @@ export default function ContactSection() {
               href={c.upworkUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="inline-flex rounded-none bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Hire me on Upwork
             </Link>
@@ -129,7 +129,7 @@ export default function ContactSection() {
               type="email"
               placeholder="your@email.com"
               className={cn(
-                "w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50",
+                "w-full rounded-none border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50",
                 errors.email && "border-destructive focus:ring-destructive"
               )}
               {...register("email")}
@@ -148,7 +148,7 @@ export default function ContactSection() {
               placeholder="Your message..."
               rows={6}
               className={cn(
-                "w-full flex-1 rounded-lg border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 resize-none min-h-[180px]",
+                "w-full flex-1 rounded-none border border-input bg-background px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 resize-none min-h-[180px]",
                 errors.text && "border-destructive focus:ring-destructive"
               )}
               {...register("text")}

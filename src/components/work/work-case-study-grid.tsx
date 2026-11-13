@@ -62,12 +62,10 @@ export function WorkCaseStudyGrid({
     <main className="min-h-dvh w-full pb-12">
       {/* Header */}
       <BlurFade delay={DELAY}>
-        <div className="mb-10 space-y-2">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
-            Portfolio
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Work</h1>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+        <div className="mb-12 space-y-5 pt-8 lg:pt-10">
+          <p className="section-kicker">Station 01</p>
+          <h1 className="poster text-[clamp(3.5rem,11vw,9rem)]">Work<span className="text-ink-purple">.</span></h1>
+          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
             Client engagements, side projects, and everything shipped in between.
           </p>
         </div>
@@ -93,7 +91,7 @@ export function WorkCaseStudyGrid({
                 {t === "Client Work" ? clientProjects.length : personalProjects.length}
               </span>
               {tab === t && (
-                <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary rounded-full" />
+                <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary rounded-none" />
               )}
             </button>
           ))}

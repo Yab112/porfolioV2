@@ -131,6 +131,13 @@ export function AegisChatWidget() {
     }
   }, [open]);
 
+  // Lets other UI (hero button, command palette) open the chat.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("aegis:open", onOpen);
+    return () => window.removeEventListener("aegis:open", onOpen);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -210,7 +217,7 @@ export function AegisChatWidget() {
       className={cn(
         "fixed right-4 z-[60] flex flex-col items-end gap-2 sm:right-6",
         /* Extra space above the bottom dock + small lift from viewport bottom */
-        "bottom-[5.5rem] sm:bottom-32"
+        "bottom-[4.5rem] lg:bottom-6"
       )}
     >
       <AnimatePresence>
@@ -223,7 +230,7 @@ export function AegisChatWidget() {
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             id="aegis-chat-panel"
             className={cn(
-              "w-[min(100vw-1.5rem,420px)] overflow-hidden rounded-xl border border-border",
+              "w-[min(100vw-1.5rem,420px)] overflow-hidden rounded-none border border-border",
               "bg-card shadow-[0_20px_50px_-12px_rgba(26,11,46,0.25)]",
               "dark:border-primary/20 dark:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.65)]"
             )}
@@ -233,13 +240,13 @@ export function AegisChatWidget() {
           >
             {/* Agent shell: status bar */}
             <div
-              className="h-1 w-full bg-gradient-to-r from-primary via-violet-500 to-primary opacity-90"
+              className="h-1 w-full bg-signal"
               aria-hidden
             />
 
             <header className="border-b border-border/80 bg-muted/20 px-4 pb-3.5 pt-5 dark:bg-muted/10">
               <div className="flex items-start gap-3">
-                <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-background ring-1 ring-border shadow-sm">
+                <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-none bg-background ring-1 ring-border shadow-sm">
                   <img
                     src={CHAT_LOGO}
                     alt=""
@@ -248,7 +255,7 @@ export function AegisChatWidget() {
                     height={36}
                   />
                   <span
-                    className="absolute bottom-0.5 right-0.5 flex size-2.5 rounded-full bg-emerald-500 ring-2 ring-card"
+                    className="absolute bottom-0.5 right-0.5 flex size-2.5 rounded-none bg-emerald-500 ring-2 ring-card"
                     title="Agent ready"
                   />
                 </div>
@@ -303,7 +310,7 @@ export function AegisChatWidget() {
             >
               {messages.length === 0 && !loading && (
                 <div className="space-y-5">
-                  <div className="rounded-lg bg-primary/[0.04] px-3.5 py-3 dark:bg-primary/[0.07]">
+                  <div className="rounded-none bg-primary/[0.04] px-3.5 py-3 dark:bg-primary/[0.07]">
                     <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-wider text-primary">
                       <Terminal className="size-3" aria-hidden />
                       Welcome
@@ -326,7 +333,7 @@ export function AegisChatWidget() {
                           type="button"
                           onClick={() => void send(prompt)}
                           className={cn(
-                            "group flex w-full flex-col gap-0.5 rounded-lg bg-card px-3 py-2.5 text-left",
+                            "group flex w-full flex-col gap-0.5 rounded-none bg-card px-3 py-2.5 text-left",
                             "transition-all hover:bg-muted/40"
                           )}
                         >
@@ -359,8 +366,8 @@ export function AegisChatWidget() {
                       className={cn(
                         "max-w-[min(100%,20rem)] px-4 py-3",
                         m.role === "user"
-                          ? "rounded-2xl rounded-tr-md bg-primary text-primary-foreground shadow-sm"
-                          : "rounded-2xl rounded-tl-md bg-muted/50 text-foreground dark:bg-muted/30"
+                          ? "rounded-none rounded-tr-none bg-primary text-primary-foreground shadow-sm"
+                          : "rounded-none rounded-tl-none bg-muted/50 text-foreground dark:bg-muted/30"
                       )}
                     >
                       {m.role === "assistant" ? (
@@ -377,11 +384,11 @@ export function AegisChatWidget() {
                     <span className="px-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-primary">
                       Agent
                     </span>
-                    <div className="flex max-w-[min(100%,20rem)] items-center gap-3 rounded-2xl rounded-tl-md bg-muted/50 px-4 py-3.5 dark:bg-muted/30">
+                    <div className="flex max-w-[min(100%,20rem)] items-center gap-3 rounded-none rounded-tl-none bg-muted/50 px-4 py-3.5 dark:bg-muted/30">
                       <span className="flex gap-1" aria-hidden>
-                        <span className="size-1.5 animate-bounce rounded-full bg-primary/70 [animation-delay:-0.2s]" />
-                        <span className="size-1.5 animate-bounce rounded-full bg-primary/70 [animation-delay:-0.1s]" />
-                        <span className="size-1.5 animate-bounce rounded-full bg-primary/70" />
+                        <span className="size-1.5 animate-bounce rounded-none bg-primary/70 [animation-delay:-0.2s]" />
+                        <span className="size-1.5 animate-bounce rounded-none bg-primary/70 [animation-delay:-0.1s]" />
+                        <span className="size-1.5 animate-bounce rounded-none bg-primary/70" />
                       </span>
                       <span className="text-[13px] text-muted-foreground">Writing a reply…</span>
                     </div>
@@ -396,7 +403,7 @@ export function AegisChatWidget() {
                   Message
                 </span>
               </div>
-              <div className="flex gap-2 rounded-lg border border-input bg-background p-1.5 pl-3 shadow-inner focus-within:border-primary/30 focus-within:ring-2 focus-within:ring-primary/15">
+              <div className="flex gap-2 rounded-none border border-input bg-background p-1.5 pl-3 shadow-inner focus-within:border-primary/30 focus-within:ring-2 focus-within:ring-primary/15">
                 <textarea
                   ref={inputRef}
                   value={input}
@@ -415,7 +422,7 @@ export function AegisChatWidget() {
                 <Button
                   type="button"
                   size="icon"
-                  className="mt-auto size-10 shrink-0 rounded-md"
+                  className="mt-auto size-10 shrink-0 rounded-none"
                   disabled={loading || !input.trim()}
                   onClick={() => void send()}
                   aria-label="Send to agent"
@@ -438,7 +445,7 @@ export function AegisChatWidget() {
         <div className="pointer-events-none flex max-w-[11rem] flex-col items-end gap-1.5 pr-0.5">
           <motion.div
             layout
-            className="rounded-xl bg-card/95 px-3 py-2 shadow-md backdrop-blur-md"
+            className="rounded-none bg-card/95 px-3 py-2 shadow-md backdrop-blur-md"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
@@ -466,7 +473,7 @@ export function AegisChatWidget() {
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.15 }}
         className={cn(
-          "relative flex size-[56px] items-center justify-center overflow-hidden rounded-2xl",
+          "relative flex size-[56px] items-center justify-center overflow-hidden rounded-none",
           "border-2 border-primary/35 bg-primary text-primary-foreground shadow-lg shadow-primary/25",
           "hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -480,10 +487,10 @@ export function AegisChatWidget() {
           <ChevronDown className="size-6" strokeWidth={2.25} />
         ) : (
           <>
-            <span className="flex size-10 items-center justify-center overflow-hidden rounded-xl bg-card p-1.5 ring-2 ring-primary-foreground/25">
+            <span className="flex size-10 items-center justify-center overflow-hidden rounded-none bg-card p-1.5 ring-2 ring-primary-foreground/25">
               <img src={CHAT_LOGO} alt="" className="size-full object-contain" width={40} height={40} />
             </span>
-            <span className="pointer-events-none absolute -bottom-0.5 -right-0.5 rounded-md border border-primary/30 bg-card px-1 py-px font-mono text-[8px] font-bold uppercase leading-none tracking-wide text-primary shadow-sm">
+            <span className="pointer-events-none absolute -bottom-0.5 -right-0.5 rounded-none border border-primary/30 bg-card px-1 py-px font-mono text-[8px] font-bold uppercase leading-none tracking-wide text-primary shadow-sm">
               AI
             </span>
           </>

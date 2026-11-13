@@ -12,12 +12,12 @@ const Header = () => {
       <motion.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className=" px-4 py-2 w-full sm:max-w-[500px] mx-auto bg-gray-100 border-cyan-100 border h-[50px]  rounded-full flex justify-between items-center  z-[999]"
+        className=" px-4 py-2 w-full sm:max-w-[500px] mx-auto bg-gray-100 border-cyan-100 border h-[50px]  rounded-none flex justify-between items-center  z-[999]"
       >
         {links.map((value,index) => (
           <div
           key={index}
-            className={clsx("px-3 py-1 relative rounded-full transition duration-800", {
+            className={clsx("px-3 py-1 relative rounded-none transition duration-800", {
               "bg-cyan-600": active === value.name,
             })}
           >

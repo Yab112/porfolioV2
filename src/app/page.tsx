@@ -1,28 +1,13 @@
-import BlurFade from "@/components/magicui/blur-fade";
-import BlurFadeText from "@/components/magicui/blur-fade-text";
-import { OG_ROUTES } from "@/data/seo-routes";
-import { DATA } from "@/data/resume";
-import Link from "next/link";
-import type { Metadata } from "next";
+import { AddisClock } from "@/components/addis-clock";
+import { SectionHeading } from "@/components/fx/section-heading";
+import { PipelineStatus } from "@/components/pipeline-status";
 import AboutSection from "@/components/section/about-section";
-import TodaysMistakeCard from "@/components/todays-mistake-card";
-import ContactSection from "@/components/section/contact-section";
-import HobbiesSection from "@/components/section/hobbies-section";
-import ProjectsSection from "@/components/section/projects-section";
-import TechStackSection from "@/components/section/tech-stack-section";
-import AchievementsSection from "@/components/section/achievements-section";
-import WorkSection from "@/components/section/work-section";
-import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
-import { TracingBeam } from "@/components/ui/tracing-beam";
-import { EducationLogo } from "@/components/education-logo";
-import { ArrowUpRight } from "lucide-react";
-
-const BLUR_FADE_DELAY = 0.04;
-
-const LOGO_COLOR = "/Logo Color Version@700x.png";
-const LOGO_WHITE = "/Logo white Version@700x.png";
-const ICON_COLOR = "/Icon Color Version@700x.png";
-const ICON_WHITE = "/Icon White Version@700x.png";
+import { SwarmSection } from "@/components/swarm/swarm-section";
+import { LEARNING } from "@/data/learning";
+import { DATA } from "@/data/resume";
+import { OG_ROUTES } from "@/data/seo-routes";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 const site = DATA.url.replace(/\/$/, "");
 const homeOg = OG_ROUTES.home;
@@ -49,138 +34,153 @@ export const metadata: Metadata = {
   },
 };
 
+const STATUS_LABEL = { done: "done", "in-progress": "in progress", next: "next" } as const;
+
 export default function Page() {
+  const [first, second] = DATA.name.split(" ");
+  const featured = DATA.projects.slice(0, 5);
+
   return (
-    <main className="min-h-dvh flex flex-col gap-16 relative ">
-      <section id="hero" className="relative overflow-hidden rounded-3xl">
-        {/* Brand pattern background */}
-        <div
-          className="absolute inset-0 opacity-[0.08] dark:opacity-[0.06] bg-repeat bg-[length:280px] bg-pattern-light dark:bg-pattern-dark"
-          aria-hidden
-        />
-        <div className="relative mx-auto w-full py-8 md:py-12">
-          {/* Full logo + text side by side (hero) */}
-          <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
-            <BlurFade delay={BLUR_FADE_DELAY} className="shrink-0">
-              <div className="w-full max-w-[200px] sm:max-w-[260px] md:max-w-[220px] lg:max-w-[280px] aspect-[2/1] md:aspect-auto md:h-24 lg:h-28 rounded-2xl border border-border overflow-hidden bg-card/80 backdrop-blur-sm flex items-center justify-center p-4">
-                <img
-                  src={LOGO_COLOR}
-                  alt=""
-                  className="w-full h-full object-contain dark:hidden"
-                  width={280}
-                  height={140}
-                />
-                <img
-                  src={LOGO_WHITE}
-                  alt=""
-                  className="w-full h-full object-contain hidden dark:block"
-                  width={280}
-                  height={140}
-                />
-              </div>
-            </BlurFade>
-            <div className="flex-1 min-w-0 space-y-2">
-              <BlurFadeText
-                delay={BLUR_FADE_DELAY}
-                className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl text-foreground"
-                yOffset={8}
-                text={`Hi, I'm ${DATA.name.split(" ")[0]}`}
-              />
-              <BlurFade delay={BLUR_FADE_DELAY}>
-                <p className="text-muted-foreground text-base sm:text-lg max-w-xl leading-relaxed">
-                  <TextWithWikiLinks text={DATA.description} />
-                </p>
-              </BlurFade>
-            </div>
-          </div>
+    <main className="relative">
+      {/* 00 — the poster: the name, and the figure it annotates */}
+      <SwarmSection
+        shape="portrait"
+        id="hero"
+        className="flex min-h-[calc(100dvh-3.5rem)] flex-col justify-between gap-10 pb-10 pt-8 lg:min-h-dvh lg:pb-12 lg:pt-10"
+      >
+        <div className="note flex flex-wrap items-start justify-between gap-x-10 gap-y-3">
+          <p>
+            Senior fullstack engineer
+            <br />
+            AI systems · automation · multi-tenant SaaS
+          </p>
+          <p className="text-right max-lg:hidden">
+            {DATA.location}
+            <br />
+            <AddisClock />
+          </p>
+          <p className="flex items-center gap-2 text-foreground">
+            <span className="relative flex size-2">
+              <span className="pulse-ring absolute inset-0 bg-signal [animation:pulse-ring_1.8s_ease-out_infinite]" />
+              <span className="relative size-2 bg-signal" />
+            </span>
+            Taking new projects
+          </p>
         </div>
-      </section>
-      <TracingBeam className="pl-12 md:pl-16">
-        <AboutSection />
-      <section id="work" className="mt-12 mb-4">
-        <div className="flex min-h-0 flex-col gap-y-6">
-          <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-xl font-bold">Work Experience</h2>
-              <Link
-                href="/work"
-                className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
-              >
-                See all →
+
+        <div className="space-y-8">
+          <h1 className="poster text-[clamp(4.25rem,17vw,15.5rem)]">
+            {first}
+            <br />
+            <span className="text-ink-purple">{second}</span>
+          </h1>
+
+          <div className="grid gap-8 border-t border-border pt-7 lg:grid-cols-[minmax(0,34rem)_1fr] lg:items-end">
+            <p className="text-pretty text-lg leading-relaxed sm:text-xl">
+              I build AI systems that keep working after the demo: agents with a human in the loop, automation that
+              heals itself, and SaaS that isolates every tenant.
+            </p>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 lg:justify-end">
+              <Link href="/contact" className="act act-solid">
+                Start a project <span aria-hidden>→</span>
+              </Link>
+              <Link href="/work" className="act">
+                See the work
               </Link>
             </div>
-          </BlurFade>
-          <BlurFade delay={BLUR_FADE_DELAY * 6}>
-            <WorkSection limit={3} />
-          </BlurFade>
-        </div>
-      </section>
-      <section id="education">
-        <div className="flex min-h-0 flex-col gap-y-6">
-          <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <div className="space-y-1">
-              <h2 className="text-xl font-bold">Education</h2>
-            </div>
-          </BlurFade>
-          <div className="flex flex-col gap-8">
-            {DATA.education.map((education, index) => (
-              <BlurFade
-                key={education.school}
-                delay={BLUR_FADE_DELAY * 8 + index * 0.05}
-              >
-                <div className="flex flex-col gap-3">
-                  <Link
-                    href={education.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-x-4 justify-between group"
-                  >
-                    <div className="flex items-center gap-x-4 flex-1 min-w-0">
-                      <EducationLogo logoUrl={education.logoUrl} />
-                      <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                        <div className="font-semibold leading-none flex items-center gap-2">
-                          {education.school}
-                          <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" aria-hidden />
-                        </div>
-                        <div className="font-sans text-sm text-muted-foreground">
-                          {education.degree}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs tabular-nums text-muted-foreground text-right flex-none">
-                      <span>
-                        {education.start} - {education.end}
-                      </span>
-                    </div>
-                  </Link>
-                  {"description" in education && education.description ? (
-                    <p className="text-sm text-muted-foreground leading-relaxed pl-[3.5rem] sm:pl-14 max-w-2xl">
-                      <TextWithWikiLinks text={education.description} />
-                    </p>
-                  ) : null}
-                </div>
-              </BlurFade>
-            ))}
           </div>
         </div>
-      </section>
-      <AchievementsSection />
-      <TechStackSection />
-      <section id="projects" className="max-w-4xl mx-auto mb-4">
-        <ProjectsSection limit={4} />
-      </section>
-      <HobbiesSection />
-      </TracingBeam>
+      </SwarmSection>
 
-      <TodaysMistakeCard />
+      <div className="space-y-36 pb-10 pt-28 lg:max-w-[58%]">
+        {/* 01 — disciplines */}
+        <SwarmSection shape="network" id="about" className="space-y-10">
+          <SectionHeading
+            kicker="01 · What I build"
+            title="Four disciplines, one owner."
+            href="/about"
+            hrefLabel="Full background"
+          />
+          <AboutSection />
+        </SwarmSection>
 
-      <TracingBeam className="pl-12 md:pl-16">
-        <section id="contact">
-          <BlurFade delay={BLUR_FADE_DELAY * 17}>
-            <ContactSection />
-          </BlurFade>
-        </section>
-      </TracingBeam>
+        {/* 02 — work index */}
+        <SwarmSection shape="layers" id="work" className="space-y-10">
+          <SectionHeading kicker="02 · Selected work" title="Live, used, paid for." href="/work" hrefLabel="All case studies" />
+          <div>
+            {featured.map((p, i) => (
+              <Link
+                key={p.slug}
+                href={`/work/${p.slug}`}
+                className="row group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-baseline gap-x-4 gap-y-2 px-2 py-6"
+              >
+                <span className="font-mono text-xs tabular-nums text-muted-foreground">0{i + 1}</span>
+                <span className="poster text-3xl transition-transform duration-300 group-hover:translate-x-2 sm:text-5xl">
+                  {p.title}
+                </span>
+                <span className="font-mono text-xs text-muted-foreground transition-colors group-hover:text-signal" aria-hidden>
+                  →
+                </span>
+                <span className="col-start-2 flex flex-wrap gap-1.5">
+                  {p.technologies.slice(0, 4).map((t) => (
+                    <span key={t} className="tag">
+                      {t}
+                    </span>
+                  ))}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </SwarmSection>
+
+        {/* 03 — currently training */}
+        <SwarmSection shape="surface" id="lab" className="space-y-10">
+          <SectionHeading
+            kicker="03 · Currently training"
+            title="Back under the hood."
+            description={LEARNING.intro}
+            href="/learning"
+            hrefLabel="Open the lab"
+          />
+          <ul>
+            {LEARNING.tracks.map((t) => (
+              <li key={t.title} className="row flex items-baseline justify-between gap-6 py-4">
+                <span className="font-medium">{t.title}</span>
+                <span
+                  className={`font-mono text-[11px] uppercase tracking-wider ${
+                    t.status === "next" ? "text-muted-foreground" : "text-signal"
+                  }`}
+                >
+                  {STATUS_LABEL[t.status]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </SwarmSection>
+
+        {/* 04 — the blog that writes itself */}
+        <SwarmSection shape="pages" id="writing" className="space-y-10">
+          <SectionHeading kicker="04 · Writing" title="Notes from production." href="/blog" hrefLabel="Read the blog" />
+          <PipelineStatus />
+        </SwarmSection>
+
+        {/* 05 — contact */}
+        <SwarmSection shape="globe" id="contact" className="space-y-8">
+          <SectionHeading
+            kicker="05 · Contact"
+            title="Addis Ababa. Working worldwide."
+            description={DATA.contact.contactFormIntro}
+          />
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            <Link href="/contact" className="act act-solid">
+              Write to me <span aria-hidden>→</span>
+            </Link>
+            <a href={DATA.contact.resumePdfUrl} className="act" target="_blank" rel="noopener noreferrer">
+              Download CV
+            </a>
+          </div>
+        </SwarmSection>
+      </div>
     </main>
   );
 }

@@ -35,7 +35,7 @@ export function InfiniteMarquee({
           <span
             key={`${label}-${i}`}
             className={cn(
-              "text-sm font-medium text-muted-foreground/90 px-3 py-1.5 rounded-full border border-border/60 bg-card/40 backdrop-blur-sm",
+              "text-sm font-medium text-muted-foreground/90 px-3 py-1.5 rounded-none border border-border/60 bg-card/40 backdrop-blur-sm",
               "hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-colors",
               itemClassName
             )}

@@ -13,11 +13,12 @@ export default function HobbiesSection() {
   if (!h) return null;
 
   return (
-    <section id="hobbies" className="mt-16  max-w-4xl mx-auto mb-16">
+    <section id="hobbies" className="mx-auto w-full max-w-4xl">
       <div className="flex min-h-0 flex-col gap-y-6">
         <BlurFade delay={BLUR_DELAY * 12}>
           <div className="space-y-1">
-            <h2 className="text-xl font-bold">Hobbies</h2>
+            <p className="section-kicker">Off the clock</p>
+            <h2 className="poster text-5xl sm:text-6xl">Hobbies.</h2>
             <p className="text-sm text-muted-foreground max-w-xl">{h.intro}</p>
           </div>
         </BlurFade>
@@ -27,7 +28,7 @@ export default function HobbiesSection() {
             href={h.bookAmazonUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-auto md:mx-0 block w-full max-w-[200px] rounded-lg overflow-hidden border border-border shadow-sm bg-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mx-auto md:mx-0 block w-full max-w-[200px] rounded-none overflow-hidden border border-border shadow-sm bg-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <img
               src={h.bookImage}
