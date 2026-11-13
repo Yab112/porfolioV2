@@ -291,6 +291,177 @@ export function fromImage(n: number, img: CanvasImageSource, w: number, h: numbe
   return f;
 }
 
+// ── plots ────────────────────────────────────────────────────────────────────
+
+/** Standard normal sample. */
+function gauss(r: () => number): number {
+  return Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+}
+
+const AX = { left: -1.5, right: 1.5, bottom: -1.15, top: 1.25 };
+
+/** Put point i on the plot's axes (with tick marks). */
+function axis(f: Formation, i: number, r: () => number) {
+  const u = r();
+  if (u < 0.42) put(f, i, AX.left + (AX.right - AX.left) * r(), AX.bottom, 0);
+  else if (u < 0.78) put(f, i, AX.left, AX.bottom + (AX.top - AX.bottom) * r(), 0);
+  else if (u < 0.9) put(f, i, AX.left + (Math.floor(r() * 7) / 6) * (AX.right - AX.left), AX.bottom - r() * 0.07, 0);
+  else put(f, i, AX.left - r() * 0.07, AX.bottom + (Math.floor(r() * 6) / 5) * (AX.top - AX.bottom), 0);
+}
+
+/** Two classes of points and the line that separates them. */
+function scatter(n: number): Formation {
+  const f = make(n);
+  const r = rng(131);
+  for (let i = 0; i < n; i++) {
+    const u = r();
+    if (u < 0.1) axis(f, i, r);
+    else if (u < 0.22) {
+      const t = r() * 2 - 1;
+      put(f, i, t * 1.25 + 0.05, -t * 1.05 + 0.08 + (r() - 0.5) * 0.02, 0.02, 1);
+    } else {
+      const a = u < 0.61;
+      const cx = a ? -0.62 : 0.72;
+      const cy = a ? -0.45 : 0.62;
+      put(f, i, cx + gauss(r) * 0.3, cy + gauss(r) * 0.27, gauss(r) * 0.05, 0);
+    }
+  }
+  return f;
+}
+
+/** Noisy observations and the line fitted through them. */
+function regression(n: number): Formation {
+  const f = make(n);
+  const r = rng(137);
+  const fit = (x: number) => 0.62 * x + 0.05 + 0.16 * Math.sin(x * 1.7);
+  for (let i = 0; i < n; i++) {
+    const u = r();
+    const x = AX.left + 0.15 + r() * (AX.right - AX.left - 0.3);
+    if (u < 0.1) axis(f, i, r);
+    else if (u < 0.3) put(f, i, x, fit(x) + (r() - 0.5) * 0.025, 0.02, 1);
+    else put(f, i, x, fit(x) + gauss(r) * 0.24, gauss(r) * 0.04, 0);
+  }
+  return f;
+}
+
+/** Training loss falling; validation loss falling, then turning back up. */
+function curve(n: number): Formation {
+  const f = make(n);
+  const r = rng(139);
+  const W = AX.right - AX.left;
+  for (let i = 0; i < n; i++) {
+    const u = r();
+    const t = r();
+    const x = AX.left + 0.08 + t * (W - 0.16);
+    if (u < 0.12) axis(f, i, r);
+    else if (u < 0.56) put(f, i, x, AX.bottom + 0.12 + 2.0 * Math.exp(-3.4 * t) + gauss(r) * 0.018, 0, 1);
+    else put(f, i, x, AX.bottom + 0.42 + 1.75 * Math.exp(-3.1 * t) + 0.55 * t * t + gauss(r) * 0.03, 0, 0);
+  }
+  return f;
+}
+
+/** A histogram of a bell-shaped distribution, the modal bin lit. */
+function bars(n: number): Formation {
+  const f = make(n);
+  const r = rng(149);
+  const bins = 13;
+  const heights = Array.from({ length: bins }, (_, k) => Math.exp(-((k - 6) ** 2) / 9));
+  const total = heights.reduce((a, b) => a + b, 0);
+  const bw = (AX.right - AX.left - 0.2) / bins;
+  for (let i = 0; i < n; i++) {
+    if (r() < 0.08) {
+      put(f, i, AX.left + (AX.right - AX.left) * r(), AX.bottom, 0);
+      continue;
+    }
+    let pick = r() * total;
+    let k = 0;
+    while (k < bins - 1 && pick > heights[k]) pick -= heights[k++];
+    const x0 = AX.left + 0.1 + k * bw;
+    put(f, i, x0 + 0.03 + r() * (bw - 0.06), AX.bottom + r() * heights[k] * 2.2, (r() - 0.5) * 0.12, k === 6 ? 1 : 0);
+  }
+  return f;
+}
+
+/** A confusion matrix: dense on the diagonal (right answers), sparse elsewhere. */
+function matrix(n: number): Formation {
+  const f = make(n);
+  const r = rng(151);
+  const k = 5;
+  const size = 2.6;
+  const cell = size / k;
+  const weights: number[] = [];
+  for (let row = 0; row < k; row++) {
+    for (let col = 0; col < k; col++) weights.push(row === col ? 1 : 0.06 + ((row * 7 + col * 3) % 5) * 0.035);
+  }
+  const total = weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < n; i++) {
+    let pick = r() * total;
+    let c = 0;
+    while (c < weights.length - 1 && pick > weights[c]) pick -= weights[c++];
+    const row = Math.floor(c / k);
+    const col = c % k;
+    put(
+      f,
+      i,
+      -size / 2 + col * cell + 0.04 + r() * (cell - 0.08),
+      size / 2 - row * cell - 0.04 - r() * (cell - 0.08),
+      (r() - 0.5) * 0.06,
+      row === col ? 1 : 0
+    );
+  }
+  return f;
+}
+
+/** Points in an embedding space, grouped by meaning; one neighbourhood selected. */
+function embedding(n: number): Formation {
+  const f = make(n);
+  const r = rng(157);
+  const centres = [
+    [0.9, 0.5, 0.2], [-0.8, 0.7, -0.4], [-0.5, -0.8, 0.6], [0.6, -0.7, -0.6], [0.0, 0.1, 0.9], [0.1, 0.9, -0.9],
+  ];
+  for (let i = 0; i < n; i++) {
+    const c = Math.floor(r() * centres.length);
+    const s = 0.2 + (c % 3) * 0.05;
+    put(f, i, centres[c][0] + gauss(r) * s, centres[c][1] + gauss(r) * s, centres[c][2] + gauss(r) * s, c === 0 ? 1 : 0);
+  }
+  return f;
+}
+
+/** A decision tree, with the path one example takes from root to leaf. */
+function tree(n: number): Formation {
+  const f = make(n);
+  const r = rng(163);
+  const depth = 5;
+  const nodes: { x: number; y: number; lit: boolean }[][] = [];
+  let litIndex = 0;
+  for (let d = 0; d < depth; d++) {
+    const count = 2 ** d;
+    if (d > 0) litIndex = litIndex * 2 + (r() < 0.5 ? 0 : 1);
+    nodes.push(
+      Array.from({ length: count }, (_, k) => ({
+        x: ((k + 0.5) / count - 0.5) * 3.1,
+        y: 1.25 - d * 0.62,
+        lit: k === litIndex,
+      }))
+    );
+  }
+  for (let i = 0; i < n; i++) {
+    const d = Math.floor(r() * depth);
+    const k = Math.floor(r() * nodes[d].length);
+    const node = nodes[d][k];
+    if (r() < 0.38 || d === 0) {
+      const rad = 0.075 * Math.sqrt(r());
+      const th = r() * Math.PI * 2;
+      put(f, i, node.x + rad * Math.cos(th), node.y + rad * Math.sin(th), 0, node.lit ? 1 : 0);
+    } else {
+      const parent = nodes[d - 1][Math.floor(k / 2)];
+      const t = r();
+      put(f, i, parent.x + (node.x - parent.x) * t, parent.y + (node.y - parent.y) * t, 0, node.lit && parent.lit ? 1 : 0);
+    }
+  }
+  return f;
+}
+
 /** A short word set in heavy type and traced in points. */
 export function fromText(n: number, text: string): Formation {
   const word = text.toUpperCase().slice(0, 14);
@@ -325,6 +496,20 @@ export function buildFormation(shape: Exclude<BaseShape, "portrait">, n: number)
       return pages(n);
     case "globe":
       return globe(n);
+    case "scatter":
+      return scatter(n);
+    case "regression":
+      return regression(n);
+    case "curve":
+      return curve(n);
+    case "bars":
+      return bars(n);
+    case "matrix":
+      return matrix(n);
+    case "embedding":
+      return embedding(n);
+    case "tree":
+      return tree(n);
   }
 }
 

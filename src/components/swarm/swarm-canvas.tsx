@@ -1,7 +1,15 @@
 "use client";
 
 import { DATA } from "@/data/resume";
-import { isStationPath, onShapeRequest, STATIONS, stationForPath, type SwarmShape } from "@/lib/swarm-bus";
+import {
+  FIGURE_CAPTION,
+  isStationPath,
+  onShapeRequest,
+  STATIONS,
+  stationForPath,
+  type BaseShape,
+  type SwarmShape,
+} from "@/lib/swarm-bus";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type * as THREE_NS from "three";
@@ -222,6 +230,7 @@ export function SwarmCanvas() {
       let route = stationForPath(window.location.pathname);
       let onStation = isStationPath(window.location.pathname);
       let preview: SwarmShape | null = null;
+      let chapter = 0;
       const goal = { x: 0, y: 0, scale: 1, opacity: 1 };
       const place = () => {
         const w = window.innerWidth;
@@ -229,33 +238,49 @@ export function SwarmCanvas() {
         const viewH = 2 * Math.tan((35 * Math.PI) / 360) * camera.position.z;
         const viewW = viewH * (w / h);
         const home = route.href === "/" && onStation;
-        const scrolled = Math.min(1, window.scrollY / (h * 0.45));
-        if (w >= 1024) {
-          goal.scale = home ? Math.min(1.08, viewW / 6.2) : 0.62;
-          goal.x = home ? viewW * 0.23 : viewW / 2 - 1.5;
-          goal.y = home ? 0.25 : viewH / 2 - 1.25;
-          // Home keeps its figure beside the narrow text column; every other page
-          // shows it in the header and clears it once reading starts.
-          goal.opacity = home ? 1 : 0.7 * (1 - scrolled);
+        // Inner pages: every screen of scrolling is a new "chapter" with its own figure.
+        const next = home ? 0 : Math.max(0, Math.floor((window.scrollY + h * 0.2) / (h * 0.85)));
+        if (next !== chapter) {
+          chapter = next;
+          queueMicrotask(refresh);
+        }
+        const reading = /^\/(blog|work)\/.+/.test(window.location.pathname);
+        const wide = w >= 1024;
+        if (home) {
+          const scrolled = Math.min(1, window.scrollY / (h * 0.45));
+          // Plots are wider than the other figures: draw them smaller and further right
+          // so their axes stay clear of the text column.
+          const plot = !!current && ["scatter", "regression", "curve", "bars", "matrix", "tree"].includes(current);
+          goal.scale = (wide ? Math.min(1.08, viewW / 6.2) : Math.min(0.8, viewW / 3.6)) * (plot ? 0.8 : 1);
+          goal.x = wide ? viewW * (plot ? 0.27 : 0.23) : 0;
+          goal.y = wide ? 0.25 : viewH * 0.17;
+          goal.opacity = wide ? 1 : 1 - scrolled;
+        } else if (chapter === 0) {
+          // Top of the page: a crisp figure in the header, beside the title.
+          const lift = Math.min(1, window.scrollY / (h * 0.6));
+          goal.scale = wide ? 0.66 : 0.5;
+          goal.x = wide ? viewW / 2 - 1.75 : viewW / 2 - 0.9;
+          goal.y = (wide ? viewH / 2 - 1.3 : viewH / 2 - 1.0) + lift * 0.5;
+          goal.opacity = (wide ? 0.9 : 0.45) * (1 - lift * 0.6);
         } else {
-          goal.scale = home ? Math.min(0.8, viewW / 3.6) : 0.5;
-          goal.x = home ? 0 : viewW / 2 - 0.9;
-          goal.y = home ? viewH * 0.17 : viewH / 2 - 1.0;
-          goal.opacity = (home ? 1 : 0.4) * (1 - scrolled);
+          // Further down: large and faint, behind the content, drifting from side to side.
+          const side = chapter % 2 === 1 ? -1 : 1;
+          goal.scale = wide ? Math.min(1.35, viewW / 4.6) : Math.min(0.95, viewW / 3.4);
+          goal.x = wide ? side * viewW * 0.16 + 0.35 : 0;
+          goal.y = 0;
+          goal.opacity = reading ? 0.13 : wide ? 0.3 : 0.2;
         }
         if (!onStation) goal.opacity = 0;
         if (preview) goal.opacity = Math.max(goal.opacity, 0.9);
       };
 
       const publishCaption = () => {
-        const shape = preview ?? current ?? route.shape;
+        const shape = wanted();
         const st = stationForPath(route.href);
         const figureFor = (sh: SwarmShape) =>
           sh.startsWith("word:")
             ? `spelling ${sh.slice(5).toUpperCase()}`
-            : sh === "network"
-            ? "arranged as a neural network, one path lit"
-            : (STATIONS.find((x) => x.shape === sh)?.figure ?? st.figure);
+            : (FIGURE_CAPTION[sh as BaseShape] ?? STATIONS.find((x) => x.shape === sh)?.figure ?? st.figure);
         const text = figureFor(shape);
         setCaption({ index: st.key.padStart(2, "0"), count: N, text });
       };
@@ -263,7 +288,7 @@ export function SwarmCanvas() {
       const show = (shape: SwarmShape) => {
         if (shape === "portrait") {
           portraitReady.then(() => {
-            if (!disposed && (preview ?? sectionShape ?? route.shape) === "portrait") morphTo("portrait");
+            if (!disposed && wanted() === "portrait") morphTo("portrait");
           });
         } else {
           morphTo(shape);
@@ -275,8 +300,13 @@ export function SwarmCanvas() {
       // A page that mounted before WebGL was ready leaves its request here.
       let sectionShape: SwarmShape | null =
         (window as unknown as { __swarmSection?: SwarmShape | null }).__swarmSection ?? null;
+      const wanted = (): SwarmShape => {
+        if (preview) return preview;
+        if (chapter > 0 && route.scroll.length) return route.scroll[(chapter - 1) % route.scroll.length];
+        return sectionShape ?? route.shape;
+      };
       const refresh = () => {
-        show(preview ?? sectionShape ?? route.shape);
+        show(wanted());
         place();
       };
 
@@ -286,6 +316,7 @@ export function SwarmCanvas() {
           onStation = isStationPath(path);
           sectionShape = null;
           preview = null;
+          chapter = 0;
           refresh();
         },
       };
@@ -351,11 +382,11 @@ export function SwarmCanvas() {
         group.scale.setScalar(s);
         uniforms.uOpacity.value += (Math.max(0, goal.opacity) - uniforms.uOpacity.value) * k;
 
-        const flat =
-          current === "portrait" || current === "pages" || current === "network" || !!current?.startsWith("word:");
-        if (!reduce) spin += dt * (current === "globe" ? 0.22 : flat ? 0 : 0.12);
+        const FLAT = ["portrait", "pages", "network", "scatter", "regression", "curve", "matrix", "tree"];
+        const flat = !!current && (FLAT.includes(current) || current.startsWith("word:"));
+        if (!reduce) spin += dt * (current === "globe" || current === "embedding" ? 0.22 : flat ? 0 : 0.12);
         const targetY = (flat ? 0 : spin) + sway.x * (flat ? 0.22 : 0.35);
-        const targetX = (current === "surface" || current === "layers" ? 0.42 : 0) - sway.y * 0.16;
+        const targetX = (current === "surface" || current === "layers" || current === "bars" ? 0.42 : 0) - sway.y * 0.16;
         group.rotation.y += (targetY - group.rotation.y) * k;
         group.rotation.x += (targetX - group.rotation.x) * k;
 
