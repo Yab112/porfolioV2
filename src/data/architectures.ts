@@ -179,4 +179,5 @@ export const ARCHITECTURES: Record<string, Architecture> = {
       },
     ],
   },
+
 };

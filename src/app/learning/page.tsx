@@ -41,7 +41,7 @@ export default function LearningPage() {
       </section>
 
       <section className="space-y-10">
-        <SectionHeading kicker={`Curriculum · ${LEARNING.platform}`} title="The syllabus." />
+        <SectionHeading kicker="Curriculum" title="The syllabus." />
         <ol>
           {LEARNING.tracks.map((t, i) => (
             <li key={t.title} className="row grid gap-x-8 gap-y-3 py-7 md:grid-cols-[3rem_minmax(0,1fr)_auto]">
@@ -72,6 +72,18 @@ export default function LearningPage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="space-y-10">
+        <SectionHeading kicker="Completed" title="Certificates." />
+        <ul>
+          {LEARNING.certificates.map((c) => (
+            <li key={c} className="row flex items-baseline justify-between gap-6 py-4">
+              <span className="font-medium">{c}</span>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-signal">done</span>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );
