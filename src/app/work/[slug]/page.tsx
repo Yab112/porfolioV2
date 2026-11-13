@@ -63,7 +63,7 @@ export default async function CaseStudyPage({ params }: Props) {
 
       <BlurFade delay={0.06}>
         <header className="mt-8 border-b border-border/80 pb-8">
-          <p className="font-mono text-[11px] text-muted-foreground">{project.dates}</p>
+          {project.dates ? <p className="font-mono text-[11px] text-muted-foreground">{project.dates}</p> : null}
           <h1 className="poster mt-3 text-balance text-5xl sm:text-7xl">{project.title}</h1>
           <p className="mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
             {project.description}
