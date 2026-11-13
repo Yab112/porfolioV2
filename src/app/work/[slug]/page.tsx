@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { TextWithWikiLinks } from "@/components/ui/text-with-wiki-links";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { ARCHITECTURES } from "@/data/architectures";
+import { PROJECT_ROLES } from "@/data/project-roles";
 import { DATA } from "@/data/resume";
 import { getCaseStudySections, getProjectBySlug } from "@/lib/case-studies";
 import type { Metadata } from "next";
@@ -89,6 +90,51 @@ export default async function CaseStudyPage({ params }: Props) {
         </header>
       </BlurFade>
 
+      {PROJECT_ROLES[project.slug] ? (
+        <section id="my-role" className="mt-14 scroll-mt-28">
+          <div className="spotlight-card grid lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]">
+            <dl className="space-y-6 border-b border-border p-6 lg:border-b-0 lg:border-r">
+              <div>
+                <dt className="note">My role</dt>
+                <dd className="poster mt-2 text-3xl">{PROJECT_ROLES[project.slug].role}</dd>
+              </div>
+              <div>
+                <dt className="note">For</dt>
+                <dd className="mt-1 leading-relaxed">{PROJECT_ROLES[project.slug].forWhom}</dd>
+              </div>
+              {PROJECT_ROLES[project.slug].period ? (
+                <div>
+                  <dt className="note">When</dt>
+                  <dd className="mt-1 font-mono text-sm tabular-nums">{PROJECT_ROLES[project.slug].period}</dd>
+                </div>
+              ) : null}
+            </dl>
+            <div className="p-6">
+              <h2 className="note">What I did</h2>
+              <ul className="mt-3">
+                {PROJECT_ROLES[project.slug].did.map((line, i) => (
+                  <li key={line} className="row grid grid-cols-[2rem_minmax(0,1fr)] gap-2 py-3.5 leading-relaxed">
+                    <span className="pt-1 font-mono text-[11px] tabular-nums text-signal">0{i + 1}</span>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+              {PROJECT_ROLES[project.slug].results?.length ? (
+                <>
+                  <h2 className="note mt-8">Result</h2>
+                  <ul className="mt-3 space-y-2">
+                    {PROJECT_ROLES[project.slug].results!.map((r) => (
+                      <li key={r} className="border-l-2 border-[var(--green)] pl-4 leading-relaxed">
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
       {ARCHITECTURES[project.slug] ? (
         <section id="how-it-works" className="mt-14 scroll-mt-28 space-y-6">
           <div className="max-w-2xl space-y-3">

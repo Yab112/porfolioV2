@@ -109,20 +109,25 @@ export const ARCHITECTURES: Record<string, Architecture> = {
     nodes: [
       { id: "gen", label: "Content agent", kind: "agent", at: [0, 0], detail: "An n8n agent that generates the data for every possible combination of country, city and pest product." },
       { id: "val", label: "Validator agent", kind: "agent", at: [1, 0], detail: "A second n8n agent that checks what the content agent produced before it is used on a page." },
-      { id: "db", label: "Database", kind: "data", at: [2, 0], detail: "Holds the validated data for each combination. Every page pulls its content from here." },
+      { id: "db", label: "PostgreSQL", kind: "data", at: [2, 0], detail: "Holds the validated data for each combination. Every page pulls its content from here." },
       { id: "searcher", label: "Person searching", kind: "person", at: [0, 1], detail: "Someone searching Google for pest control or a pesticide around their city." },
       { id: "page", label: "City + pest page", kind: "surface", at: [1, 1], detail: "One generic page template. Each country, city and product combination becomes its own marketing page by filling the template with that combination's data." },
       { id: "form", label: "Reach-out form", kind: "surface", at: [2, 1], detail: "The visitor fills in a form to ask for help. That enquiry is the lead." },
-      { id: "edge", label: "Supabase Edge Functions", kind: "service", at: [3, 1], detail: "Server-side functions on Supabase that sit behind the pages and the form." },
+      { id: "edge", label: "Edge Functions", kind: "service", at: [3, 1], detail: "Server-side functions on Supabase that sit behind the pages and the form." },
       { id: "router", label: "Lead routing", kind: "agent", at: [4, 1], detail: "n8n automation that sells the lead to a vendor, redirects the visitor to them and sends the vendor a notification so they make contact." },
       { id: "wallet", label: "Vendor wallet", kind: "data", at: [4, 0], detail: "Each vendor holds a balance. The price of a lead is taken from it automatically, and refunded if the lead turns out not to be good." },
       { id: "vendor", label: "Vendor", kind: "person", at: [5, 1], detail: "A pest-control business that buys leads and is expected to contact the person." },
       { id: "check", label: "Contact check", kind: "service", at: [4, 2], detail: "Checks whether the vendor actually contacted the person. If they did not, the lead is redirected to another vendor." },
       { id: "vendor2", label: "Next vendor", kind: "person", at: [5, 2], detail: "Receives the lead when the first vendor does not follow up." },
+      { id: "sched", label: "Scheduled agents", kind: "agent", at: [3, 0], detail: "Four background agents that run on a schedule and write to the database: SEO, performance, audit and reporting." },
+      { id: "portal", label: "Vendor portal", kind: "surface", at: [5, 0], detail: "Where vendors work with the platform." },
+      { id: "pr", label: "Digital PR agent", kind: "agent", at: [0, 2], detail: "Detects spikes in pest incidents, generates a press page with GPT, runs outreach through Hunter.io and publishes embeddable trend charts." },
+      { id: "press", label: "Press pages", kind: "surface", at: [1, 2], detail: "Generated press pages and embeddable trend charts that other sites can cite and link to." },
     ],
     edges: [
       ["gen", "val"], ["val", "db"], ["db", "page"], ["searcher", "page"], ["page", "form"], ["form", "edge"],
       ["edge", "db"], ["edge", "router"], ["router", "wallet"], ["router", "vendor"], ["router", "check"], ["check", "vendor2"],
+      ["sched", "db"], ["wallet", "portal"], ["portal", "vendor"], ["pr", "press"],
     ],
     flows: [
       {
@@ -154,6 +159,14 @@ export const ARCHITECTURES: Record<string, Architecture> = {
           { at: "router", note: "The lead is still open." },
           { at: "check", note: "The check finds no contact was made." },
           { at: "vendor2", note: "The lead is redirected to another vendor." },
+        ],
+      },
+      {
+        name: "A pest spike becomes press",
+        steps: [
+          { at: "pr", note: "Detects a spike in pest incidents." },
+          { at: "press", note: "A press page is generated, with a trend chart others can embed." },
+          { at: "pr", note: "Outreach goes out through Hunter.io." },
         ],
       },
       {
