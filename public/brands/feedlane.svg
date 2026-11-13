@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <!-- The talking QR (F-073 brand v2). Same drawing as LogoMark in src/features/shell/Logo.tsx. -->
+  <style>
+    .ring { fill: #095c34 }
+    .voice { fill: #6d28d9 }
+    @media (prefers-color-scheme: dark) { .ring { fill: #2fcf7a } .voice { fill: #8b5cf6 } }
+  </style>
+  <path class="ring" fill-rule="evenodd" d="M12 3h16a9 9 0 0 1 9 9v16a9 9 0 0 1-9 9H13.5L4.6 38.6a1 1 0 0 1-1.5-.9V12a9 9 0 0 1 9-9Zm2 7a4 4 0 0 0-4 4v12a4 4 0 0 0 4 4h12a4 4 0 0 0 4-4V14a4 4 0 0 0-4-4Z"/>
+  <rect class="voice" x="14.5" y="14.5" width="11" height="11" rx="3"/>
+</svg>
