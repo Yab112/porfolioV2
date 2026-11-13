@@ -83,7 +83,7 @@ export function ProjectCard({
         <div className="flex items-start justify-between gap-2">
           <div>
             <h3 className="poster text-2xl leading-snug tracking-tight text-foreground">{title}</h3>
-            <time className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{dates}</time>
+            {dates ? <time className="font-mono text-[10px] text-muted-foreground/50 tabular-nums">{dates}</time> : null}
           </div>
           {caseStudyHref && (
             <Link
