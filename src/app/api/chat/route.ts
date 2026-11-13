@@ -11,7 +11,11 @@ export async function POST(req: Request) {
 
   const upstream = await fetch(`${getAegisApiBase()}/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      // Lets the agent tell a person from an AI agent or script calling the site.
+      "X-Visitor-User-Agent": req.headers.get("user-agent") ?? "",
+    },
     body: JSON.stringify(body),
   });
 

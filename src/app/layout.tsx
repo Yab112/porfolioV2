@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Rail from "@/components/rail";
+import { WorkWithMe } from "@/components/work-with-me";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DATA } from "@/data/resume";
@@ -126,6 +127,7 @@ export default function RootLayout({
             <div className="relative z-10 lg:pl-[4.5rem]">
               <div className="mx-auto flex min-h-dvh w-full max-w-[88rem] flex-col px-5 pb-24 sm:px-10 lg:pb-10">
                 <div className="flex-1">{children}</div>
+                <WorkWithMe />
                 <Footer />
               </div>
             </div>
