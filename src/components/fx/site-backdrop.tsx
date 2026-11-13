@@ -1,4 +1,4 @@
-/** Flat page colour with a fading dot matrix — the same dots the hero portrait is made of. */
+/** Plot-paper backdrop in the site's two colours; the swarm is drawn on top of it. */
 export function SiteBackdrop() {
   return <div className="site-backdrop" aria-hidden />;
 }

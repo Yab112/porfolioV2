@@ -253,6 +253,23 @@ html {
   color: var(--muted-foreground);
 }
 
+/* Page backdrop: plot paper. Fine purple grid, a heavier line every fifth,
+   and the two colours bleeding in softly from opposite corners. */
+.site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60rem 40rem at 0% 0%, color-mix(in srgb, var(--purple) 16%, transparent), transparent 70%),
+    radial-gradient(52rem 36rem at 100% 100%, color-mix(in srgb, var(--green-fill) 11%, transparent), transparent 70%),
+    linear-gradient(color-mix(in srgb, var(--purple) 13%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--purple) 13%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--purple) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--purple) 6%, transparent) 1px, transparent 1px);
+  background-size: auto, auto, 200px 200px, 200px 200px, 40px 40px, 40px 40px;
+}
+
 /* Sheet: the only "card". A flat panel with a purple tick top-left and a green tick bottom-right. */
 .spotlight-card,
 .glass {
