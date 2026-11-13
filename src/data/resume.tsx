@@ -249,7 +249,7 @@ export const DATA = {
       title: "Pest Leads Pro",
       slug: "pest-leads-pro",
       href: "https://pestleadspro.com",
-      dates: "v2.5 · 2025",
+      dates: "Mar 2025 – Aug 2025",
       active: true,
       client: true,
       description:
@@ -313,7 +313,7 @@ export const DATA = {
       title: "Eset Coffee",
       slug: "eset-coffee",
       href: "https://www.esetcoffee.com/",
-      dates: "Recent",
+      dates: "",
       active: true,
       client: true,
       description:
@@ -364,7 +364,7 @@ export const DATA = {
       title: "Lumen Tech",
       slug: "lumen-tech",
       href: "https://lumen-tech-navy.vercel.app",
-      dates: "Recent",
+      dates: "",
       active: true,
       client: true,
       description:
@@ -381,7 +381,7 @@ export const DATA = {
       title: "Octopus",
       slug: "octopus",
       href: "https://octopus-jet.vercel.app",
-      dates: "Recent",
+      dates: "",
       active: true,
       description:
         "Fullstack application with a clean API/client split: Node.js REST backend and React frontend deployed independently. Demonstrates a scalable repository architecture suited to team-based development, with typed API contracts shared across both layers.",
