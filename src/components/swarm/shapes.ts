@@ -1,4 +1,5 @@
 import type { BaseShape } from "@/lib/swarm-bus";
+import { ETHIOPIA_BITS, LAND_BITS } from "./land";
 
 /** A formation: xyz per point plus a 0..1 "signal" flag (signal points render green). */
 export interface Formation {
@@ -185,47 +186,80 @@ function pages(n: number): Formation {
   return f;
 }
 
-/** Earth as an even point sphere, with Addis Ababa (9.0°N, 38.7°E) lit and ringed. */
+function unpack(b64: string): Uint8Array {
+  const raw = atob(b64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+
+/** Is the 1-degree cell at this latitude/longitude (radians) set in the bitmap? */
+function cell(mask: Uint8Array, lat: number, lon: number): boolean {
+  const row = Math.min(179, Math.max(0, Math.floor(90 - (lat * 180) / Math.PI)));
+  const col = ((Math.floor((lon * 180) / Math.PI + 180) % 360) + 360) % 360;
+  const bit = row * 360 + col;
+  return (mask[bit >> 3] & (0x80 >> (bit & 7))) !== 0;
+}
+
+/**
+ * Earth drawn in points: the continents are dense, the oceans a faint scatter
+ * that keeps the sphere readable. Ethiopia is lit, with a ring on Addis Ababa
+ * (9.0°N, 38.7°E).
+ */
 function globe(n: number): Formation {
   const f = make(n);
   const r = rng(97);
+  const land = unpack(LAND_BITS);
+  const ethiopia = unpack(ETHIOPIA_BITS);
   const R = 1.25;
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const ringCount = Math.floor(n * 0.04);
+  const oceanCount = Math.floor(n * 0.1);
+  const landCount = n - ringCount - oceanCount;
+
+  // Evenly spaced candidates over the sphere; keep the ones that fall on land.
+  let i = 0;
+  const candidates = Math.ceil(landCount * 3.6);
+  for (let pass = 0; i < landCount && pass < 4; pass++) {
+    for (let k = 0; k < candidates && i < landCount; k++) {
+      const y = 1 - ((k + 0.5 + pass * 0.37) / candidates) * 2;
+      const rad = Math.sqrt(Math.max(0, 1 - y * y));
+      const th = golden * k + pass * 1.3;
+      const x = Math.sin(th) * rad;
+      const z = Math.cos(th) * rad;
+      const lat = Math.asin(y);
+      const lon = Math.atan2(x, z);
+      if (!cell(land, lat, lon)) continue;
+      put(f, i++, x * R, y * R, z * R, cell(ethiopia, lat, lon) ? 1 : 0);
+    }
+  }
+
+  // Oceans: a sparse scatter, slightly inside the surface so land stands proud.
+  for (let k = 0; i < landCount + oceanCount; k++) {
+    const y = 1 - ((k + 0.5) / oceanCount) * 2;
+    const rad = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = golden * k * 1.7;
+    put(f, i++, Math.sin(th) * rad * R * 0.985, y * R * 0.985, Math.cos(th) * rad * R * 0.985, 0);
+  }
+
+  // A ring around Addis Ababa, lifted just off the surface.
   const lat = (9.0 * Math.PI) / 180;
   const lon = (38.7 * Math.PI) / 180;
-  const ax = Math.cos(lat) * Math.sin(lon);
-  const ay = Math.sin(lat);
-  const az = Math.cos(lat) * Math.cos(lon);
-  const body = Math.floor(n * 0.9);
-  const golden = Math.PI * (3 - Math.sqrt(5));
-  for (let i = 0; i < n; i++) {
-    if (i < body) {
-      const yy = 1 - (i / (body - 1)) * 2;
-      const rad = Math.sqrt(1 - yy * yy);
-      const th = golden * i;
-      const x = Math.cos(th) * rad;
-      const z = Math.sin(th) * rad;
-      const near = x * ax + yy * ay + z * az > 0.992 ? 1 : 0;
-      put(f, i, x * R, yy * R, z * R, near);
-    } else {
-      // Ring around the city, lifted slightly off the surface.
-      const ang = r() * Math.PI * 2;
-      const spread = 0.16 + (r() < 0.5 ? 0 : 0.1);
-      // Two tangent vectors at the city.
-      const tx = Math.cos(lon);
-      const tz = -Math.sin(lon);
-      const ux = ay * tz;
-      const uy = az * tx - ax * tz;
-      const uz = -ay * tx;
-      const k = R * 1.02;
-      put(
-        f,
-        i,
-        (ax + (tx * Math.cos(ang) + ux * Math.sin(ang)) * spread) * k,
-        (ay + uy * Math.sin(ang) * spread) * k,
-        (az + (tz * Math.cos(ang) + uz * Math.sin(ang)) * spread) * k,
-        1
-      );
-    }
+  const c = [Math.cos(lat) * Math.sin(lon), Math.sin(lat), Math.cos(lat) * Math.cos(lon)];
+  const east = [Math.cos(lon), 0, -Math.sin(lon)];
+  const north = [-Math.sin(lat) * Math.sin(lon), Math.cos(lat), -Math.sin(lat) * Math.cos(lon)];
+  for (; i < n; i++) {
+    const ang = r() * Math.PI * 2;
+    const spread = r() < 0.75 ? 0.17 : 0.03 * Math.sqrt(r());
+    const k = R * 1.03;
+    put(
+      f,
+      i,
+      (c[0] + (east[0] * Math.cos(ang) + north[0] * Math.sin(ang)) * spread) * k,
+      (c[1] + (east[1] * Math.cos(ang) + north[1] * Math.sin(ang)) * spread) * k,
+      (c[2] + (east[2] * Math.cos(ang) + north[2] * Math.sin(ang)) * spread) * k,
+      1
+    );
   }
   return f;
 }

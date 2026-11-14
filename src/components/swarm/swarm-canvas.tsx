@@ -384,9 +384,13 @@ export function SwarmCanvas() {
 
         const FLAT = ["portrait", "pages", "network", "scatter", "regression", "curve", "matrix", "tree"];
         const flat = !!current && (FLAT.includes(current) || current.startsWith("word:"));
-        if (!reduce) spin += dt * (current === "globe" || current === "embedding" ? 0.22 : flat ? 0 : 0.12);
-        const targetY = (flat ? 0 : spin) + sway.x * (flat ? 0.22 : 0.35);
-        const targetX = (current === "surface" || current === "layers" || current === "bars" ? 0.42 : 0) - sway.y * 0.16;
+        if (!reduce) spin += dt * (current === "embedding" ? 0.22 : flat || current === "globe" ? 0 : 0.12);
+        // The globe does not spin away: it rocks slowly around Africa so Ethiopia stays in view.
+        const targetY =
+          current === "globe"
+            ? -0.42 + (reduce ? 0 : Math.sin(uniforms.uTime.value * 0.22) * 0.55) + sway.x * 0.3
+            : (flat ? 0 : spin) + sway.x * (flat ? 0.22 : 0.35);
+        const targetX = (current === "surface" || current === "layers" || current === "bars" ? 0.42 : current === "globe" ? 0.16 : 0) - sway.y * 0.16;
         group.rotation.y += (targetY - group.rotation.y) * k;
         group.rotation.x += (targetX - group.rotation.x) * k;
 
