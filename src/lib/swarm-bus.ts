@@ -39,7 +39,7 @@ export const STATIONS: Station[] = [
   { key: "2", href: "/about", label: "About", shape: "helix", figure: "arranged as a career, strand by strand", scroll: ["curve", "bars", "embedding", "tree"] },
   { key: "3", href: "/learning", label: "Lab", shape: "surface", figure: "arranged as a loss surface, descending", scroll: ["regression", "scatter", "curve", "network"] },
   { key: "4", href: "/blog", label: "Writing", shape: "pages", figure: "arranged as paragraphs", scroll: ["embedding", "bars", "tree", "scatter"] },
-  { key: "5", href: "/contact", label: "Contact", shape: "globe", figure: "arranged as Earth, Addis Ababa lit", scroll: ["network", "embedding"] },
+  { key: "5", href: "/contact", label: "Contact", shape: "globe", figure: "arranged as Earth: Ethiopia lit, Addis Ababa ringed", scroll: ["network", "embedding"] },
 ];
 
 export function stationForPath(pathname: string): Station {
