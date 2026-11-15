@@ -65,6 +65,9 @@ const blogJsonLd = buildCollectionPageJsonLd({
   ],
 });
 
+/** Solid surface for reading: the animated dots stay in the page margins, never behind text. */
+const SURFACE = "mx-auto max-w-[74rem] border-x border-border bg-background px-5 py-8 sm:px-9";
+
 export default async function BlogPage({ searchParams }: Props) {
   const sp = await searchParams;
   const requested = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
@@ -89,7 +92,7 @@ export default async function BlogPage({ searchParams }: Props) {
 
     const posts = data.items.map(apiListItemToSummary);
     return (
-      <>
+      <div className={SURFACE}>
         <JsonLd data={blogJsonLd} />
         <BlogIndex
           key={`${topic ?? "all"}`}
@@ -110,11 +113,11 @@ export default async function BlogPage({ searchParams }: Props) {
         <div className="mx-auto mt-16 w-full max-w-6xl">
           <PipelineStatus />
         </div>
-      </>
+      </div>
     );
   } catch {
     return (
-      <>
+      <div className={SURFACE}>
         <JsonLd data={blogJsonLd} />
         <BlogIndex
           posts={[]}
@@ -122,7 +125,7 @@ export default async function BlogPage({ searchParams }: Props) {
           activeTopic={topic ?? null}
           error="Could not load posts. The blog API may be unreachable—try again later."
         />
-      </>
+      </div>
     );
   }
 }

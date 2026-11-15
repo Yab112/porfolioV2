@@ -181,7 +181,15 @@ export function BlogChart({ spec }: { spec: ChartSpec }) {
               ))
             : spec.x!.map((label, i) =>
                 i % labelEvery === 0 ? (
-                  <text key={i} x={sx(i)} y={height - M.bottom + 16} textAnchor="middle" className="fill-muted-foreground font-mono" fontSize={11}>
+                  <text
+                    key={i}
+                    x={sx(i)}
+                    y={height - M.bottom + 16}
+                    // the first and last labels of a line chart sit on the plot edges: anchor them inward so they are not cut off
+                    textAnchor={spec.type === "bar" ? "middle" : i === 0 ? "start" : i === n - 1 ? "end" : "middle"}
+                    className="fill-muted-foreground font-mono"
+                    fontSize={11}
+                  >
                     {String(label).length > 12 ? `${String(label).slice(0, 11)}…` : String(label)}
                   </text>
                 ) : null
