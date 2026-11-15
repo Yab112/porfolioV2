@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useId, useState } from "react";
 
 /** Diagram block (```mermaid). Loaded on demand; falls back to the source if it cannot be drawn. */
-export function BlogMermaid({ code }: { code: string }) {
+export function BlogMermaid({ code, natural = false }: { code: string; natural?: boolean }) {
   const id = useId().replace(/[^a-zA-Z0-9]/g, "");
   const { resolvedTheme } = useTheme();
   const [svg, setSvg] = useState<string | null>(null);
@@ -20,6 +20,8 @@ export function BlogMermaid({ code }: { code: string }) {
           securityLevel: "strict",
           theme: resolvedTheme === "dark" ? "dark" : "neutral",
           fontFamily: "inherit",
+          // `natural`: keep the diagram at its real size and let the frame scroll, instead of shrinking it to fit.
+          er: { useMaxWidth: !natural },
         });
         const out = await mermaid.render(`mmd${id}`, code);
         if (!cancelled) setSvg(out.svg);
@@ -30,7 +32,7 @@ export function BlogMermaid({ code }: { code: string }) {
     return () => {
       cancelled = true;
     };
-  }, [code, id, resolvedTheme]);
+  }, [code, id, resolvedTheme, natural]);
 
   if (failed) {
     return (
@@ -42,7 +44,10 @@ export function BlogMermaid({ code }: { code: string }) {
   return (
     <figure className="my-10 overflow-x-auto border border-border bg-card p-4">
       {svg ? (
-        <div className="flex justify-center [&_svg]:h-auto [&_svg]:max-w-full" dangerouslySetInnerHTML={{ __html: svg }} />
+        <div
+          className={natural ? "w-max min-w-full [&_svg]:h-auto [&_svg]:max-w-none" : "flex justify-center [&_svg]:h-auto [&_svg]:max-w-full"}
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
       ) : (
         <div className="h-40 animate-pulse bg-muted/40" aria-label="Loading diagram" />
       )}

@@ -2,8 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Empty, Notice, PageTitle, Pill, inputCls, shortDate, timeAgo, useApi } from "../_lib";
+import { useEffect, useState } from "react";
+import { Btn, Empty, Loading, Notice, PANE, PageTitle, Pager, Pill, inputCls, shortDate, timeAgo, useApi } from "../_lib";
 
 type Person = {
   email: string;
@@ -24,53 +24,83 @@ type Detail = {
   mail: { created_at: string; subject?: string; body_md?: string; sent_body?: string; body?: string; status?: string; channel?: string }[];
 };
 
+type PeoplePage = { items: Person[]; total: number; everyone: number; waiting: number; anonymous_conversations: number };
+const PAGE = 25;
+
 export default function AdminPeople() {
-  const { data, error, loading } = useApi<{ items: Person[]; anonymous_conversations: number }>("admin/people");
   const [query, setQuery] = useState("");
+  const [search, setSearch] = useState("");
+  const [only, setOnly] = useState<"" | "waiting">("");
+  const [offset, setOffset] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
 
-  const people = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return (data?.items ?? []).filter((p) => !q || p.email.includes(q) || p.last_question.toLowerCase().includes(q));
-  }, [data, query]);
-  const waiting = (data?.items ?? []).filter((p) => p.open > 0 && p.emails_sent === 0).length;
+  // Search runs on the server, a moment after you stop typing.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setSearch(query.trim());
+      setOffset(0);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const { data, error, loading } = useApi<PeoplePage>(
+    `admin/people?limit=${PAGE}&offset=${offset}&only=${only}&q=${encodeURIComponent(search)}`
+  );
+  const people = data?.items ?? [];
 
   return (
     <main>
-      <PageTitle title="People" sub="Everyone who left an email on your site: what they asked, and what you have sent them." />
+      <PageTitle title="People" sub="Everyone who left an email on your site: what they asked, and what you have sent them.">
+        {(["", "waiting"] as const).map((f) => (
+          <Btn
+            key={f || "all"}
+            tone={only === f ? "primary" : "plain"}
+            className="h-8"
+            onClick={() => {
+              setOnly(f);
+              setOffset(0);
+            }}
+          >
+            {f ? "Waiting for you" : "Everyone"}
+            {data ? <span className="tabular-nums opacity-70">{f ? data.waiting : data.everyone}</span> : null}
+          </Btn>
+        ))}
+      </PageTitle>
       {error ? <Notice kind="error">{error}</Notice> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by email or question" aria-label="Search people" className={cn(inputCls, "mb-4 max-w-md")} />
+      {loading && !data ? <Loading /> : null}
       {data ? (
         <>
           <p className="mb-4 text-[13.5px] text-muted-foreground">
-            {data.items.length} people with an email. {waiting} of them asked something and have not had an email from you yet.{" "}
-            {data.anonymous_conversations} conversations left no email, so they cannot be contacted.
+            {data.everyone} people with an email. {data.waiting} asked something and have not had an email from you yet. {data.anonymous_conversations} conversations left no email, so they cannot be contacted.
           </p>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by email or question" aria-label="Search people" className={cn(inputCls, "mb-4 max-w-md")} />
           {people.length === 0 ? <Empty>No one matches.</Empty> : null}
           <div className={cn("grid gap-6", selected && "lg:grid-cols-[minmax(0,1fr)_28rem]")}>
-            <ul className="divide-y divide-border self-start border-border [&:not(:empty)]:border">
-              {people.map((p) => (
-                <li key={p.email}>
-                  <button type="button" onClick={() => setSelected(p.email)} className={cn("block w-full px-4 py-3 text-left hover:bg-muted/40", selected === p.email ? "bg-muted/60" : "bg-card")}>
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="font-medium">{p.email}</span>
-                      <span className="text-[12px] text-muted-foreground">last seen {timeAgo(p.last_seen)}</span>
-                    </div>
-                    {p.last_question ? <p className="mt-1 line-clamp-2 text-[13px] text-muted-foreground">{p.last_question}</p> : null}
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[12px] text-muted-foreground">
-                      {p.open > 0 && p.emails_sent === 0 ? <Pill>open</Pill> : null}
-                      {p.intents.map((i) => (
-                        <Pill key={i}>{i}</Pill>
-                      ))}
-                      <span>
-                        {p.conversations} handed over · {p.chat_sessions} chats · {p.emails_sent} emails from you
-                      </span>
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className={cn(PANE, loading && "opacity-60")}>
+              <ul className="divide-y divide-border border-border [&:not(:empty)]:border">
+                {people.map((p) => (
+                  <li key={p.email}>
+                    <button type="button" onClick={() => setSelected(p.email)} className={cn("block w-full px-4 py-3 text-left hover:bg-muted/40", selected === p.email ? "bg-muted/60" : "bg-card")}>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-medium">{p.email}</span>
+                        <span className="text-[12px] text-muted-foreground">last seen {timeAgo(p.last_seen)}</span>
+                      </div>
+                      {p.last_question ? <p className="mt-1 line-clamp-2 text-[13px] text-muted-foreground">{p.last_question}</p> : null}
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[12px] text-muted-foreground">
+                        {p.open > 0 && p.emails_sent === 0 ? <Pill>open</Pill> : null}
+                        {p.intents.map((i) => (
+                          <Pill key={i}>{i}</Pill>
+                        ))}
+                        <span>
+                          {p.conversations} handed over · {p.chat_sessions} chats · {p.emails_sent} emails from you
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <Pager total={data.total} limit={PAGE} offset={offset} onChange={setOffset} />
+            </div>
             {selected ? <PersonPane key={selected} email={selected} onClose={() => setSelected(null)} /> : null}
           </div>
         </>
@@ -82,7 +112,7 @@ export default function AdminPeople() {
 function PersonPane({ email, onClose }: { email: string; onClose: () => void }) {
   const { data, error, loading } = useApi<Detail>(`admin/people/${encodeURIComponent(email)}`);
   return (
-    <aside className="space-y-5 self-start border border-border bg-card p-4">
+    <aside className={cn(PANE, "space-y-5 self-start border border-border bg-card p-4")}>
       <div className="flex items-start justify-between gap-3">
         <h2 className="break-all text-[16px] font-semibold">{email}</h2>
         <button type="button" onClick={onClose} className="text-[13px] text-muted-foreground hover:text-foreground">
@@ -93,7 +123,7 @@ function PersonPane({ email, onClose }: { email: string; onClose: () => void }) 
         Write an email
       </Link>
       {error ? <Notice kind="error">{error}</Notice> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {loading && !data ? <Loading kind="detail" /> : null}
       {data ? (
         <>
           <Block title={`Asked you (${data.conversations.length})`}>
@@ -149,7 +179,7 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
   return (
     <section>
       <h3 className="mb-2 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{title}</h3>
-      <ul className="max-h-72 space-y-3 overflow-y-auto">{children}</ul>
+      <ul className="space-y-3">{children}</ul>
     </section>
   );
 }

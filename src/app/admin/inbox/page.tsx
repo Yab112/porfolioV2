@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Btn, Empty, Notice, PageTitle, Pill, api, inputCls, shortDate, timeAgo, useApi } from "../_lib";
+import { Btn, Empty, Loading, Notice, PANE, PageTitle, Pager, Pill, api, inputCls, shortDate, timeAgo, useApi } from "../_lib";
 
 type Alert = {
   id: string;
@@ -21,10 +21,14 @@ type Conversation = {
 };
 
 const FILTERS = ["open", "replied", "handled", "all"] as const;
+const PAGE = 25;
 
 export default function AdminInbox() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("open");
-  const list = useApi<{ items: Alert[] }>(`admin/inbox${filter === "all" ? "" : `?status=${filter}`}`);
+  const [offset, setOffset] = useState(0);
+  const list = useApi<{ items: Alert[]; total: number; counts: Record<string, number> }>(
+    `admin/inbox?limit=${PAGE}&offset=${offset}${filter === "all" ? "" : `&status=${filter}`}`
+  );
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -41,15 +45,24 @@ export default function AdminInbox() {
     <main>
       <PageTitle title="Inbox" sub="Visitors the site agent handed over to you. Reply here and they get your email.">
         {FILTERS.map((f) => (
-          <Btn key={f} tone={filter === f ? "primary" : "plain"} onClick={() => setFilter(f)} className="h-8 capitalize">
+          <Btn
+            key={f}
+            tone={filter === f ? "primary" : "plain"}
+            onClick={() => {
+              setFilter(f);
+              setOffset(0);
+            }}
+            className="h-8 capitalize"
+          >
             {f}
+            {list.data?.counts?.[f] !== undefined ? <span className="tabular-nums opacity-70">{list.data.counts[f]}</span> : null}
           </Btn>
         ))}
       </PageTitle>
       {list.error ? <Notice kind="error">{list.error}</Notice> : null}
       <div className="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)]">
-        <div className={cn(selected && "hidden lg:block")}>
-          {list.loading && !list.data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+        <div className={cn(PANE, selected && "hidden lg:block", list.loading && list.data && "opacity-60")}>
+          {list.loading && !list.data ? <Loading /> : null}
           {list.data && items.length === 0 ? <Empty>{filter === "open" ? "Inbox zero. Nothing is waiting for you." : "Nothing here."}</Empty> : null}
           <ul className="divide-y divide-border border-border [&:not(:empty)]:border">
             {items.map((a) => (
@@ -72,8 +85,9 @@ export default function AdminInbox() {
               </li>
             ))}
           </ul>
+          {list.data ? <Pager total={list.data.total} limit={PAGE} offset={offset} onChange={setOffset} /> : null}
         </div>
-        <div className={cn(!selected && "hidden lg:block")}>
+        <div className={cn(PANE, !selected && "hidden lg:block")}>
           {selected ? (
             <ConversationPane key={selected} id={selected} onBack={() => setSelected(null)} onChanged={list.reload} />
           ) : (
@@ -118,7 +132,7 @@ function ConversationPane({ id, onBack, onChanged }: { id: string; onBack: () =>
     }
   }
 
-  if (loading && !data) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (loading && !data) return <Loading kind="detail" />;
   if (error) return <Notice kind="error">{error}</Notice>;
   if (!data) return null;
   const { alert } = data;
@@ -143,7 +157,7 @@ function ConversationPane({ id, onBack, onChanged }: { id: string; onBack: () =>
         </div>
       </header>
 
-      <div className="max-h-[46vh] space-y-3 overflow-y-auto px-4 py-4">
+      <div className="space-y-3 px-4 py-4">
         {data.messages.length === 0 ? (
           <div className="border-l-2 border-[var(--green)] pl-3 text-[14px]">
             <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">Visitor asked</div>

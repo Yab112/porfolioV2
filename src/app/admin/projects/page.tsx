@@ -3,7 +3,8 @@
 import { DATA } from "@/data/resume";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
-import { Btn, Empty, Field, Notice, PageTitle, Pill, api, inputCls, useApi } from "../_lib";
+import { Btn, Empty, Field, Loading, Notice, PageTitle, Pill, api, inputCls, useApi } from "../_lib";
+import { ImageUpload } from "../_upload";
 
 type Row = {
   id: string;
@@ -142,7 +143,7 @@ export default function AdminProjects() {
         </Btn>
       </PageTitle>
       {error || err ? <div className="mb-4"><Notice kind="error">{err ?? error}</Notice></div> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {loading && !data ? <Loading /> : null}
 
       <div className={cn("grid gap-6", draft && "lg:grid-cols-[minmax(0,1fr)_26rem]")}>
         <ul className="divide-y divide-border self-start border border-border">
@@ -201,8 +202,18 @@ export default function AdminProjects() {
             <Field label="Main link">
               <input value={draft.href ?? ""} onChange={(e) => setDraft({ ...draft, href: e.target.value })} placeholder="https://" className={inputCls} />
             </Field>
-            <Field label="Image URL">
-              <input value={draft.image ?? ""} onChange={(e) => setDraft({ ...draft, image: e.target.value })} placeholder="https:// or /projects/name.png" className={inputCls} />
+            <Field label="Image">
+              {draft.image ? (
+                <div className="mb-2 flex items-center gap-3 border border-border bg-background p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={draft.image} alt="" className="h-14 w-24 shrink-0 object-cover" />
+                  <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-muted-foreground">{draft.image}</span>
+                  <button type="button" onClick={() => setDraft({ ...draft, image: "" })} className="text-[12px] text-destructive hover:underline">
+                    Remove
+                  </button>
+                </div>
+              ) : null}
+              <ImageUpload folder="projects" label={draft.image ? "Replace image" : "Upload image"} onUploaded={(url) => setDraft((d) => (d ? { ...d, image: url } : d))} />
             </Field>
             <Field label="Technologies" hint="Comma separated.">
               <input

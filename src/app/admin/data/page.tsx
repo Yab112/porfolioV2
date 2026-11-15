@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Btn, Empty, Notice, PageTitle, useApi } from "../_lib";
+import { Btn, Empty, Loading, Notice, PageTitle, useApi } from "../_lib";
+import { SchemaView } from "./_schema";
 
 type TableInfo = { table: string; about: string; rows: number | null };
 type Rows = { table: string; about: string; total: number; columns: string[]; rows: Record<string, unknown>[] };
@@ -18,14 +19,24 @@ export default function AdminData() {
   const tables = useApi<{ items: TableInfo[] }>("admin/data");
   const [table, setTable] = useState<string | null>(null);
   const [offset, setOffset] = useState(0);
+  const [view, setView] = useState<"rows" | "schema">("rows");
   const rows = useApi<Rows>(table ? `admin/data/${table}?limit=${PAGE}&offset=${offset}` : null);
 
   return (
     <main>
-      <PageTitle title="Data" sub="Everything stored for your site, table by table. Read-only: nothing here can be changed or deleted." />
+      <PageTitle title="Data" sub="Everything stored for your site. Read-only: nothing here can be changed or deleted.">
+        <Btn tone={view === "rows" ? "primary" : "plain"} className="h-8" onClick={() => setView("rows")}>
+          Rows
+        </Btn>
+        <Btn tone={view === "schema" ? "primary" : "plain"} className="h-8" onClick={() => setView("schema")}>
+          Schema diagram
+        </Btn>
+      </PageTitle>
       {tables.error ? <Notice kind="error">{tables.error}</Notice> : null}
-      <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
-        <ul className="divide-y divide-border self-start border border-border">
+      {view === "schema" ? <SchemaView /> : null}
+      <div className={cn("grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]", view === "schema" && "hidden")}>
+        {tables.loading && !tables.data ? <Loading rows={8} /> : null}
+        <ul className="divide-y divide-border self-start border-border [&:not(:empty)]:border">
           {(tables.data?.items ?? []).map((t) => (
             <li key={t.table}>
               <button
@@ -50,7 +61,7 @@ export default function AdminData() {
         <section className="min-w-0">
           {!table ? <Empty>Pick a table to see its rows.</Empty> : null}
           {rows.error ? <Notice kind="error">{rows.error}</Notice> : null}
-          {table && rows.loading && !rows.data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+          {table && rows.loading && !rows.data ? <Loading kind="table" /> : null}
           {table && rows.data ? (
             <>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">

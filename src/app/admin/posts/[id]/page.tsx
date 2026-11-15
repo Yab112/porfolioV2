@@ -4,8 +4,9 @@ import { BlogPostBody } from "@/components/blog/blog-post-body";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Btn, Field, Notice, Pill, api, inputCls, useApi } from "../../_lib";
+import { useEffect, useRef, useState } from "react";
+import { Btn, Field, Loading, Notice, Pill, api, inputCls, useApi } from "../../_lib";
+import { ImageUpload } from "../../_upload";
 
 type Post = {
   id: string;
@@ -27,6 +28,18 @@ export default function AdminPostEditor() {
   const [view, setView] = useState<"split" | "write" | "preview">("split");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+
+  /** Put an uploaded image into the article where the cursor is (or at the end). */
+  function insertImage(url: string, name: string) {
+    const at = bodyRef.current?.selectionStart;
+    setForm((f) => {
+      if (!f) return f;
+      const pos = at ?? f.body_md.length;
+      const block = `\n\n![${name.replace(/[-_]+/g, " ")}](${url})\n\n`;
+      return { ...f, body_md: f.body_md.slice(0, pos).trimEnd() + block + f.body_md.slice(pos).trimStart() };
+    });
+  }
 
   useEffect(() => {
     if (data) setForm(data);
@@ -40,7 +53,7 @@ export default function AdminPostEditor() {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  if (loading && !form) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (loading && !form) return <Loading kind="editor" />;
   if (error) return <Notice kind="error">{error}</Notice>;
   if (!form) return null;
 
@@ -141,8 +154,18 @@ export default function AdminPostEditor() {
               className={inputCls}
             />
           </Field>
-          <Field label="Cover image URL">
-            <input value={form.image_url ?? ""} onChange={(e) => set("image_url", e.target.value)} placeholder="https://" className={inputCls} />
+          <Field label="Cover image">
+            {form.image_url ? (
+              <div className="mb-2 flex items-center gap-3 border border-border bg-background p-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={form.image_url} alt="" className="h-14 w-24 shrink-0 object-cover" />
+                <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-muted-foreground">{form.image_url}</span>
+                <button type="button" onClick={() => set("image_url", "")} className="text-[12px] text-destructive hover:underline">
+                  Remove
+                </button>
+              </div>
+            ) : null}
+            <ImageUpload folder="blog/covers" label={form.image_url ? "Replace cover" : "Upload cover"} onUploaded={(url) => set("image_url", url)} />
           </Field>
         </div>
       </div>
@@ -157,9 +180,14 @@ export default function AdminPostEditor() {
           ))}
         </div>
       </div>
+      <div className="mb-3">
+        <ImageUpload folder="blog/images" multiple label="Add images to the article" onUploaded={insertImage} />
+        <p className="mt-1 text-[12px] text-muted-foreground">Each image is inserted where your cursor is in the article. Add as many as you need.</p>
+      </div>
       <div className={cn("grid gap-4", view === "split" && "lg:grid-cols-2")}>
         {view !== "preview" ? (
           <textarea
+            ref={bodyRef}
             value={form.body_md}
             onChange={(e) => set("body_md", e.target.value)}
             spellCheck
