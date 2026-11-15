@@ -6,6 +6,7 @@ import { SwarmSection } from "@/components/swarm/swarm-section";
 import { LEARNING } from "@/data/learning";
 import { EthiopiaFlag } from "@/components/ethiopia-flag";
 import { DATA } from "@/data/resume";
+import { getProjects } from "@/lib/projects";
 import { VENTURES, VENTURES_STATUS } from "@/data/ventures";
 import { OG_ROUTES } from "@/data/seo-routes";
 import type { Metadata } from "next";
@@ -38,9 +39,9 @@ export const metadata: Metadata = {
 
 const STATUS_LABEL = { done: "done", "in-progress": "in progress", next: "next" } as const;
 
-export default function Page() {
+export default async function Page() {
   const [first, second] = DATA.name.split(" ");
-  const featured = DATA.projects.slice(0, 5);
+  const featured = (await getProjects()).slice(0, 5);
 
   return (
     <main className="relative">

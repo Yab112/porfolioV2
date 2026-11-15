@@ -1,6 +1,7 @@
 import { JsonLd } from "@/components/json-ld";
 import { WorkCaseStudyGrid } from "@/components/work/work-case-study-grid";
 import { DATA } from "@/data/resume";
+import { getProjects } from "@/lib/projects";
 import { OG_ROUTES } from "@/data/seo-routes";
 import { buildCollectionPageJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
@@ -44,11 +45,11 @@ const workJsonLd = buildCollectionPageJsonLd({
   ],
 });
 
-export default function WorkPage() {
+export default async function WorkPage() {
   return (
     <>
       <JsonLd data={workJsonLd} />
-      <WorkCaseStudyGrid projects={DATA.projects} work={DATA.work} />
+      <WorkCaseStudyGrid projects={await getProjects()} work={DATA.work} />
     </>
   );
 }
