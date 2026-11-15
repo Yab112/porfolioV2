@@ -11,8 +11,8 @@ const PITCH: { match: (p: string) => boolean; title: string; body: string }[] = 
   },
   {
     match: (p) => p.startsWith("/blog"),
-    title: "Need this in your product?",
-    body: "I do this work for clients: agents, RAG, automation and the systems around them.",
+    title: "Want me on your team?",
+    body: "I can join your team, or take a project over and deliver it end to end: agents, RAG, automation and the systems around them.",
   },
   {
     match: (p) => p.startsWith("/learning"),
