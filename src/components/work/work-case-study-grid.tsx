@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const DELAY = 0.04;
 
-type Project = (typeof import("@/data/resume").DATA.projects)[number] & { slug: string };
+type Project = import("@/lib/projects").SiteProject;
 type WorkEntry = (typeof import("@/data/resume").DATA.work)[number];
 
 function ProjectGrid({ projects }: { projects: readonly Project[] }) {

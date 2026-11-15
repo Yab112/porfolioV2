@@ -44,6 +44,10 @@ export type BlogPostSummary = {
   updated?: string;
   /** Alt text for `image` hero + list thumb (defaults to title on the post page if omitted) */
   imageAlt?: string;
+  /** Category label shown above the title ("Model releases"). */
+  category?: string;
+  /** news | analysis | explainer | course */
+  format?: string;
 };
 
 export type BlogPost = BlogPostSummary & {
