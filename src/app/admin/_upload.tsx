@@ -11,7 +11,7 @@ const MAX_BYTES = 10 * 1024 * 1024;
 export async function uploadImage(file: File, folder: string): Promise<string> {
   if (!file.type.startsWith("image/")) throw new Error(`${file.name} is not an image.`);
   if (file.size > MAX_BYTES) throw new Error(`${file.name} is larger than 10 MB.`);
-  const signed = await api<Signed>(`admin/uploads/sign?folder=${encodeURIComponent(folder)}`, { method: "POST", body: {} });
+  const signed = await api<Signed>(`admin/uploads/sign?folder=${encodeURIComponent(folder)}`, { method: "POST", quiet: true, body: {} });
   const form = new FormData();
   form.append("file", file);
   for (const [k, v] of Object.entries(signed.fields)) form.append(k, v);

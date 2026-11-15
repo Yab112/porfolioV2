@@ -41,8 +41,12 @@ export default function AdminPostEditor() {
     });
   }
 
+  // Take the server copy only when there are no unsaved edits, so a background refresh never overwrites typing.
+  const synced = useRef<Post | null>(null);
   useEffect(() => {
-    if (data) setForm(data);
+    if (!data) return;
+    setForm((f) => (!f || JSON.stringify(f) === JSON.stringify(synced.current) ? data : f));
+    synced.current = data;
   }, [data]);
 
   const dirty = Boolean(form && data && JSON.stringify(form) !== JSON.stringify(data));

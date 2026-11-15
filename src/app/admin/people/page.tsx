@@ -76,7 +76,7 @@ export default function AdminPeople() {
           </p>
           {people.length === 0 ? <Empty>No one matches.</Empty> : null}
           <div className={cn("grid gap-6", selected && "lg:grid-cols-[minmax(0,1fr)_28rem]")}>
-            <div className={cn(PANE, loading && "opacity-60")}>
+            <div className={PANE}>
               <ul className="divide-y divide-border border-border [&:not(:empty)]:border">
                 {people.map((p) => (
                   <li key={p.email}>
