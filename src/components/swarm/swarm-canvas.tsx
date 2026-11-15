@@ -254,21 +254,23 @@ export function SwarmCanvas() {
           goal.scale = (wide ? Math.min(1.08, viewW / 6.2) : Math.min(0.8, viewW / 3.6)) * (plot ? 0.8 : 1);
           goal.x = wide ? viewW * (plot ? 0.27 : 0.23) : 0;
           goal.y = wide ? 0.25 : viewH * 0.17;
-          goal.opacity = wide ? 1 : 1 - scrolled;
+          // Full strength beside the hero only; once the page scrolls into text the figure fades right down.
+          goal.opacity = wide ? 1 - scrolled * 0.86 : 1 - scrolled;
         } else if (chapter === 0) {
           // Top of the page: a crisp figure in the header, beside the title.
           const lift = Math.min(1, window.scrollY / (h * 0.6));
           goal.scale = wide ? 0.66 : 0.5;
           goal.x = wide ? viewW / 2 - 1.75 : viewW / 2 - 0.9;
           goal.y = (wide ? viewH / 2 - 1.3 : viewH / 2 - 1.0) + lift * 0.5;
-          goal.opacity = (wide ? 0.9 : 0.45) * (1 - lift * 0.6);
+          goal.opacity = (wide ? 0.8 : 0.4) * (1 - lift * 0.85);
         } else {
           // Further down: large and faint, behind the content, drifting from side to side.
           const side = chapter % 2 === 1 ? -1 : 1;
           goal.scale = wide ? Math.min(1.35, viewW / 4.6) : Math.min(0.95, viewW / 3.4);
           goal.x = wide ? side * viewW * 0.16 + 0.35 : 0;
           goal.y = 0;
-          goal.opacity = reading ? 0.13 : wide ? 0.3 : 0.2;
+          // Behind paragraphs the figure is a faint texture: body text must stay easy to read.
+          goal.opacity = reading ? 0.07 : wide ? 0.12 : 0.09;
         }
         if (!onStation) goal.opacity = 0;
         if (preview) goal.opacity = Math.max(goal.opacity, 0.9);
