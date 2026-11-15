@@ -61,7 +61,7 @@ export default function AdminInbox() {
       </PageTitle>
       {list.error ? <Notice kind="error">{list.error}</Notice> : null}
       <div className="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)]">
-        <div className={cn(PANE, selected && "hidden lg:block", list.loading && list.data && "opacity-60")}>
+        <div className={cn(PANE, selected && "hidden lg:block")}>
           {list.loading && !list.data ? <Loading /> : null}
           {list.data && items.length === 0 ? <Empty>{filter === "open" ? "Inbox zero. Nothing is waiting for you." : "Nothing here."}</Empty> : null}
           <ul className="divide-y divide-border border-border [&:not(:empty)]:border">

@@ -47,7 +47,7 @@ export default function AdminEmail() {
     const mine = ++seq.current;
     const t = setTimeout(async () => {
       try {
-        const p = await api<Preview>("admin/email/preview", { method: "POST", body: { to, first_name: firstName || null, subject, body } });
+        const p = await api<Preview>("admin/email/preview", { method: "POST", quiet: true, body: { to, first_name: firstName || null, subject, body } });
         if (mine === seq.current) setPreview(p);
       } catch {
         /* keep the last good preview while typing */

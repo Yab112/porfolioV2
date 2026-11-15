@@ -1,10 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { queryClient, queryKey } from "./_query";
 
 /** Call the admin API through the site's server-side proxy. Throws with the API's own message. */
-export async function api<T = unknown>(path: string, init?: { method?: string; body?: unknown }): Promise<T> {
+export async function api<T = unknown>(path: string, init?: { method?: string; body?: unknown; quiet?: boolean }): Promise<T> {
   const res = await fetch(`/api/admin/${path}`, {
     method: init?.method ?? "GET",
     headers: init?.body !== undefined ? { "Content-Type": "application/json" } : undefined,
@@ -25,32 +27,50 @@ export async function api<T = unknown>(path: string, init?: { method?: string; b
     const detail = (data as { detail?: unknown } | null)?.detail;
     throw new Error(typeof detail === "string" ? detail : `Request failed (${res.status})`);
   }
+  // Something changed on the server: refresh every cached page in the background.
+  // `quiet` is for calls that change nothing (a preview, an upload signature).
+  if ((init?.method ?? "GET") !== "GET" && !init?.quiet) void queryClient.invalidateQueries();
   return data as T;
 }
 
+/**
+ * Read from the admin API through the shared cache.
+ *
+ * - `loading` is true only when there is nothing to show yet (first load ever).
+ * - Changing the path (next page, another filter) keeps the current rows on screen
+ *   until the new ones arrive.
+ * - `reload()` refetches; `setData()` writes straight into the cache.
+ */
 export function useApi<T>(path: string | null) {
-  const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(Boolean(path));
-
+  const query = useQuery<T, Error>({
+    queryKey: queryKey(path ?? ""),
+    queryFn: () => api<T>(path as string),
+    enabled: Boolean(path),
+    placeholderData: keepPreviousData,
+  });
+  const { refetch } = query; // stable across renders, so effects that depend on `reload` do not re-run
   const reload = useCallback(async () => {
-    if (!path) return;
-    setLoading(true);
-    try {
-      setData(await api<T>(path));
-      setError(null);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load");
-    } finally {
-      setLoading(false);
-    }
-  }, [path]);
+    await refetch();
+  }, [refetch]);
+  const setData = useCallback(
+    (value: T) => {
+      if (path) queryClient.setQueryData(queryKey(path), value);
+    },
+    [path]
+  );
+  return {
+    data: query.data ?? null,
+    error: query.data === undefined && query.error ? query.error.message : null,
+    loading: Boolean(path) && query.data === undefined && query.isPending,
+    refreshing: query.isFetching && query.data !== undefined,
+    reload,
+    setData,
+  };
+}
 
-  useEffect(() => {
-    void reload();
-  }, [reload]);
-
-  return { data, error, loading, reload, setData };
+/** Warm the cache for a page before it is opened. */
+export function prefetch(path: string) {
+  void queryClient.prefetchQuery({ queryKey: queryKey(path), queryFn: () => api(path) });
 }
 
 export function timeAgo(iso?: string | null): string {

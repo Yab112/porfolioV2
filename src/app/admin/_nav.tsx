@@ -3,27 +3,40 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { prefetch } from "./_lib";
+import { queryClient } from "./_query";
 
 const TABS = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/inbox", label: "Inbox" },
-  { href: "/admin/people", label: "People" },
-  { href: "/admin/email", label: "Email" },
-  { href: "/admin/keywords", label: "Keywords" },
-  { href: "/admin/posts", label: "Blog" },
-  { href: "/admin/sources", label: "Sources" },
-  { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/automation", label: "Automation" },
-  { href: "/admin/data", label: "Data" },
+  { href: "/admin", label: "Overview", first: "admin/overview" },
+  { href: "/admin/inbox", label: "Inbox", first: "admin/inbox?limit=25&offset=0&status=open" },
+  { href: "/admin/people", label: "People", first: "admin/people?limit=25&offset=0&only=&q=" },
+  { href: "/admin/email", label: "Email", first: "admin/email/templates" },
+  { href: "/admin/keywords", label: "Keywords", first: "keywords/best?limit=40&status=candidate" },
+  { href: "/admin/posts", label: "Blog", first: "admin/posts?limit=20&offset=0" },
+  { href: "/admin/sources", label: "Sources", first: "newsroom/sources" },
+  { href: "/admin/projects", label: "Projects", first: "admin/projects" },
+  { href: "/admin/automation", label: "Automation", first: "internal/scheduler/status" },
+  { href: "/admin/data", label: "Data", first: "admin/data" },
 ];
 
 export function AdminNav() {
   const pathname = usePathname() ?? "";
   const router = useRouter();
-  if (pathname === "/admin/login") return null;
+  const signedIn = pathname !== "/admin/login";
+
+  // Load every section's first screen in the background, so opening a tab is instant.
+  useEffect(() => {
+    if (!signedIn) return;
+    const t = setTimeout(() => TABS.forEach((tab) => prefetch(tab.first)), 400);
+    return () => clearTimeout(t);
+  }, [signedIn]);
+
+  if (!signedIn) return null;
 
   async function signOut() {
     await fetch("/api/admin-auth", { method: "DELETE" });
+    queryClient.clear(); // nothing from this session stays in memory
     router.push("/admin/login");
   }
 
@@ -39,6 +52,8 @@ export function AdminNav() {
             <Link
               key={t.href}
               href={t.href}
+              onMouseEnter={() => prefetch(t.first)}
+              onFocus={() => prefetch(t.first)}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "border-b-2 px-3 py-1.5 text-[13.5px] font-medium transition-colors",
