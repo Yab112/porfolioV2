@@ -72,7 +72,7 @@ const components = {
     </h3>
   ),
   p: ({ children }: { children?: React.ReactNode }) => (
-    <p className="mt-5 text-[17px] leading-[1.8] text-foreground/90 first:mt-0">{children}</p>
+    <p className="mt-5 text-[17px] leading-[1.8] text-foreground first:mt-0">{children}</p>
   ),
   ul: ({ children }: { children?: React.ReactNode }) => (
     <ul className="my-4 list-disc space-y-2 pl-6 text-[17px] leading-[1.75] text-foreground/90">{children}</ul>
@@ -207,7 +207,7 @@ const components = {
 export function BlogPostBody({ content }: { content: string }) {
   const prepared = prepareBlogMarkdown(content);
   return (
-    <div className="blog-body max-w-[42rem]">
+    <div className="blog-body mx-auto max-w-[44rem]">
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["chart", "figure", "mermaid"] }]]} components={components}>
         {prepared}
       </ReactMarkdown>
