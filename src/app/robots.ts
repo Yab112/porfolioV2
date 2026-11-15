@@ -1,7 +1,7 @@
 import { DATA } from "@/data/resume";
 import type { MetadataRoute } from "next";
 
-const disallowApi = ["/api/"] as const;
+const disallowApi = ["/api/", "/admin"] as const;
 
 export default function robots(): MetadataRoute.Robots {
   const base = DATA.url.replace(/\/$/, "");

@@ -3,6 +3,8 @@ import { CASE_STUDY_OVERRIDES } from "@/data/case-study-overrides";
 import type { CaseStudySection } from "@/types/work";
 
 type ProjectWithSlug = (typeof DATA.projects)[number] & { slug: string };
+/** Enough of a project to write its case study (built-in or added in the admin). */
+type CaseStudyProject = { slug: string; description: string; technologies: readonly string[] };
 
 export function getAllProjectSlugs(): string[] {
   return DATA.projects.map((p) => (p as ProjectWithSlug).slug);
@@ -14,7 +16,7 @@ export function getProjectBySlug(slug: string): ProjectWithSlug | null {
 }
 
 /** Without a hand-written case study, say only what is known: what it is, what was built, the stack. */
-export function buildDefaultCaseStudySections(project: ProjectWithSlug): CaseStudySection[] {
+export function buildDefaultCaseStudySections(project: CaseStudyProject): CaseStudySection[] {
   const sentences = project.description
     .split(/(?<=[.!?])\s+/)
     .map((x) => x.trim())
@@ -27,7 +29,7 @@ export function buildDefaultCaseStudySections(project: ProjectWithSlug): CaseStu
   return sections;
 }
 
-export function getCaseStudySections(project: ProjectWithSlug): CaseStudySection[] {
+export function getCaseStudySections(project: CaseStudyProject): CaseStudySection[] {
   const override = CASE_STUDY_OVERRIDES[project.slug];
   return override && override.length > 0 ? override : buildDefaultCaseStudySections(project);
 }

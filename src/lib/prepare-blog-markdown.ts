@@ -100,8 +100,10 @@ function convertPipeGridsToBulletLists(md: string): string {
       const hasUrl = block.some(rowHasUrl);
       const allTwoCols = block.every((c) => c.length === 2);
 
+      // A block with a separator row is a real GFM table and is rendered as one.
+      // Only legacy "Topic | Link" grids and separator-less pipe rows become bullets.
       const shouldConvert =
-        block.length >= 2 && (hasSep || hasHeader || hasUrl || allTwoCols);
+        block.length >= 2 && (hasHeader || (!hasSep && (hasUrl || allTwoCols)));
 
       if (shouldConvert) {
         for (const c of block) {
@@ -142,10 +144,28 @@ function ensureBlankLineBeforeList(md: string): string {
   return out.join("\n");
 }
 
-export function prepareBlogMarkdown(md: string): string {
-  let s = md.trim();
-  if (!s) return s;
+/**
+ * Emphasis colours, written as plain text so the Markdown stays readable:
+ *   ==highlight==   {+improvement+}   {-regression-}
+ * They become links to `#hl`, `#pos`, `#neg`, which the renderer draws as coloured marks.
+ * Inline code is left alone.
+ */
+function colourMarks(md: string): string {
+  return md
+    .split(/(`[^`\n]*`)/)
+    .map((part, i) =>
+      i % 2 === 1
+        ? part
+        : part
+            .replace(/==([^=\n][^\n]*?)==/g, "[$1](#hl)")
+            .replace(/\{\+([^\n]+?)\+\}/g, "[$1](#pos)")
+            .replace(/\{-([^\n]+?)-\}/g, "[$1](#neg)")
+    )
+    .join("");
+}
 
+function prepareProse(md: string): string {
+  let s = colourMarks(md);
   s = s.replace(/\uFF5C/g, "|");
   s = s.replace(CLOSING_LINE, "");
 
@@ -158,6 +178,37 @@ export function prepareBlogMarkdown(md: string): string {
   s = ensureBlankLineBeforePipeBlock(s);
   s = convertPipeGridsToBulletLists(s);
   s = ensureBlankLineBeforeList(s);
-
   return s;
+}
+
+/** Fenced blocks (code, chart JSON, diagrams) are passed through byte for byte. */
+export function prepareBlogMarkdown(md: string): string {
+  const src = md.replace(/\r\n?/g, "\n").trim();
+  if (!src) return src;
+
+  const out: string[] = [];
+  let prose: string[] = [];
+  let fence: string[] | null = null;
+  const flush = () => {
+    if (prose.length) out.push(prepareProse(prose.join("\n")));
+    prose = [];
+  };
+  for (const line of src.split("\n")) {
+    const isFence = line.trimStart().startsWith("```");
+    if (fence) {
+      fence.push(line);
+      if (isFence) {
+        out.push(fence.join("\n"));
+        fence = null;
+      }
+    } else if (isFence) {
+      flush();
+      fence = [line];
+    } else {
+      prose.push(line);
+    }
+  }
+  if (fence) out.push(fence.join("\n"));
+  flush();
+  return out.join("\n");
 }

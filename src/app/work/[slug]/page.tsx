@@ -6,7 +6,8 @@ import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { ARCHITECTURES } from "@/data/architectures";
 import { PROJECT_ROLES } from "@/data/project-roles";
 import { DATA } from "@/data/resume";
-import { getCaseStudySections, getProjectBySlug } from "@/lib/case-studies";
+import { getCaseStudySections } from "@/lib/case-studies";
+import { getProject } from "@/lib/projects";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
@@ -20,7 +21,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProject(slug);
   if (!project) return { title: "Work" };
   const site = DATA.url.replace(/\/$/, "");
   const title = `${project.title} — Case study | ${DATA.name}`;
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProject(slug);
   if (!project) notFound();
 
   const sections = getCaseStudySections(project);

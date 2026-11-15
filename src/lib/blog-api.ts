@@ -17,6 +17,9 @@ export interface BlogListItem {
   image_url: string | null;
   image_alt: string | null;
   og_image_url: string | null;
+  category?: string | null;
+  category_label?: string | null;
+  format?: string | null;
 }
 
 export interface BlogTopicItem {
@@ -54,6 +57,10 @@ export interface BlogDetailResponse {
   image_alt: string | null;
   og_image_url: string | null;
   canonical_url: string | null;
+  category?: string | null;
+  category_label?: string | null;
+  format?: string | null;
+  keyword?: string | null;
   resource_links?: BlogResourceLink[];
   related_posts?: BlogListItem[];
 }
@@ -74,6 +81,8 @@ export function apiListItemToSummary(item: BlogListItem): BlogPostSummary {
     image: item.image_url ?? undefined,
     imageAlt: item.image_alt ?? undefined,
     ogImage: item.og_image_url ?? undefined,
+    category: item.category_label ?? undefined,
+    format: item.format ?? undefined,
   };
 }
 
@@ -99,6 +108,8 @@ export function apiDetailToPageData(detail: BlogDetailResponse): BlogPostPageDat
     imageAlt: detail.image_alt ?? undefined,
     ogImage: detail.og_image_url ?? undefined,
     canonical: detail.canonical_url ?? undefined,
+    category: detail.category_label ?? undefined,
+    format: detail.format ?? undefined,
     updated: detail.updated_at ?? undefined,
     topicKey: detail.topic_key ?? undefined,
     content: detail.body_md ?? "",
