@@ -28,6 +28,8 @@ type RawBlogItem = {
   image_url: string | null;
   image_alt: string | null;
   og_image_url: string | null;
+  category_label?: string | null;
+  format?: string | null;
 };
 
 function rawToSummary(item: RawBlogItem): BlogPostSummary {
@@ -38,6 +40,8 @@ function rawToSummary(item: RawBlogItem): BlogPostSummary {
     description: item.description,
     date: item.published_at ?? "",
     tags: item.tags ?? [],
+    category: item.category_label ?? undefined,
+    format: item.format ?? undefined,
     readingMinutes: Math.max(1, Math.round(words / 200)),
     image: item.image_url ?? undefined,
     imageAlt: item.image_alt ?? undefined,
@@ -109,7 +113,7 @@ function PostCard({ post, index }: { post: BlogPostSummary; index: number }) {
       className="group flex h-full flex-col gap-4 border border-border bg-card p-6 transition-colors hover:border-foreground"
     >
       <p className="note flex items-center justify-between gap-3">
-        <span className="text-signal">{post.tags[0] ?? "note"}</span>
+        <span className="text-signal">{post.category ?? post.tags[0] ?? "note"}</span>
         <span className="tabular-nums">{String(index + 2).padStart(2, "0")}</span>
       </p>
       <h3 className="poster flex-1 text-balance text-2xl transition-colors group-hover:text-[var(--purple)] sm:text-3xl">

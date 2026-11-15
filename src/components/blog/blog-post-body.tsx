@@ -1,9 +1,51 @@
 "use client";
 
+import { BlogChart, parseChartSpec } from "@/components/blog/blog-chart";
+import { BlogCode } from "@/components/blog/blog-code";
+import { BlogFigure, parseFigureSpec } from "@/components/blog/blog-figure";
+import { BlogMermaid } from "@/components/blog/blog-mermaid";
+import { slugifyHeading } from "@/lib/blog-toc";
 import { prepareBlogMarkdown } from "@/lib/prepare-blog-markdown";
 import { cn } from "@/lib/utils";
+import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+
+const MARKS: Record<string, string> = {
+  "#hl": "blog-mark blog-mark-hl",
+  "#pos": "blog-mark blog-mark-pos",
+  "#neg": "blog-mark blog-mark-neg",
+};
+
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (isValidElement(node)) return textOf((node.props as { children?: ReactNode }).children);
+  return "";
+}
+
+const CALLOUTS: Record<string, { label: string; tone: string }> = {
+  KEY: { label: "Key point", tone: "border-[var(--green)] bg-[var(--green)]/[0.07]" },
+  TIP: { label: "Tip", tone: "border-[var(--green)] bg-[var(--green)]/[0.07]" },
+  NOTE: { label: "Note", tone: "border-[var(--purple)] bg-[var(--purple)]/[0.07]" },
+  WARNING: { label: "Watch out", tone: "border-destructive bg-destructive/[0.07]" },
+};
+
+/** `> [!KEY]` style blockquotes become labelled callouts; the marker is removed from the text. */
+function splitCallout(children: ReactNode): { kind: string; body: ReactNode } | null {
+  const kids = Children.toArray(children);
+  const idx = kids.findIndex((k) => isValidElement(k));
+  if (idx < 0) return null;
+  const first = kids[idx] as ReactElement<{ children?: ReactNode }>;
+  const inner = Children.toArray(first.props.children);
+  if (typeof inner[0] !== "string") return null;
+  const m = /^\s*\[!(KEY|TIP|NOTE|WARNING)\]\s*/i.exec(inner[0]);
+  if (!m) return null;
+  inner[0] = inner[0].slice(m[0].length);
+  kids[idx] = cloneElement(first, undefined, ...inner);
+  return { kind: m[1].toUpperCase(), body: kids };
+}
 
 const components = {
   h1: ({ children }: { children?: React.ReactNode }) => (
@@ -11,13 +53,23 @@ const components = {
       {children}
     </h1>
   ),
-  h2: ({ children }: { children?: React.ReactNode }) => (
-    <h2 className="poster mt-14 scroll-m-20 border-t border-border pt-6 text-3xl text-foreground first:mt-0 first:border-t-0 first:pt-0 sm:text-4xl">
-      {children}
-    </h2>
-  ),
+  h2: ({ children, id }: { children?: React.ReactNode; id?: string }) =>
+    id === "footnote-label" ? (
+      <h2 id={id} className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+        Notes
+      </h2>
+    ) : (
+      <h2
+        id={slugifyHeading(textOf(children))}
+        className="poster mt-14 scroll-m-24 border-t border-border pt-6 text-3xl text-foreground first:mt-0 first:border-t-0 first:pt-0 sm:text-4xl"
+      >
+        {children}
+      </h2>
+    ),
   h3: ({ children }: { children?: React.ReactNode }) => (
-    <h3 className="mt-10 scroll-m-20 text-xl font-semibold tracking-tight text-foreground">{children}</h3>
+    <h3 id={slugifyHeading(textOf(children))} className="mt-10 scroll-m-24 text-xl font-semibold tracking-tight text-foreground">
+      {children}
+    </h3>
   ),
   p: ({ children }: { children?: React.ReactNode }) => (
     <p className="mt-5 text-[17px] leading-[1.8] text-foreground/90 first:mt-0">{children}</p>
@@ -32,16 +84,39 @@ const components = {
   strong: ({ children }: { children?: React.ReactNode }) => (
     <strong className="font-semibold text-foreground">{children}</strong>
   ),
-  a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
+  a: ({ href, children, id, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { node?: unknown }) =>
+    href && MARKS[href] ? (
+      <mark className={MARKS[href]}>{children}</mark>
+    ) : "data-footnote-ref" in rest ? (
+      <a
+        href={href}
+        id={id}
+        aria-describedby="footnote-label"
+        className="ml-0.5 rounded-sm px-0.5 font-mono text-[0.72em] font-semibold text-primary no-underline hover:bg-primary/10"
+      >
+        {children}
+      </a>
+    ) : "data-footnote-backref" in rest ? (
+      <a href={href} aria-label="Back to text" className="ml-1 font-mono text-primary no-underline">
+        ↩
+      </a>
+    ) : (
     <a
       href={href}
+      id={id}
       className="font-medium text-primary underline decoration-primary/35 underline-offset-[3px] transition-colors hover:decoration-primary break-words"
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
     >
       {children}
     </a>
-  ),
+    ),
+  section: ({ children, className }: { children?: React.ReactNode; className?: string }) =>
+    className?.includes("footnotes") ? (
+      <section className="blog-footnotes mt-16 border-t border-border pt-6">{children}</section>
+    ) : (
+      <section className={className}>{children}</section>
+    ),
   img: ({ src, alt }: { src?: string; alt?: string }) => {
     if (!src?.trim()) return null;
     return (
@@ -57,7 +132,7 @@ const components = {
     );
   },
   code: ({ className, children }: { className?: string; children?: React.ReactNode }) => {
-    const isBlock = className?.includes("language-");
+    const isBlock = className?.includes("language-") || className?.includes("hljs");
     if (isBlock) {
       return <code className={cn("font-mono text-[13px]", className)}>{children}</code>;
     }
@@ -67,20 +142,50 @@ const components = {
       </code>
     );
   },
-  pre: ({ children }: { children?: React.ReactNode }) => (
-    <pre className="my-8 overflow-x-auto rounded-none border border-border border-l-4 border-l-[var(--purple)] bg-card p-5 font-mono text-[13px] leading-relaxed dark:bg-muted/25">
-      {children}
-    </pre>
-  ),
-  blockquote: ({ children }: { children?: React.ReactNode }) => (
-    <blockquote className="my-8 border-l-4 border-[var(--green)] pl-5 text-xl leading-relaxed text-foreground">
-      {children}
-    </blockquote>
-  ),
+  pre: ({ children }: { children?: React.ReactNode }) => {
+    const child = Children.toArray(children).find((c) => isValidElement(c)) as
+      | ReactElement<{ className?: string; children?: ReactNode }>
+      | undefined;
+    const lang = /language-(\w+)/.exec(child?.props.className ?? "")?.[1];
+    if (child && (lang === "chart" || lang === "figure" || lang === "mermaid")) {
+      const raw = textOf(child.props.children).trim();
+      if (lang === "mermaid") return <BlogMermaid code={raw} />;
+      if (lang === "chart") {
+        const spec = parseChartSpec(raw);
+        return spec ? <BlogChart spec={spec} /> : null;
+      }
+      const fig = parseFigureSpec(raw);
+      return fig ? <BlogFigure spec={fig} /> : null;
+    }
+    const meta = (child?.props as { node?: { data?: { meta?: string } } } | undefined)?.node?.data?.meta ?? "";
+    const title = /title="([^"]+)"/.exec(meta)?.[1];
+    return (
+      <BlogCode lang={lang} title={title}>
+        {children}
+      </BlogCode>
+    );
+  },
+  blockquote: ({ children }: { children?: React.ReactNode }) => {
+    const callout = splitCallout(children);
+    if (callout) {
+      const { label, tone } = CALLOUTS[callout.kind];
+      return (
+        <aside className={cn("my-8 border-l-4 px-5 py-4 [&>p]:mt-2 [&>p]:text-[16px]", tone)}>
+          <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/70">{label}</div>
+          {callout.body}
+        </aside>
+      );
+    }
+    return (
+      <blockquote className="my-8 border-l-4 border-[var(--green)] pl-5 text-xl leading-relaxed text-foreground">
+        {children}
+      </blockquote>
+    );
+  },
   hr: () => <hr className="my-10 border-border/80" />,
   table: ({ children }: { children?: React.ReactNode }) => (
     <div className="my-8 w-full overflow-x-auto rounded-none border border-border/70 bg-card/30 shadow-sm">
-      <table className="w-full min-w-[min(100%,36rem)] border-collapse text-left text-[14px] leading-snug">{children}</table>
+      <table className="w-full min-w-[min(100%,36rem)] border-collapse text-left text-[14.5px] leading-snug">{children}</table>
     </div>
   ),
   thead: ({ children }: { children?: React.ReactNode }) => (
@@ -89,10 +194,10 @@ const components = {
   tbody: ({ children }: { children?: React.ReactNode }) => <tbody className="divide-y divide-border/60">{children}</tbody>,
   tr: ({ children }: { children?: React.ReactNode }) => <tr className="transition-colors hover:bg-muted/25">{children}</tr>,
   th: ({ children }: { children?: React.ReactNode }) => (
-    <th className="px-3 py-2.5 font-semibold text-foreground first:pl-4 last:pr-4">{children}</th>
+    <th className="whitespace-nowrap px-3 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-foreground first:pl-4 last:pr-4">{children}</th>
   ),
   td: ({ children }: { children?: React.ReactNode }) => (
-    <td className="px-3 py-2.5 align-top text-foreground/90 first:pl-4 last:pr-4 [&_a]:break-all">{children}</td>
+    <td className="px-3 py-2.5 align-top text-foreground/90 first:pl-4 first:font-medium first:text-foreground last:pr-4 [&_a]:break-all">{children}</td>
   ),
   del: ({ children }: { children?: React.ReactNode }) => (
     <del className="text-muted-foreground line-through">{children}</del>
@@ -102,8 +207,8 @@ const components = {
 export function BlogPostBody({ content }: { content: string }) {
   const prepared = prepareBlogMarkdown(content);
   return (
-    <div className="max-w-[42rem]">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+    <div className="blog-body max-w-[42rem]">
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["chart", "figure", "mermaid"] }]]} components={components}>
         {prepared}
       </ReactMarkdown>
     </div>

@@ -1,11 +1,13 @@
 import { SwarmWord } from "@/components/swarm/swarm-word";
 import { BlogPostBody } from "@/components/blog/blog-post-body";
 import { BlogPostShare } from "@/components/blog/blog-post-share";
+import { BlogToc } from "@/components/blog/blog-toc";
 import { JsonLd } from "@/components/json-ld";
 import BlurFade from "@/components/magicui/blur-fade";
 import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
 import { resolveMediaUrl } from "@/lib/blog";
+import { extractToc } from "@/lib/blog-toc";
 import { apiDetailToPageData, fetchBlogPost } from "@/lib/blog-api";
 import { buildBlogPostingJsonLd } from "@/lib/json-ld";
 import type { Metadata } from "next";
@@ -90,6 +92,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+const FORMAT_LABEL: Record<string, string> = { news: "News", analysis: "Analysis", explainer: "Explainer", course: "Course" };
+
 function BlogPostUnavailable() {
   return (
     <main className="min-h-dvh pb-12">
@@ -128,6 +132,7 @@ export default async function BlogPostPage({ params }: Props) {
     return <BlogPostUnavailable />;
   }
   const post = apiDetailToPageData(result.data);
+  const toc = extractToc(post.content);
   const siteOrigin = DATA.url.replace(/\/$/, "");
   const canonicalRaw = post.canonical?.trim();
   const shareUrl =
@@ -168,6 +173,14 @@ export default async function BlogPostPage({ params }: Props) {
       <BlurFade delay={0.08}>
         <article className="mt-8">
           <header className="border-b border-border/80 pb-8">
+            {post.category || post.format ? (
+              <div className="mb-4 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em]">
+                {post.category ? (
+                  <span className="border border-[var(--green)] px-2 py-1 font-semibold text-[var(--green)]">{post.category}</span>
+                ) : null}
+                {post.format ? <span className="border border-border px-2 py-1 text-muted-foreground">{FORMAT_LABEL[post.format] ?? post.format}</span> : null}
+              </div>
+            ) : null}
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="size-3.5 shrink-0 opacity-70" aria-hidden />
@@ -209,8 +222,23 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           ) : null}
 
-          <div className="pt-8">
-            <BlogPostBody content={post.content} />
+          <div className="pt-8 xl:grid xl:grid-cols-[minmax(0,42rem)_16rem] xl:gap-14">
+            <div className="min-w-0">
+              {toc.length >= 3 ? (
+                <details className="mb-8 border border-border bg-card/40 px-4 py-3 xl:hidden">
+                  <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                    In this article · {toc.filter((t) => t.level === 2).length} sections
+                  </summary>
+                  <BlogToc items={toc} className="mt-4" />
+                </details>
+              ) : null}
+              <BlogPostBody content={post.content} />
+            </div>
+            {toc.length >= 3 ? (
+              <aside className="hidden xl:block" aria-label="Table of contents">
+                <BlogToc items={toc} className="sticky top-24 z-10 max-h-[calc(100dvh-8rem)] overflow-y-auto border border-border bg-background p-4" />
+              </aside>
+            ) : null}
           </div>
 
           <BlogPostShare url={shareUrl} title={post.title} className="mt-12 border-t border-border/80 pt-10" />
@@ -218,9 +246,11 @@ export default async function BlogPostPage({ params }: Props) {
           {post.resourceLinks.length > 0 ? (
             <section className="mt-14 border-t border-border/80 pt-10" aria-labelledby="resources-heading">
               <h2 id="resources-heading" className="text-lg font-semibold tracking-tight">
-                Learn more
+                Sources and further reading
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">Curated resources referenced in this article.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                The pages this article was researched from, plus reference docs for its topics.
+              </p>
               <ul className="mt-5 space-y-3">
                 {post.resourceLinks.map((link) => (
                   <li key={`${link.url}-${link.title}`}>

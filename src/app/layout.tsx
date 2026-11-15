@@ -14,6 +14,7 @@ import { SwarmCanvas } from "@/components/swarm/swarm-canvas";
 import { CommandPalette } from "@/components/command-palette";
 import { AegisChatWidget } from "@/components/aegis-chat-widget";
 import { GeoJsonLd } from "@/components/geo-json-ld";
+import { PublicOnly } from "@/components/site-chrome";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -123,17 +124,23 @@ export default function RootLayout({
           <Toaster position="top-center" />
           <TooltipProvider delayDuration={0}>
             <SiteBackdrop />
-            <SwarmCanvas />
+            <PublicOnly>
+              <SwarmCanvas />
+            </PublicOnly>
             <div className="relative z-10 lg:pl-[4.5rem]">
               <div className="mx-auto flex min-h-dvh w-full max-w-[88rem] flex-col px-5 pb-24 sm:px-10 lg:pb-10">
                 <div className="flex-1">{children}</div>
-                <WorkWithMe />
-                <Footer />
+                <PublicOnly>
+                  <WorkWithMe />
+                  <Footer />
+                </PublicOnly>
               </div>
             </div>
-            <Rail />
-            <AegisChatWidget />
-            <CommandPalette />
+            <PublicOnly>
+              <Rail />
+              <AegisChatWidget />
+              <CommandPalette />
+            </PublicOnly>
           </TooltipProvider>
         </ThemeProvider>
       </body>

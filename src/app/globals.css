@@ -356,3 +356,102 @@ a.row:focus-visible {
     animation: none !important;
   }
 }
+
+/* Blog charts: four categorical series colours, checked for colour-blind
+   separation and contrast against the card surface in each theme. */
+:root {
+  --chart-1: #2a78d6;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+}
+.dark {
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+}
+
+/* Footnotes at the end of a post read as notes, not as body copy. */
+.blog-footnotes ol {
+  margin-top: 0.75rem;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.blog-footnotes li p {
+  margin-top: 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.blog-footnotes li:target {
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+}
+
+/* Emphasis colours in posts: ==highlight==, {+improvement+}, {-regression-}. */
+:root {
+  --mark-hl: #f6dd6b;
+  --mark-pos: #0b7a45;
+  --mark-neg: #b3261e;
+}
+.dark {
+  --mark-hl: #c9a21a;
+  --mark-pos: #45e896;
+  --mark-neg: #ff8a80;
+}
+.blog-mark {
+  background: none;
+  color: inherit;
+  font-weight: 600;
+  padding: 0 0.15em;
+}
+.blog-mark-hl {
+  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--mark-hl) 75%, transparent) 55%);
+}
+.blog-mark-pos {
+  color: var(--mark-pos);
+  background: color-mix(in srgb, var(--mark-pos) 10%, transparent);
+}
+.blog-mark-neg {
+  color: var(--mark-neg);
+  background: color-mix(in srgb, var(--mark-neg) 10%, transparent);
+}
+
+/* Syntax colours for code blocks (highlight.js class names), one set per theme. */
+:root {
+  --code-keyword: #7a2fc2;
+  --code-string: #0b6b3f;
+  --code-number: #a2530a;
+  --code-fn: #1d56c9;
+  --code-comment: #7c7287;
+  --code-type: #9a3a6e;
+}
+.dark {
+  --code-keyword: #c99cff;
+  --code-string: #7fe0ae;
+  --code-number: #f0b46a;
+  --code-fn: #8db4ff;
+  --code-comment: #8d819c;
+  --code-type: #f29ac6;
+}
+.blog-code .hljs-keyword,
+.blog-code .hljs-selector-tag,
+.blog-code .hljs-literal,
+.blog-code .hljs-meta .hljs-keyword { color: var(--code-keyword); }
+.blog-code .hljs-string,
+.blog-code .hljs-regexp,
+.blog-code .hljs-addition { color: var(--code-string); }
+.blog-code .hljs-number,
+.blog-code .hljs-symbol,
+.blog-code .hljs-attr,
+.blog-code .hljs-attribute { color: var(--code-number); }
+.blog-code .hljs-title,
+.blog-code .hljs-title.function_,
+.blog-code .hljs-section { color: var(--code-fn); }
+.blog-code .hljs-comment,
+.blog-code .hljs-quote,
+.blog-code .hljs-meta { color: var(--code-comment); font-style: italic; }
+.blog-code .hljs-type,
+.blog-code .hljs-built_in,
+.blog-code .hljs-title.class_,
+.blog-code .hljs-variable.language_ { color: var(--code-type); }
+.blog-code .hljs-deletion { color: var(--mark-neg); }
