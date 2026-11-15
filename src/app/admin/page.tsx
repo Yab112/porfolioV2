@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Empty, Notice, PageTitle, Pill, timeAgo, useApi } from "./_lib";
+import { Loading, Empty, Notice, PageTitle, Pill, timeAgo, useApi } from "./_lib";
 import { WritePostForm } from "./posts/_write-form";
 
 type Overview = {
@@ -30,7 +30,15 @@ export default function AdminOverview() {
     <main>
       <PageTitle title="Overview" sub="What needs you today." />
       {error ? <Notice kind="error">{error}</Notice> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {loading && !data ? (
+        <div className="space-y-10">
+          <Loading kind="tiles" />
+          <div className="grid gap-10 lg:grid-cols-2">
+            <Loading rows={3} />
+            <Loading kind="detail" />
+          </div>
+        </div>
+      ) : null}
       {data ? (
         <div className="space-y-10">
           <section className="grid grid-cols-2 gap-3 md:grid-cols-4">

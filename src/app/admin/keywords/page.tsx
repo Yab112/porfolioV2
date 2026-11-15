@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Btn, Empty, Field, Notice, PageTitle, Pill, api, inputCls, timeAgo, useApi } from "../_lib";
+import { Btn, Empty, Field, Loading, Notice, PANE, PageTitle, Pill, api, inputCls, timeAgo, useApi } from "../_lib";
 import { KeywordDetail, type Keyword } from "./_detail";
 
 type Best = { items: Keyword[]; categories: Record<string, string> };
@@ -84,7 +84,7 @@ export default function AdminKeywords() {
 
       {msg ? <div className="mb-4"><Notice kind={msg.kind}>{msg.text}</Notice></div> : null}
       {list.error ? <Notice kind="error">{list.error}</Notice> : null}
-      {list.loading && !list.data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {list.loading && !list.data ? <Loading /> : null}
       {list.data && items.length === 0 ? (
         <Empty>
           {status === "candidate"
@@ -94,7 +94,7 @@ export default function AdminKeywords() {
       ) : null}
 
       <div className={cn("grid gap-6", open && "lg:grid-cols-[minmax(0,1fr)_27rem]")}>
-        <ul className="divide-y divide-border self-start border-border [&:not(:empty)]:border">
+        <ul className={cn(PANE, "divide-y divide-border self-start border-border [&:not(:empty)]:border")}>
           {items.map((k) => (
             <li key={k.id} className={cn("grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-4 bg-card px-4 py-3", open?.id === k.id && "bg-muted/60")}>
               <div className="text-center">

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
-import { Btn, Field, Notice, PageTitle, Pill, api, inputCls, shortDate, useApi } from "../_lib";
+import { Btn, Field, Loading, Notice, PageTitle, Pill, api, inputCls, shortDate, useApi } from "../_lib";
 
 type Template = { id: string; key: string; name: string; subject: string; body_md: string };
 type Preview = { subject: string; html: string; unfilled: string[] };
@@ -116,7 +116,8 @@ export default function AdminEmail() {
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      {templates.loading && !templates.data ? <Loading kind="editor" /> : null}
+      <div className={cn("grid gap-6 lg:grid-cols-2", templates.loading && !templates.data && "hidden")}>
         <section className="space-y-3">
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Templates">
             {(items ?? []).map((t) => (
@@ -191,6 +192,7 @@ export default function AdminEmail() {
       <section className="mt-12">
         <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Recently sent</h2>
         {sent.error ? <Notice kind="error">{sent.error}</Notice> : null}
+        {sent.loading && !sent.data ? <Loading rows={3} /> : null}
         {sent.data && sent.data.items.length === 0 ? <p className="text-sm text-muted-foreground">Nothing sent from here yet.</p> : null}
         <ul className="divide-y divide-border border-border [&:not(:empty)]:border">
           {(sent.data?.items ?? []).map((s) => (

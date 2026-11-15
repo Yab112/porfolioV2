@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Btn, Field, Notice, PageTitle, Pill, api, inputCls, timeAgo, useApi } from "../_lib";
+import { Loading, Btn, Field, Notice, PageTitle, Pill, api, inputCls, timeAgo, useApi } from "../_lib";
 
 type Source = {
   key: string;
@@ -50,7 +50,7 @@ export default function AdminSources() {
       </PageTitle>
       {error ? <Notice kind="error">{error}</Notice> : null}
       {msg ? <div className="mb-4"><Notice kind={msg.kind}>{msg.text}</Notice></div> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {loading && !data ? <Loading rows={8} /> : null}
 
       {adding ? (
         <form

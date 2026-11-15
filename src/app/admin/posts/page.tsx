@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Btn, Empty, Field, Notice, PageTitle, Pill, api, inputCls, shortDate, timeAgo, useApi } from "../_lib";
+import { Btn, Empty, Field, Loading, Notice, PageTitle, Pager, Pill, api, inputCls, shortDate, timeAgo, useApi } from "../_lib";
 import { WritePostForm } from "./_write-form";
 
 type Post = { id: string; slug: string; title: string; description: string; status: string; tags: string[]; published_at: string | null; created_at: string };
@@ -10,10 +10,12 @@ type Idea = { id: string; created_at: string; source: string; source_url: string
 type Generation = { running: boolean; error?: string | null; topic?: string | null; result?: { slug?: string; status?: string } | null };
 
 const FILTERS = ["all", "review", "draft", "published"] as const;
+const PAGE = 20;
 
 export default function AdminPosts() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
-  const posts = useApi<{ items: Post[] }>(`admin/posts${filter === "all" ? "" : `?status=${filter}`}`);
+  const [offset, setOffset] = useState(0);
+  const posts = useApi<{ items: Post[]; total: number }>(`admin/posts?limit=${PAGE}&offset=${offset}${filter === "all" ? "" : `&status=${filter}`}`);
   const ideas = useApi<{ items: Idea[] }>("admin/ideas");
   const gen = useApi<Generation>("admin/generation");
   const [err, setErr] = useState<string | null>(null);
@@ -49,7 +51,15 @@ export default function AdminPosts() {
       <section>
         <PageTitle title="Blog" sub="Every post the writer produced, and the ones you wrote.">
           {FILTERS.map((f) => (
-            <Btn key={f} tone={filter === f ? "primary" : "plain"} onClick={() => setFilter(f)} className="h-8 capitalize">
+            <Btn
+              key={f}
+              tone={filter === f ? "primary" : "plain"}
+              onClick={() => {
+                setFilter(f);
+                setOffset(0);
+              }}
+              className="h-8 capitalize"
+            >
               {f}
             </Btn>
           ))}
@@ -62,6 +72,7 @@ export default function AdminPosts() {
         ) : gen.data?.error ? (
           <div className="mb-4"><Notice kind="error">Last writer run failed: {gen.data.error}</Notice></div>
         ) : null}
+        {posts.loading && !posts.data ? <Loading /> : null}
         {posts.data && items.length === 0 ? <Empty>No posts here yet.</Empty> : null}
         <ul className="divide-y divide-border border-border [&:not(:empty)]:border">
           {items.map((p) => (
@@ -97,6 +108,7 @@ export default function AdminPosts() {
             </li>
           ))}
         </ul>
+        {posts.data ? <Pager total={posts.data.total} limit={PAGE} offset={offset} onChange={setOffset} /> : null}
       </section>
 
       <div className="grid gap-10 lg:grid-cols-2">
@@ -125,6 +137,7 @@ export default function AdminPosts() {
             </Btn>
           </form>
           {ideas.error ? <Notice kind="error">{ideas.error}</Notice> : null}
+          {ideas.loading && !ideas.data ? <Loading rows={3} /> : null}
           {ideas.data && ideas.data.items.length === 0 ? <Empty>The queue is empty. The idea radar refills it on schedule.</Empty> : null}
           <ul className="max-h-[28rem] divide-y divide-border overflow-y-auto border-border [&:not(:empty)]:border">
             {(ideas.data?.items ?? []).map((i) => (

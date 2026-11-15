@@ -1,6 +1,7 @@
 "use client";
 
-import { Pill, shortDate } from "../_lib";
+import { cn } from "@/lib/utils";
+import { PANE, Pill, shortDate } from "../_lib";
 
 type Sig = { score?: number } & Record<string, unknown>;
 export type Keyword = {
@@ -95,7 +96,7 @@ export function KeywordDetail({ keyword: k, onClose }: { keyword: Keyword; onClo
   };
 
   return (
-    <aside className="space-y-5 self-start border border-border bg-card p-4">
+    <aside className={cn(PANE, "space-y-5 self-start border border-border bg-card p-4")}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="poster text-5xl tabular-nums leading-none">{Math.round(k.score)}</div>
@@ -154,7 +155,7 @@ export function KeywordDetail({ keyword: k, onClose }: { keyword: Keyword; onClo
       {k.sources?.length ? (
         <div>
           <h3 className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">Pages the writer will read</h3>
-          <ul className="mt-1.5 max-h-72 space-y-2 overflow-y-auto">
+          <ul className="mt-1.5 space-y-2">
             {k.sources.map((src) => (
               <li key={src.url} className="text-[13px] leading-snug">
                 <a href={src.url} target="_blank" rel="noreferrer" className="hover:text-primary">

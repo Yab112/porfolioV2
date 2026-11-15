@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Btn, Notice, PageTitle, Pill, api, shortDate, timeAgo, useApi } from "../_lib";
+import { Loading, Btn, Notice, PageTitle, Pill, api, shortDate, timeAgo, useApi } from "../_lib";
 
 type Job = {
   name: string;
@@ -44,7 +44,7 @@ export default function AdminAutomation() {
       </PageTitle>
       {error ? <Notice kind="error">{error}</Notice> : null}
       {msg ? <div className="mb-4"><Notice kind={msg.kind}>{msg.text}</Notice></div> : null}
-      {loading && !data ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+      {loading && !data ? <Loading kind="cards" /> : null}
       {data ? (
         <div className="space-y-10">
           {!data.enabled || !data.running ? (
