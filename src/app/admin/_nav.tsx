@@ -7,11 +7,14 @@ import { usePathname, useRouter } from "next/navigation";
 const TABS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/inbox", label: "Inbox" },
+  { href: "/admin/people", label: "People" },
+  { href: "/admin/email", label: "Email" },
   { href: "/admin/keywords", label: "Keywords" },
   { href: "/admin/posts", label: "Blog" },
   { href: "/admin/sources", label: "Sources" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/automation", label: "Automation" },
+  { href: "/admin/data", label: "Data" },
 ];
 
 export function AdminNav() {
