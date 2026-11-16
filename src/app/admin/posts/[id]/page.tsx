@@ -217,6 +217,9 @@ export default function AdminPostEditor() {
           </li>
           <li>Diagram: a <code>```mermaid</code> block. Table: a normal Markdown table.</li>
           <li>
+            Post on X: a <code>```xpost</code> block with JSON: <code>url</code>, <code>author</code>, <code>handle</code>, <code>text</code>, <code>date</code>.
+          </li>
+          <li>
             Footnote: <code>[^1]</code> in the text and <code>[^1]: note with a link</code> at the end. Callout: a quote starting with <code>[!KEY]</code>, <code>[!NOTE]</code> or{" "}
             <code>[!WARNING]</code>.
           </li>
