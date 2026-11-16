@@ -4,6 +4,7 @@ import { BlogChart, parseChartSpec } from "@/components/blog/blog-chart";
 import { BlogCode } from "@/components/blog/blog-code";
 import { BlogFigure, parseFigureSpec } from "@/components/blog/blog-figure";
 import { BlogMermaid } from "@/components/blog/blog-mermaid";
+import { BlogXPost, parseXPostSpec } from "@/components/blog/blog-xpost";
 import { slugifyHeading } from "@/lib/blog-toc";
 import { prepareBlogMarkdown } from "@/lib/prepare-blog-markdown";
 import { cn } from "@/lib/utils";
@@ -147,9 +148,13 @@ const components = {
       | ReactElement<{ className?: string; children?: ReactNode }>
       | undefined;
     const lang = /language-(\w+)/.exec(child?.props.className ?? "")?.[1];
-    if (child && (lang === "chart" || lang === "figure" || lang === "mermaid")) {
+    if (child && (lang === "chart" || lang === "figure" || lang === "mermaid" || lang === "xpost")) {
       const raw = textOf(child.props.children).trim();
       if (lang === "mermaid") return <BlogMermaid code={raw} />;
+      if (lang === "xpost") {
+        const post = parseXPostSpec(raw);
+        return post ? <BlogXPost spec={post} /> : null;
+      }
       if (lang === "chart") {
         const spec = parseChartSpec(raw);
         return spec ? <BlogChart spec={spec} /> : null;
@@ -208,7 +213,7 @@ export function BlogPostBody({ content }: { content: string }) {
   const prepared = prepareBlogMarkdown(content);
   return (
     <div className="blog-body mx-auto max-w-[44rem]">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["chart", "figure", "mermaid"] }]]} components={components}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeHighlight, { detect: false, ignoreMissing: true, plainText: ["chart", "figure", "mermaid", "xpost"] }]]} components={components}>
         {prepared}
       </ReactMarkdown>
     </div>
